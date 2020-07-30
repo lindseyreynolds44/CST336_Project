@@ -1,0 +1,16 @@
+<%- include('partials/header.ejs') %>
+    <body>
+        <div>
+            <% resultArray.forEach( (result) => { %>
+            <div class="articleContainer">
+                <h3> <%= result.title %> </h3>
+                <h3> <%= result.movieID %> </h3>
+            </div>
+        
+        <% });%>
+        </div>
+        
+<%- include('partials/footer.ejs') %>
+
+    </body>
+</html>
