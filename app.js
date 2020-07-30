@@ -1,7 +1,7 @@
+require("dotenv").config(); // allows to run locally you need to use a .env file
 const express = require("express");
 const app = express();
 const homeController = require("./controllers/homeController");
-
 app.set("view engine", "ejs");
 app.use(express.static("public"));
 
@@ -10,6 +10,8 @@ app.use(express.static("public"));
 app.get("/", homeController.displayIndex);
 
 // Start server
-app.listen(process.env.PORT, process.env.IP, function(){
-   console.log("Express server is running..."); 
+app.listen(process.env.PORT, process.env.IP, function () {
+  console.log("Express server is running...");
+  console.log("Port:", process.env.PORT);
+  console.log("IP:", process.env.IP);
 });
