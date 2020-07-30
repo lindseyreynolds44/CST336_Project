@@ -5,6 +5,7 @@
 ### Description
 
 Takes a string to return some details regarding a movie including the movie_ID. The search function returns a few fields. I don't think it is enough, but it does return the movie ID which we can use to call the other APIs.
+Documentation URL: https://developers.themoviedb.org/3/getting-started/search-and-query-for-details
 
 ### Test API String ( I stole the api key shhhh )
 
