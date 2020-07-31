@@ -1,5 +1,10 @@
 # The Movie Database API
 
+## Method: Get /configuration
+Use this to get the basic config information we need such as the base url for images.
+
+https://api.themoviedb.org/3/configuration?api_key=2e9106137e566a1c862c47d7251bb5fe
+
 ## Method: GET /search/movie
 
 ### Description
