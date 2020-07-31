@@ -4,7 +4,15 @@
             <% resultArray.forEach( (result) => { %>
             <div class="articleContainer">
                 <h3> <%= result.title %> </h3>
-                <h3> <%= result.movieID %> </h3>
+                <img src="<%= result.imageUrl %>" alt="Movie poster">
+                <h3>Rating: <%= result.rating %> </h3>
+                <h3> ID: <%= result.movieID %> </h3>
+                <h3>Release Date: <%= result.release_date %> </h3>
+                <p><%= result.overview %></p>
+                <% result.genres.forEach((genre) => { %>
+                    <h3><%= genre; %> </h3>
+                <% }); %>
+                <hr>
             </div>
         
         <% });%>

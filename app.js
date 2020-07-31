@@ -14,4 +14,5 @@ app.listen(process.env.PORT, process.env.IP, function () {
   console.log("Express server is running...");
   console.log("Port:", process.env.PORT);
   console.log("IP:", process.env.IP);
+  console.log("API_KEY:", process.env.API_KEY);
 });
