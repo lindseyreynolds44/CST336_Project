@@ -2,6 +2,22 @@ const request = require("request");
 const pool = require("../dbPool.js");
 const API_KEY = process.env.API_KEY;
 
+
+var test = "";
+
+ const config = async () => {
+  let configUrl = {
+    url: "https://api.themoviedb.org/3/configuration",
+    qs: {
+      api_key: API_KEY,
+    },
+  };
+
+  return await callAPI(configUrl);
+};
+
+console.log(config());
+
 exports.displayIndex = async (req, res) => {
   let query = "Jack Reacher";
   let resultArray = await getMovie(query);
