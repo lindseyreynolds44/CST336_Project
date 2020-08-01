@@ -6,9 +6,12 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "nodemonConfig":{
+  "nodemonConfig": {
     "delay": 2000,
-    "watch": ["./", "controllers/"]
+    "watch": [
+      "./",
+      "controllers/"
+    ]
   },
   "repository": {
     "type": "git",
