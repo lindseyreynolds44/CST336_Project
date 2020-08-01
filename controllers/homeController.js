@@ -1,27 +1,52 @@
 const request = require("request");
 const pool = require("../dbPool.js");
 const API_KEY = process.env.API_KEY;
+//global vars
+var config;
 
 
-var test = "";
+/**********************************************
+ *  What do you think about this?
+ * 
+ * This will load the config into a global variable
+ * and then it will call the funciton to load the
+ * config on startup. Then it will call another
+ * function to load the config ever X amount of 
+ * minutes. I have it set to 1 min for testing.
+ * This way the config doesn't get loaded for 
+ * every API call, but we can ensure it does 
+ * get updated from time to time just incase
+ * the config changes.
+ **********************************************/
 
- const config = async () => {
+ const loadConfig = async () => {
   let configUrl = {
     url: "https://api.themoviedb.org/3/configuration",
     qs: {
       api_key: API_KEY,
     },
   };
-
-  return await callAPI(configUrl);
+  //sets value of call to global var
+  config = await callAPI(configUrl);
+  console.log("loaded Config");
 };
 
-console.log(config());
+  
+let minutes = 1;
+let the_interval = minutes * 60 * 1000;
+//loads the config
+loadConfig();
+// loads the config at every X amount of time.
+setInterval(loadConfig,the_interval);
+
+/*****************************************************/
+
 
 exports.displayIndex = async (req, res) => {
   let query = "Jack Reacher";
   let resultArray = await getMovie(query);
   res.render("index", { resultArray: resultArray });
+
 };
 
 async function getMovie(query) {
@@ -47,7 +72,7 @@ async function getMovie(query) {
    * level. I tried getting it to do that earlier but I had some issues with
    * getting it to work properly
    */
-  const config = await callAPI(configUrl);
+  // const config = await callAPI(configUrl);
   let genreList = await getGenre();
   let parsedData = await callAPI(requestUrl);
   let base_url = config.images.base_url;
