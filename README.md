@@ -30,6 +30,7 @@ API_KEY="add the api key here"
 - Save the file
 - Run using nodemon you should see the api key print out in the console. I added console.log for diagnostic purposes
 
+## Additional Config
 Note: I added some config to the `package.json` file to monitor the **root** and **controllers** directories.
 ```
   "nodemonConfig": {
