@@ -34,7 +34,7 @@ API_KEY="add the api key here"
 Note: I added some config to the `package.json` file to monitor the **root** and **controllers** directories.
 ```
   "nodemonConfig": {
-    "delay": 2000,
+    "delay": 1000,
     "watch": [
       "./",
       "controllers/"

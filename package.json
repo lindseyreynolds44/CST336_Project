@@ -7,7 +7,7 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "nodemonConfig": {
-    "delay": 2000,
+    "delay": 1000,
     "watch": [
       "./",
       "controllers/"

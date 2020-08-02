@@ -25,7 +25,12 @@ Looks like this one just gives more primary information about the movie, but it'
 ### Test API String
 
 https://api.themoviedb.org/3/movie/597?api_key=2e9106137e566a1c862c47d7251bb5fe&language=en-US
+## Method Get /
 
+### Description
+
+### Test APi URL
+https://api.themoviedb.org/3/genre/movie/list?api_key=2e9106137e566a1c862c47d7251bb5fe
 ## Method GET /movie/{movie_id}/credits
 
 ### Description
