@@ -23,7 +23,7 @@ exports.displayIndex = async (req, res) => {
   let query = "Jack Reacher";
   let resultArray = await getMovie(query);
   res.render("index", { resultArray: resultArray });
-  console.log("Index rendered");
+  console.log("length: " + resultArray.length + " Index rendered");
 };
 
 /*******************************************************************************
@@ -45,13 +45,6 @@ async function getMovie(query) {
       query: query,
     },
   };
-  /******************************************************************************
-   *                     NOTE For Lindsey 8/1/2020 10:48 PM
-   * ****************************************************************************
-   * I think we also need to have the genreNames to be called at a global
-   * level. Mainly because it's mostly static data that we don't want to be calling
-   * with every request. What do you think?
-   ******************************************************************************/
   let genreNames = await getGenreNames();
   let parsedData = await callAPI(requestUrl);
   let base_url = config.images.base_url;
@@ -73,6 +66,7 @@ async function getMovie(query) {
       genres: genreNameArr,
     };
     resultArray.push(result);
+    console.log("result title: " + result.title);
   });
   return resultArray;
 }

@@ -9,6 +9,10 @@ app.use(express.static("public"));
 // Root route for landing page
 app.get("/", homeController.displayIndex);
 
+// Route for shopping cart
+
+
+
 // Start server
 app.listen(process.env.PORT, process.env.IP, function () {
   console.log("Express server is running...");
