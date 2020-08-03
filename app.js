@@ -12,6 +12,11 @@ const bcrypt = require("bcrypt");
 // Root route for login page
 app.get("/", homeController.displayLoginPage);
 
+// Route to display main page of our website, once user is logged in
+app.get("/welcome", function(req, res){
+    res.render("welcome"); 
+});
+
 // When user clicks "login" on the login page, using
 // their username and password (Be sure to use POST in .ejs file)
 app.post("/login", homeController.login);
