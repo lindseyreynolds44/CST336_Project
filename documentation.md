@@ -5,8 +5,8 @@
 * Use AJAX call
 * Route: "/search"
 * Return: JSON data is sent to resultPage.ejs
-JSON Value: 
-`resultArray { title, imageUrl, rating, movieID, release_date, overview, genres }`
+* JSON Value: 
+>`resultArray { title, imageUrl, rating, movieID, release_date, overview, genres }`
 
 ### Click “Create new account” button
 
