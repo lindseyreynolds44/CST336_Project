@@ -15,13 +15,11 @@ loadConfig();
 setInterval(loadConfig, the_interval);
 
 /******************************************************************************
- *                                  Route Functions
+ *             Route Functions - called directly in app.js routes
  ******************************************************************************/
 
 /**
  * Handles the GET "/" route
- * @param {*} req
- * @param {*} res
  */
 exports.displayLoginPage = (req, res) => {
   res.render("loginPage");
@@ -29,8 +27,6 @@ exports.displayLoginPage = (req, res) => {
 
 /**
  * Handles the login route.
- * @param {*} req
- * @param {*} res
  */
 exports.login = async (req, res) => {
   let username = req.body.username;
@@ -48,8 +44,6 @@ exports.login = async (req, res) => {
 
 /**
  * Handles the create account route
- * @param {*} req
- * @param {*} res
  */
 exports.createAccount = async (req, res) => {
   let username = req.body.username;
@@ -65,33 +59,27 @@ exports.createAccount = async (req, res) => {
 
 /**
  * Displays the welcome page after logging in.
- * @param {*} req
- * @param {*} res
  */
 exports.displayWelcome = async (req, res) => {
   // Display top ten rated movies from our database
-
-  let query = "Jack Reacher";
-  let resultArray = await getMovie(query);
-  res.render("index", { resultArray: resultArray });
-  console.log("length: " + resultArray.length + " Index rendered");
 };
 
 /**
  * Displays the search results.
- * @param {*} req
- * @param {*} res
  */
 exports.displaySearchResults = async (req, res) => {
   // Call DB first on success display results otherwise call API.
   // Use "LIKE" (or similar) for sql query to search movie name.
   // Return: resultArray
+  let query = "Jack Reacher";
+  let resultArray = await getMovie(query);
+  let test = "Hello World";
+  res.render("index", { resultArray: resultArray, "test": test});
+  console.log("length: " + resultArray.length + " Index rendered");
 };
 
 /**
  * Handles logout and redirect to root route
- * @param {*} req
- * @param {*} res
  */
 exports.logout = (req, res) => {
   req.session.destroy();
@@ -100,8 +88,6 @@ exports.logout = (req, res) => {
 
 /**
  * Handles adding a movie into the user's cart
- * @param {*} req
- * @param {*} res
  */
 exports.updateCart = async (req, res) => {
   let user_id = req.session.name;
@@ -113,8 +99,6 @@ exports.updateCart = async (req, res) => {
 
 /**
  * Handles the display shopping cart route
- * @param {*} req
- * @param {*} res
  */
 exports.displayCartPage = async (req, res) => {
   let user_id = req.session.name;
@@ -123,13 +107,13 @@ exports.displayCartPage = async (req, res) => {
   // Returns "rows"
 };
 
+
 /*******************************************************************************
  *                                Middleware Functions
  ******************************************************************************/
 
 /**
  * Processes movie data from API.
- *
  * @param {String} query
  */
 async function getMovie(query) {
@@ -163,8 +147,9 @@ async function getMovie(query) {
       genres: genreNameArr,
     };
     resultArray.push(result);
-    console.log("result title: " + result.title);
+    console.log("In loop Length: " + resultArray.length);
   });
+  console.log("Out loop Length: " + resultArray.length);
   return resultArray;
 }
 
