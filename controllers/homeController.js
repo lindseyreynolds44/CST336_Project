@@ -227,7 +227,6 @@ async function loadConfig() {
   //sets value of call to global var
   config = await callAPI(requestUrl);
   genreNames = await getGenreNames();
-  console.dir(genreNames);
   console.log("Loaded config");
 }
 
