@@ -13,18 +13,18 @@
 ### Click “Register” button
 * Use AJAX call
 * Route: "/register"
-* Input Data: firstName, lastName, username and password
+* Input Data: `firstName, lastName, username and password`
 * Return: sign-in.ejs is rendered 
 
 ### Click “add to cart” on a movie
 * Use AJAX call
 * Route: "/updateCart"
-* Input Data: movie_id and action: "add"
+* Input Data: `movie_id, title, release_date, description, image_url, rating, genres and action: "add"`
 
 ### Click “remove from cart”
 * Use AJAX call
 * Route: "/updateCart"
-* Input Data: movie_id and action: "delete"
+* Input Data: `movie_id and action: "delete"`
 
 
 

@@ -15,7 +15,7 @@ loadConfig();
 setInterval(loadConfig, interval);
 
 /******************************************************************************
- *                      Route Functions - called in app.js
+ *                      Route Functions - called in app.js                    *
  ******************************************************************************/
 
 /**
@@ -75,22 +75,18 @@ exports.register = async (req, res) => {
 
 /**
  * Handles the GET "/search" route
- * --- TO DO (3) ---
+ * --- DONE ---
  */
 exports.displaySearchResults = async (req, res) => {
-  let query = req.query.search_string;
-  // Call DB first on success display results otherwise call API.
-  // Use "LIKE" (or similar) for sql query to search movie name.
-  // Return: resultArray
-  query = "Jack Reacher";
+  let query = req.query.search_string.trim();
+  query = "Jack Reacher"; // For testing purposes only
   let resultArray = await getMovie(query);
-  let test = "Hello World";
   res.render("selection", {"resultArray": resultArray});
-  console.log("Index rendered");
 };
 
 /**
  * Handles the GET "/logout" route
+ * --- DONE ---
  */
 exports.logout = (req, res) => {
   req.session.destroy();
@@ -99,17 +95,32 @@ exports.logout = (req, res) => {
 
 /**
  * Handles the GET "/updateCart" route 
+ * --- TO DO (3) ---
  */
 exports.updateCart = async (req, res) => {
   let user_id = req.session.name;
-  let movie_id = req.query.movie_id;
   let action = req.query.action; //add or delete
+  // check if this is an "add" or "delete" action
+  
+  // If it is delete, just remove record from cart table
+  
+  // If it is add, do the following...
+  let movie_id = req.query.movie_id;
+  let title = req.query.title;
+  let release_date = req.query.release_date;
+  let description = req.query.description;
+  let image_url = req.query.image_url;
+  let rating = req.query.rating;
+  let genres = req.query.genres;
 
-  // use user_id and movie_id to add a record to the cart table
+  // 1) Use user_id and movie_id to add a record to the cart table
+  
+  // 2) Use all movie info to add records to the movie table and genre table
 };
 
 /**
  * Handles the GET "/displayCartPage" route
+ * --- TO DO (4) ---
  */
 exports.displayCartPage = async (req, res) => {
   let user_id = req.session.name;
@@ -120,7 +131,7 @@ exports.displayCartPage = async (req, res) => {
 
 
 /*******************************************************************************
- *                       Middleware Helper Functions
+ *                            API functions                                    *
  ******************************************************************************/
 
 /**
@@ -160,10 +171,6 @@ async function getMovie(query) {
   });
   return resultArray;
 }
-
-/*******************************************************************************
- *                            API functions
- ******************************************************************************/
 
 /**
  * This function receives a request URL object with the URL and params
@@ -236,8 +243,22 @@ async function loadConfig() {
   console.log("Loaded config");
 }
 
+
 /*******************************************************************************
- *                        Password Authentication Functions                    *
+ *                            Database Functions                               *
+ ******************************************************************************/
+
+
+
+
+
+
+
+
+
+
+/*******************************************************************************
+ *                      Password Authentication Functions                      *
  ******************************************************************************/
 
 async function verifyLoginInfo(username, password) {
