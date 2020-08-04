@@ -65,7 +65,8 @@ exports.register = async (req, res) => {
     // Call function to add username and password (hash) into user table
   });
   
-  res.render("sign-in");
+  // Redirect user to the sign in page
+  res.redirect("/");
 };
 
 /**
@@ -226,6 +227,7 @@ async function loadConfig() {
   //sets value of call to global var
   config = await callAPI(requestUrl);
   genreNames = await getGenreNames();
+  console.dir(genreNames);
   console.log("Loaded config");
 }
 
