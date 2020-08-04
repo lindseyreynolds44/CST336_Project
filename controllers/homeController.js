@@ -7,45 +7,54 @@ const saltRounds = 10;
 //global vars
 var config;
 var genreNames;
-let days = 1;
-let the_interval = days * 24 * 60 * 60 * 1000; // 1 day
-//loads the config
+var interval = 24 * 60 * 60 * 1000; // 1 day
+
+// Loads the configuration settings for the API
 loadConfig();
-// loads the config at every X amount of time.
-setInterval(loadConfig, the_interval);
+// Sets ups the loadConfig function to run every "interval" amount of time.
+setInterval(loadConfig, interval);
 
 /******************************************************************************
- *             Route Functions - called directly in app.js routes
+ *                      Route Functions - called in app.js
  ******************************************************************************/
 
 /**
  * Handles the GET "/" route
  */
-exports.displayLoginPage = (req, res) => {
-  res.render("loginPage");
+exports.displaySignInPage = (req, res) => {
+  res.render("sign-in");
 };
 
 /**
- * Handles the login route.
+ * Handles the GET "/index" route
  */
-exports.login = async (req, res) => {
+exports.displayIndexPage = async (req, res) => {
+  // Display top ten rated movies from our database
+  let resultArray = []; //This is where we will get 10 top rated movies
+  res.render("index", {"resultArray": resultArray});
+};
+
+/**
+ * Handles the POST "/signIn" route
+ */
+exports.signIn = async (req, res) => {
   let username = req.body.username;
   let password = req.body.password;
 
   // Check if this username and password exist in our database
   if (verifyLogin(username, password)) {
     //welcome
-    res.render("welcome");
+    res.render("index");
   } else {
     //denied
-    res.render("loginPage", { loginError: true });
+    res.render("sign-in", { loginError: true });
   }
 };
 
 /**
- * Handles the create account route
+ * Handles the POST "/register" route
  */
-exports.createAccount = async (req, res) => {
+exports.register = async (req, res) => {
   let username = req.body.username;
   let password = req.body.password;
   let firstName = req.body.firstName;
@@ -55,17 +64,12 @@ exports.createAccount = async (req, res) => {
     // Store hash in your password DB.
     // Call function to add username and password (hash) into user table
   });
+  
+  res.render("sign-in");
 };
 
 /**
- * Displays the welcome page after logging in.
- */
-exports.displayWelcome = async (req, res) => {
-  // Display top ten rated movies from our database
-};
-
-/**
- * Displays the search results.
+ * Handles the GET "/search" route
  */
 exports.displaySearchResults = async (req, res) => {
   // Call DB first on success display results otherwise call API.
@@ -74,12 +78,12 @@ exports.displaySearchResults = async (req, res) => {
   let query = "Jack Reacher";
   let resultArray = await getMovie(query);
   let test = "Hello World";
-  res.render("index", { resultArray: resultArray, "test": test});
-  console.log("length: " + resultArray.length + " Index rendered");
+  res.render("selection", {"resultArray": resultArray});
+  console.log("Index rendered");
 };
 
 /**
- * Handles logout and redirect to root route
+ * Handles the GET "/logout" route
  */
 exports.logout = (req, res) => {
   req.session.destroy();
@@ -87,7 +91,7 @@ exports.logout = (req, res) => {
 };
 
 /**
- * Handles adding a movie into the user's cart
+ * Handles the GET "/updateCart" route 
  */
 exports.updateCart = async (req, res) => {
   let user_id = req.session.name;
@@ -98,7 +102,7 @@ exports.updateCart = async (req, res) => {
 };
 
 /**
- * Handles the display shopping cart route
+ * Handles the GET "/displayCartPage" route
  */
 exports.displayCartPage = async (req, res) => {
   let user_id = req.session.name;
@@ -109,7 +113,7 @@ exports.displayCartPage = async (req, res) => {
 
 
 /*******************************************************************************
- *                                Middleware Functions
+ *                       Middleware Helper Functions
  ******************************************************************************/
 
 /**
@@ -126,7 +130,6 @@ async function getMovie(query) {
       query: query,
     },
   };
-  let genreNames = await getGenreNames();
   let parsedData = await callAPI(requestUrl);
   let base_url = config.images.base_url;
   let resultArray = [];
@@ -147,9 +150,7 @@ async function getMovie(query) {
       genres: genreNameArr,
     };
     resultArray.push(result);
-    console.log("In loop Length: " + resultArray.length);
   });
-  console.log("Out loop Length: " + resultArray.length);
   return resultArray;
 }
 

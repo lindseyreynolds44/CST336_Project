@@ -5,18 +5,15 @@
 ### Click “search” button
 * Use AJAX call
 * Route: "/search"
-* Return: resultPage.ejs is rendered, including JSON data.
+* Return: selection.ejs is rendered, including JSON data.
 * JSON Value: 
 >`resultArray { title, imageUrl, rating, movieID, release_date, overview, genres }`
 
-### Click “Create new account” button
+### Click “Register” button
 * Use AJAX call
-* Route: "/createAccount"
+* Route: "/register"
 * Input Data: firstName, lastName, username and password
-* Return: loginPage.ejs is rendered
-
-### Click “Logout” button
-* Return: loginPage.ejs is rendered
+* Return: sign-in.ejs is rendered 
 
 ### Click “add to cart” on a movie
 * Use AJAX call
@@ -29,23 +26,33 @@
 * Input Data: movie_id and action: "delete"
 
 
+
 ## Routes 
 
 ### Root route/Landing page
 * Route: "/"
-* Return: loginPage.ejs is rendered
+* Return: sign-in.ejs is rendered
 
-### Click “Login” using username and password
-* Route: "/login"
-* Return: welcome.ejs is rendered 
+### Click “Sign In” using username and password
+* Route: "/signIn"
+* Return no Error: index.ejs is rendered
+* Return with Error: sign-in.ejs is rendered with JSON data `{ loginError: true }`
 * Note: Must use the POST method
 
 ### Main Page with Featured Movies
-* Route: "/welcome"
-* Return: welcome.ejs is rendered
+* Route: "/index"
+* Return: index.ejs is rendered, including JSON data (the top 10 rated movies)
+* JSON Value:
+>`resultArray { title, imageUrl, rating, movieID, release_date, overview, genres }`
 
 ### Shopping Cart 
-* Dan, can you fill in this one?
+* Route: "/shoppingCart"
+* Return: cart.ejs is rendered with JSON data
+* JSON Value:
+* Dan, can you fill this info in?
+
+### Click “Logout” button
+* Return: sign-in.ejs is rendered
 
 
 

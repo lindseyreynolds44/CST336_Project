@@ -9,20 +9,18 @@ const session = require("express-session");
 const bcrypt = require("bcrypt");
 
 // Routes
-// Root route for login page
-app.get("/", homeController.displayLoginPage);
+// Root route for sign in page
+app.get("/", homeController.displaySignInPage);
 
 // Route to display main page of our website, once user is logged in
-app.get("/welcome", function(req, res){
-    res.render("welcome"); 
-});
+app.get("/index", homeController.displayIndexPage);
 
-// When user clicks "login" on the login page, using
+// When user clicks "sign in" on the sign in page, using
 // their username and password (Be sure to use POST in .ejs file)
-app.post("/login", homeController.login);
+app.post("/signIn", homeController.signIn);
 
 // When user fills out form to create a new account and submits it
-app.post("/createAccount", homeController.createAccount);
+app.post("/register", homeController.register);
 
 // Route for returning movies from a search
 app.get("/search", homeController.displaySearchResults);
@@ -35,9 +33,6 @@ app.get("/updateCart", homeController.updateCart);
 
 // Route to display the shopping cart page 
 app.get("/shoppingCart", homeController.displayCartPage);
-
-
-
 
 
 // Start server
