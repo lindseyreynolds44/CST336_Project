@@ -23,7 +23,8 @@ setInterval(loadConfig, interval);
  *  --- DONE ---
  */
 exports.displaySignInPage = (req, res) => {
-  res.render("sign-in");
+  res.redirect("/search"); // Only for testing purposes
+  //res.render("sign-in");
 };
 
 /**
@@ -78,7 +79,7 @@ exports.register = async (req, res) => {
  * --- DONE ---
  */
 exports.displaySearchResults = async (req, res) => {
-  let query = req.query.search_string.trim();
+  let query = req.query.search_string;
   query = "Jack Reacher"; // For testing purposes only
   let resultArray = await getMovie(query);
   res.render("selection", {"resultArray": resultArray});
