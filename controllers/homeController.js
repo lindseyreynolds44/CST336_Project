@@ -20,6 +20,7 @@ setInterval(loadConfig, interval);
 
 /**
  * Handles the GET "/" route
+ *  --- DONE ---
  */
 exports.displaySignInPage = (req, res) => {
   res.render("sign-in");
@@ -27,32 +28,35 @@ exports.displaySignInPage = (req, res) => {
 
 /**
  * Handles the GET "/index" route
+ * --- TO DO (1) ---
  */
 exports.displayIndexPage = async (req, res) => {
-  // Display top ten rated movies from our database
-  let resultArray = []; //This is where we will get 10 top rated movies
+  // SQL call to our database to get top ten rated movies
+  let resultArray = []; //This is where we will store the 10 top movies
   res.render("index", {"resultArray": resultArray});
 };
 
 /**
  * Handles the POST "/signIn" route
+ * --- DONE ---
  */
 exports.signIn = async (req, res) => {
   let username = req.body.username;
   let password = req.body.password;
 
   // Check if this username and password exist in our database
-  if (verifyLogin(username, password)) {
-    //welcome
-    res.render("index");
+  if (verifyLoginInfo(username, password)) {
+    //Send to "/index" route to display index page
+    res.redirect("/index");
   } else {
-    //denied
+    //If username and password do not match, send back to sign in page
     res.render("sign-in", { loginError: true });
   }
 };
 
 /**
  * Handles the POST "/register" route
+ * --- TO DO (2) ---
  */
 exports.register = async (req, res) => {
   let username = req.body.username;
@@ -71,12 +75,14 @@ exports.register = async (req, res) => {
 
 /**
  * Handles the GET "/search" route
+ * --- TO DO (3) ---
  */
 exports.displaySearchResults = async (req, res) => {
+  let query = req.query.search_string;
   // Call DB first on success display results otherwise call API.
   // Use "LIKE" (or similar) for sql query to search movie name.
   // Return: resultArray
-  let query = "Jack Reacher";
+  query = "Jack Reacher";
   let resultArray = await getMovie(query);
   let test = "Hello World";
   res.render("selection", {"resultArray": resultArray});
@@ -234,7 +240,7 @@ async function loadConfig() {
  *                        Password Authentication Functions                    *
  ******************************************************************************/
 
-async function verifyLogin(username, password) {
+async function verifyLoginInfo(username, password) {
   let result = await checkUsername(username);
   console.dir(result); //.dir to display the values of the object
   let hashedPwd = "";

@@ -5,6 +5,7 @@
 ### Click “search” button
 * Use AJAX call
 * Route: "/search"
+* Input Data: search_string (this variable will hold the string from the search text field)
 * Return: selection.ejs is rendered, including JSON data.
 * JSON Value: 
 >`resultArray { title, imageUrl, rating, movieID, release_date, overview, genres }`
