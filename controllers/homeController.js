@@ -23,36 +23,21 @@ setInterval(loadConfig, interval);
  *  --- DONE ---
  */
 exports.displaySignInPage = (req, res) => {
-  res.redirect("/search"); // Only for testing purposes
-  //res.render("sign-in");
+  //res.redirect("/index"); // Only for testing purposes
+  res.render("sign-in");
 };
 
 /**
  * Handles the GET "/index" route
- * --- TO DO (1) ---
+ * This method gets the top 10 rated movies from our database and sends
+ * them to index.ejs to be displayed
+ * --- TO DO (LINDSEY) ---
  */
 exports.displayIndexPage = async (req, res) => {
-  // SQL call to our database to get top ten rated movies
-  let resultArray = []; //This is where we will store the 10 top movies
+  let resultArray = await getFeaturedMovies(); 
+  //let query = "Jack Reacher"; // For testing purposes only
+  //let resultArray = await getMovie(query);
   res.render("index", {"resultArray": resultArray});
-};
-
-/**
- * Handles the POST "/signIn" route
- * --- DONE ---
- */
-exports.signIn = async (req, res) => {
-  let username = req.body.username;
-  let password = req.body.password;
-
-  // Check if this username and password exist in our database
-  if (verifyLoginInfo(username, password)) {
-    //Send to "/index" route to display index page
-    res.redirect("/index");
-  } else {
-    //If username and password do not match, send back to sign in page
-    res.render("sign-in", { loginError: true });
-  }
 };
 
 /**
@@ -80,23 +65,14 @@ exports.register = async (req, res) => {
  */
 exports.displaySearchResults = async (req, res) => {
   let query = req.query.search_string;
-  query = "Jack Reacher"; // For testing purposes only
+  //query = "Jack Reacher"; // For testing purposes only
   let resultArray = await getMovie(query);
   res.render("selection", {"resultArray": resultArray});
 };
 
 /**
- * Handles the GET "/logout" route
- * --- DONE ---
- */
-exports.logout = (req, res) => {
-  req.session.destroy();
-  res.redirect("/");
-};
-
-/**
  * Handles the GET "/updateCart" route 
- * --- TO DO (3) ---
+ * --- TO DO ( DAN ) ---
  */
 exports.updateCart = async (req, res) => {
   let user_id = req.session.name;
@@ -121,7 +97,7 @@ exports.updateCart = async (req, res) => {
 
 /**
  * Handles the GET "/displayCartPage" route
- * --- TO DO (4) ---
+ * --- TO DO ( DAN ) ---
  */
 exports.displayCartPage = async (req, res) => {
   let user_id = req.session.name;
@@ -157,7 +133,7 @@ async function getMovie(query) {
   parsedData.results.forEach(async (movie) => {
     // creates Date object for formatting
     let date = new Date(movie.release_date);
-    let genreNameArr = await genreToString(movie.genre_ids, genreNames);
+    let genreNameArr = await genreToString(movie.genre_ids);
 
     let result = {
       title: movie.original_title,
@@ -217,7 +193,7 @@ async function getGenreNames() {
  * @param {Int} genreIDs
  * @param {Object} genreNames
  */
-async function genreToString(genreIDs, genreNames) {
+async function genreToString(genreIDs) {
   let genreNameArr = [];
 
   genreIDs.forEach((genreID) => {
@@ -249,60 +225,56 @@ async function loadConfig() {
  *                            Database Functions                               *
  ******************************************************************************/
 
-
-
-
-
-
-
-
-
-
-/*******************************************************************************
- *                      Password Authentication Functions                      *
- ******************************************************************************/
-
-async function verifyLoginInfo(username, password) {
-  let result = await checkUsername(username);
-  console.dir(result); //.dir to display the values of the object
-  let hashedPwd = "";
-
-  if (result.length > 0) {
-    hashedPwd = result[0].password;
-  }
-
-  let passwordMatch = await checkPassword(password, hashedPwd);
-
-  if (passwordMatch) {
-    req.session.authenticated = true;
-    req.session.name = result[0].user_id;
-    return true;
-  } else {
-    return false;
-  }
-}
-
-function checkUsername(username) {
-  let sql = "SELECT * from user WHERE username = ?";
-  return new Promise((resolve, reject) => {
-    let conn = createDBConnection();
-    conn.connect((err) => {
-      if (err) throw err;
-      conn.query(sql, [username], (err, rows, fields) => {
+/**
+ * Get the top ten rated movies from our Database 
+ * @return {resultArray} an array containing 10 JSON-formatted movies
+ */
+async function getFeaturedMovies(){
+  return new Promise (function (resolve, reject){
+    let sql = "SELECT * FROM movie ORDER BY rating DESC LIMIT 10;";
+    pool.query(sql, function (err, rows, fields) {
         if (err) throw err;
-
-        console.log("Rows found:", rows.length);
-        resolve(rows);
-      }); // query
-    }); // connect
-  }); // promise
+        let resultArray = [];
+        
+        rows.forEach( async (movie) => {
+          let genreNameArray = ["temp"];
+          // The next line is giving an error saying we cannot do this many sql queries
+          //let genreNameArray = await getGenreNamesFromDB(movie.movie_id);
+          
+          let result = {
+            title: movie.title,
+            imageUrl: movie.image_url,
+            rating: movie.rating,
+            movieID: movie.movie_id,
+            release_date: movie.release_date, // formats date to locale's style
+            overview: movie.description,
+            genres: genreNameArray,
+          };
+          resultArray.push(result);
+        });
+        
+        resolve(resultArray);
+    });
+  });
 }
 
-function checkPassword(password, hashedValue) {
-  return new Promise((resolve, reject) => {
-    bcrypt.compare(password, hashedValue, (err, result) => {
-      console.log("Result:", result);
-      resolve(result);
+/**
+ * Get the names of all genres associated with the movie id
+ * @param {movieID} the movie
+ * @return {resultArray} an array of genres
+ */ 
+function getGenreNamesFromDB(movieID){
+  return new Promise (function (resolve, reject){
+    let sql = "SELECT genre_name FROM genre WHERE movie_id = ?;";
+    pool.query(sql, [movieID], function (err, rows, fields) {
+        
+        if (err) throw err;
+        let resultArray = [];
+        
+        rows.forEach( async (genre) => {
+          resultArray.push(genre.genre_name);
+        });
+        resolve(resultArray);
     });
   });
 }
