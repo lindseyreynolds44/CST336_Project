@@ -84,6 +84,9 @@ resultArray[] { title, imageUrl, rating, movieID, release_date, overview, genres
 * Route: "/logout"
 * Return: sign-in.ejs is rendered
 
+### Admin Page 
+* Route: "/adminPage"
+* Return: admin.ejs is rendered
 
 ### Shopping Cart  --Still may need to update this--
 * Route: "/shoppingCart"

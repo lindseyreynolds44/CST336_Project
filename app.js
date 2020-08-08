@@ -65,6 +65,11 @@ app.get("/updateCart", isAuthenticated, homeController.updateCart);
 // Route to display the shopping cart page 
 app.get("/shoppingCart", isAuthenticated, homeController.displayCartPage);
 
+// Display the admin page
+app.get("/adminPage", isAuthenticated, isAdmin, function(req, res){
+  res.render("admin");
+});
+
 // Start server
 app.listen(process.env.PORT, process.env.IP, function () {
   console.log("Express server is running...");
@@ -75,7 +80,7 @@ app.listen(process.env.PORT, process.env.IP, function () {
 
 
 /*******************************************************************************
- *                      Password Authentication Functions                      *
+ *                           Authentication Functions                         *
  ******************************************************************************/
 
 async function verifyLoginInfo(req, username, password) {
@@ -92,7 +97,9 @@ async function verifyLoginInfo(req, username, password) {
   if (passwordMatch) {
     req.session.authenticated = true;
     req.session.name = result[0].user_id;
-    return true;
+    // 1 for admin, 0 for regular user
+    req.session.admin = result[0].admin_privledges;
+    return true; 
   } else {
     return false;
   }
@@ -120,6 +127,14 @@ function checkPassword(password, hashedValue) {
 function isAuthenticated(req, res, next) {
     if(!req.session.authenticated) {
         res.redirect('/');
+    } else {
+        next();
+    }
+}
+
+function isAdmin(req, res, next) {
+    if(!req.session.admin) {
+        res.redirect('/index');
     } else {
         next();
     }
