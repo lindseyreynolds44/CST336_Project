@@ -84,7 +84,7 @@ resultArray[] { title, imageUrl, rating, movieID, release_date, overview, genres
 * Route: "/logout"
 * Return: sign-in.ejs is rendered
 
-### Admin Page 
+### Admin Page (This page is only accessible when logging in as admin - user: "admin" pass: "secret")
 * Route: "/adminPage"
 * Return: admin.ejs is rendered
 
