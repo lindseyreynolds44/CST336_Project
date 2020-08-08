@@ -4,13 +4,18 @@
 
 ### Check if a username is available
 * Make an action event on the username text field
-> `$("#new-username").on("change", function()`
+```
+$("#new-username").on("change", function()
+```
 * Use AJAX call
 * url: "/isUsernameAvailable"
 * Input data: username
 * Return: true or false
-> `success: function(data, status){`
->    `if(data.response) // add code here }`
+```
+success: function(data, status){
+    if(data.response) // add code here 
+}
+```
 
 ### Click “add to cart” on a movie --Still may need to update this--
 * Use AJAX call
@@ -34,11 +39,17 @@
 
 ### Click “Sign In” using username and password
 * Route: "/signIn"
-* > `<form method="POST" action="/signIn">`
+```
+<form method="POST" action="/signIn">
+```
 * Input Data: Make input elements for username and password
-> `<input type="text" name="username">`
+```
+<input type="text" name="username">
+```
 * Return no Error: index.ejs is rendered with JSON data for top 10 movies 
-> `resultArray[] { title, imageUrl, rating, movieID, release_date, overview, genres }`
+```
+resultArray[] { title, imageUrl, rating, movieID, release_date, overview, genres }
+```
 * Return with Error: sign-in.ejs is rendered again, but with JSON data `{ loginError: true }`
  
 ### Registration page
@@ -48,26 +59,26 @@
 
 ### Click "Create New Account" on Register Page
 * Route: "/createAccount" (do this in the register.ejs file)
-> `<form method="POST" action="/createAccount">`
+```<form method="POST" action="/createAccount">```
 * Input Data: Make input elements for username, password, firstName and lastName.
-> `<input type="text" name="username">`
+```<input type="text" name="username">```
 * Return: "confirmation.ejs" is rendered, with JSON data confirming their registration 
-> `userValues { username, firstName, lastName }`
+```userValues { username, firstName, lastName }```
 
 ### Main Page (index.ejs) with top Movies
 * Route: "/index"
 * Return: index.ejs is rendered, including JSON data (the top 10 rated movies)
 * JSON Value:
->`resultArray[] { title, imageUrl, rating, movieID, release_date, overview, genres }`
+```resultArray[] { title, imageUrl, rating, movieID, release_date, overview, genres }```
 
 ### Click “search” button
 * Route: "/search" (use a form element with action="/search")
-> `<form action="/search">`
+```<form action="/search">```
 * Input Data: make an input element for the search using name="search_string"
->  `<input type="text" name="search_string">`
+```<input type="text" name="search_string">```
 * Return: selection.ejs is rendered, including JSON data.
 * JSON Value: 
->`resultArray[] { title, imageUrl, rating, movieID, release_date, overview, genres }`
+```resultArray[] { title, imageUrl, rating, movieID, release_date, overview, genres }```
 
 ### Click “Logout” button
 * Route: "/logout"
