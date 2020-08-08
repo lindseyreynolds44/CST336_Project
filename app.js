@@ -48,7 +48,7 @@ app.get("/registrationPage", function(req, res){
 app.get("/isUsernameAvailable", homeController.isUsernameAvailable);
 
 // When user fills out form to create a new account and submits it
-app.post("/register", homeController.register);
+app.post("/createAccount", homeController.createAccount);
 
 // Route for returning movies from a search
 app.get("/search", isAuthenticated, homeController.displaySearchResults);

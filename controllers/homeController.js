@@ -41,10 +41,10 @@ exports.displayIndexPage = async (req, res) => {
 };
 
 /**
- * Handles the POST "/register" route
+ * Handles the POST "/createAccount" route
  * --- TO DO (LINDSEY) ---
  */
-exports.register = (req, res) => {
+exports.createAccount = (req, res) => {
   let usernameInput = req.body.username;
   let passwordInput = req.body.password;
   let firstNameInput = req.body.firstName;
