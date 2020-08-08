@@ -1,9 +1,15 @@
 <%- include('partials/header.ejs') %>
     <body>
         <div>
-            <h2> Main Page: </h2>
+            <form action="/search">
+                <input type="text" name="search_string">
+                <br>
+                <button> Search </button>
+            </form>
+            
+            <h2> Top Ten Movies: </h2>
             <% resultArray.forEach( (result) => { %>
-            <div class="articleContainer">
+            <div>
                         
                 <h3> <%= result.title %> </h3>
                 <img src="<%= result.imageUrl %>" alt="Movie poster">

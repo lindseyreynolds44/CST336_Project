@@ -39,6 +39,14 @@ app.post("/signIn", async function(req, res){
   }
 });
 
+// Display the new user registration page
+app.get("/registrationPage", function(req, res){
+  res.render("register");
+});
+
+// Check if the username is available for use
+app.get("/isUsernameAvailable", homeController.isUsernameAvailable);
+
 // When user fills out form to create a new account and submits it
 app.post("/register", homeController.register);
 
@@ -71,7 +79,6 @@ app.listen(process.env.PORT, process.env.IP, function () {
  ******************************************************************************/
 
 async function verifyLoginInfo(req, username, password) {
-  console.log("inside verifyLoginInfo");
   
   let result = await checkUsername(username);
   let hashedPwd = "";

@@ -1,14 +1,4 @@
-<!DOCTYPE html>
-<html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <title>Login Screen</title>
-        <style>
-            .error {
-                color: red; 
-            }
-        </style>
-    </head>
+<%- include('partials/header.ejs') %>
     <body>
         
         <form method="POST" action="/signIn">
@@ -24,5 +14,7 @@
             <h3 class="error">Wrong credentials!</h3>
         
         <% } %>
+        
+        <a href="/registrationPage">Create Account</a>
     </body>
 </html>
