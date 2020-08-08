@@ -42,21 +42,49 @@ exports.displayIndexPage = async (req, res) => {
 
 /**
  * Handles the POST "/register" route
- * --- TO DO (2) ---
+ * --- TO DO (LINDSEY) ---
  */
-exports.register = async (req, res) => {
-  let username = req.body.username;
-  let password = req.body.password;
-  let firstName = req.body.firstName;
-  let lastName = req.body.lastName;
-
-  bcrypt.hash(password, saltRounds, function (err, hash) {
-    // Store hash in your password DB.
-    // Call function to add username and password (hash) into user table
-  });
+exports.register = (req, res) => {
+  let usernameInput = req.body.username;
+  let passwordInput = req.body.password;
+  let firstNameInput = req.body.firstName;
+  let lastNameInput = req.body.lastName;
   
-  // Redirect user to the sign in page
-  res.redirect("/");
+  bcrypt.hash(passwordInput, saltRounds, function (err, hash) {
+    
+    let sql = "INSERT INTO user (admin_privledges, username, password, firstName, lastName) VALUES (false, ?, ?, ?, ?);";
+    let sqlParams = [usernameInput, hash, firstNameInput, lastNameInput];
+    pool.query(sql, sqlParams, function (err, rows, fields) {
+      if (err) throw err;
+      let userValues = {
+        username: usernameInput,
+        firstName: firstNameInput,
+        lastName: lastNameInput
+      };
+      res.render("confirmation", {"userValues": userValues});
+    });
+  });
+};
+
+/**
+ * Handles the GET "/isUsernameAvailable" route
+ *  --- DONE ---
+ */
+exports.isUsernameAvailable = (req, res) => {
+  let username = req.query.username;
+  let sql = "SELECT username FROM user WHERE username = ?;";
+  pool.query(sql, [username], function (err, rows, fields) {
+    if (err) throw err;
+    let response;
+    
+    // This username is already in use
+    if(rows.length > 0){ 
+      response = false;
+    } else {
+      response = true;
+    }
+    res.send({"response": response});
+  });
 };
 
 /**
