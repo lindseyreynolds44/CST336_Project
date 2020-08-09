@@ -1,7 +1,8 @@
+
 {
   "name": "cst336_project",
   "version": "1.0.0",
-  "description": "Be sure to run `npm i` before starting work to install all dependencies",
+  "description": "",
   "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -10,7 +11,7 @@
     "delay": 1000,
     "watch": [
       "./",
-      "controllers/"
+      "./controllers/"
     ]
   },
   "repository": {
@@ -32,6 +33,6 @@
     "mysql": "^2.18.1",
     "nodemon": "^2.0.4",
     "request": "^2.88.2"
-  },
-  "devDependencies": {}
+  }
 }
+
