@@ -1,0 +1,127 @@
+
+
+#logo {
+    /* need to select a google font here for logo*/
+    color:red;
+    font-size: 3.0rem;
+}
+
+/* 
+** Styles for home and index page 
+*/
+
+.home {
+    text-align: center;
+    background-image: url("../img/movie-wall.jpg");
+    background-size: cover;
+    background-repeat: no-repeat;
+    color: white;
+    font-size: 2.0rem;
+    padding: 20px;
+}
+
+.selection {
+    background-color:black;
+    color: gold;
+    font-size: 2.0rem;
+    padding:20px;
+}
+
+#home-signIn {
+    background-color:red;
+    color:white;
+    text-decoration:none;
+    text-align: center;
+    padding:10px 15px 10px 15px;
+}
+
+#home-menu, #search-form {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 5px;
+    
+}
+
+#home-form {
+    display: inline-block;
+    margin:0 auto;
+    background-color: rgba(0, 0, 0, 0.75);
+    width: 50%;
+    font-size:2.0rem;
+    padding: 15px 15px 20px 15px;
+}
+
+#home-form input[type=text], #search-form input[type=text] {
+    font-size: 1.6rem;
+    border: 2px solid red;
+    border-radius: 10px;
+    padding: 5px;
+}
+
+#home-form input[type=text]:focus, #search-form input[type=text]:focus {
+        background-color: lightblue;
+        
+}
+
+.home-button {
+    background-color:red;
+    color:white;
+    font-size:1.6rem;
+    padding: 5px;
+}
+
+#resultsContainer {
+    display: flex;
+    flex-wrap: wrap;
+    font-size: 1rem;
+}
+
+.poster-box {
+    background-color: black;
+    color: white;
+    margin: 20px;
+    min-width:200px;
+}
+
+#selected-movie-container {
+    display: flex;
+    background-color: black;
+}
+
+#selected-image {
+    padding:30px;
+}
+
+#movie-detail {
+    margin: 10px;
+    padding:40px;
+}
+
+
+#add-movie {
+    color:black;
+}
+
+#title {
+    color:blue;
+}
+
+#synopsis {
+    color:gold;
+}
+
+#synopsis-content {
+    color: mediumturquoise;
+    padding-left: 20px;
+}
+
+#rating, #genre, #release {
+    color: darkseagreen;
+}
+
+#rating-content, #genre-content, #release-content {
+    color: white;
+    padding-left: 20px;
+}
+

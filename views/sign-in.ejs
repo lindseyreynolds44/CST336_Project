@@ -4,15 +4,16 @@
       <title>Sign In</title>
       <meta charset="utf-8">
       <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+      <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+      <script></script>
    </head>
 
    <!--Beginning of body-->
    <body>
-      <nav>QueueFlix</nav>
+      <nav class ="logo">QueueFlix</nav>
       <section>
          Sign in
-         <form method="POST">
+         <form method="POST" action="/signIn">
             Email: <input type="text" name="username">
             <br>
             Password: <input type="password" name="password">
@@ -20,8 +21,10 @@
             <button>Sign In</button>
          </form>
          <% if(typeof loginError != "undefined" && loginError) {%>
-            <h3>Username and password do not match</h3>
+            <h3>Wrong Credentials</h3>
          <%}%>
+
+         <a href="/registrationPage">Create Account</a>
       </section>
    </body>
 </html>
