@@ -24,7 +24,8 @@ setInterval(loadConfig, interval);
  */
 exports.displaySignInPage = (req, res) => {
   //res.redirect("/index"); // Only for testing purposes
-  res.render("sign-in");
+  //res.render("sign-in");
+  res.render("home"); // for testing home page
 };
 
 /**
@@ -95,7 +96,9 @@ exports.displaySearchResults = async (req, res) => {
   let query = req.query.search_string;
   //query = "Jack Reacher"; // For testing purposes only
   let resultArray = await getMovie(query);
-  res.render("selection", {"resultArray": resultArray});
+  //res.render("selection", {"resultArray": resultArray});
+  console.log(resultArray);
+  res.send(resultArray);  // index page will be used as selection as well without reloading the page
 };
 
 /**
@@ -157,7 +160,8 @@ async function getMovie(query) {
   let base_url = config.images.base_url;
   let resultArray = [];
   // console.log(genreList.genres.length);
-
+  console.log("getMovie");
+  //console.log(parsedData);
   parsedData.results.forEach(async (movie) => {
     // creates Date object for formatting
     let date = new Date(movie.release_date);
@@ -174,7 +178,9 @@ async function getMovie(query) {
     };
     resultArray.push(result);
   });
+  console.log(resultArray);
   return resultArray;
+
 }
 
 /**
