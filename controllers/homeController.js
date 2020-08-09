@@ -95,6 +95,7 @@ exports.displaySearchResults = async (req, res) => {
   let query = req.query.search_string;
   //query = "Jack Reacher"; // For testing purposes only
   let resultArray = await getMovie(query);
+
   res.render("selection", { resultArray: resultArray });
 };
 
@@ -104,19 +105,68 @@ exports.displaySearchResults = async (req, res) => {
  */
 exports.updateCart = async (req, res) => {
   let user_id = req.session.name;
+  let movie_id = req.query.movie_id;
   let action = req.query.action; //add or delete
+  let sql = "";
+  let sqlParams;
   // check if this is an "add" or "delete" action
+  switch (action) {
+    case "add":
+      //add here
+      let title = req.query.title; // check
+      let release_date = req.query.release_date; // check
+      let description = req.query.description; // check
+      let image_url = req.query.image_url; // check
+      let rating = req.query.rating; // check
+      sql =
+        "INSERT INTO movie (movie_id, title, release_date, description, image_url, rating) VALUES (?,?,?,?,?,?)";
+      sqlParams = {
+        movie_id: movie_id,
+        title: title,
+        release_date: release_date,
+        description: description,
+        image_url: image_url,
+        rating: rating,
+      };
+      await callDB(sql, sqlParams);
+      let genres = req.query.genres;
+      sql =
+        "INSERT INTO genre (genre_id, movie_id, genre_name) VALUES (?, ?, ?)";
+      for (genre of genres) {
+        for (names of genreNames) {
+          if (names.id == genre.id) {
+            sqlParams = {
+              genre_id: genre.id,
+              movie_id: movie_id,
+              genre_name: names.name,
+            };
+            await callDB(sql, sqlParams);
+          }
+        }
+      }
+      sql = "INSERT INTO cart (user_id, movie_id) VALUES (?, ?)";
+      sqlParams = { user_id: user_id, movie_id: movie_id };
+      await callDB(sql, sqlParams);
+
+      break;
+    case "delete":
+      //delete here
+      sql = "DELETE FROM cart WHERE user_id = ? AND movie_id = ?;";
+      sqlParams = { user_id: user_id, movie_id: movie_id };
+      await callDB(sql, sqlParams);
+      break;
+  }
 
   // If it is delete, just remove record from cart table
 
   // If it is add, do the following...
-  let movie_id = req.query.movie_id;
-  let title = req.query.title;
-  let release_date = req.query.release_date;
-  let description = req.query.description;
-  let image_url = req.query.image_url;
-  let rating = req.query.rating;
-  let genres = req.query.genres;
+  // let movie_id = req.query.movie_id;
+  // let title = req.query.title;
+  // let release_date = req.query.release_date;
+  // let description = req.query.description;
+  // let image_url = req.query.image_url;
+  // let rating = req.query.rating;
+  // let genres = req.query.genres;
 
   // 1) Use user_id and movie_id to add a record to the cart table
 
@@ -125,7 +175,7 @@ exports.updateCart = async (req, res) => {
 
 /**
  * Handles the GET "/displayCartPage" route
- * --- TO DO ( DAN ) ---
+ * --- Tentatively DONE ( DAN ) ---
  */
 exports.displayCartPage = async (req, res) => {
   let user_id = req.session.name;
