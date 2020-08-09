@@ -1,26 +1,52 @@
-<%- include('partials/header.ejs') %>
-    <body>
-        <div>
-            <h2> Main Page: </h2>
-            <% resultArray.forEach( (result) => { %>
-            <div class="articleContainer">
-                        
-                <h3> <%= result.title %> </h3>
-                <img src="<%= result.imageUrl %>" alt="Movie poster">
-                <h3>Rating: <%= result.rating %> </h3>
-                <h3> ID: <%= result.movieID %> </h3>
-                <h3>Release Date: <%= result.release_date %> </h3>
-                <p><%= result.overview %></p>
-                <% result.genres.forEach((genre) => { %>
-                    <h3><%= genre; %> </h3>
-                <% }); %>
-                <hr>
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>QueueFlix Search</title>
+        <meta charset="UTF-8">
+        <script 
+            src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js">
+        </script>
+        <script src="js/functions.js"></script>
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+		<link rel="stylesheet" href="css/styles.css" />
+        
+    </head>
+    <body class="selection" page="index">
+        
+        <form id="search-form">
+            <div id="logo">QueueFlix</div>
+            <input type="text" id="search-text" placeholder="Search movie keyword" name="keyword" size=30>
+        </form>
+        <div id="search-warning"></div>
+        
+		
+        <main>
+            <hr>
+			<div id="selected-movie-container">
+				<!-- Display movie poster -->
+				<div id="selected-image">
+				</div>
+                <div id="movie-detail">
+					<p id="title"><span id="title-content"></span></p>
+                    <p id="synopsis">Synopsis: <span id="synopsis-content"></span></p>
+                    <p id="rating">TMDB Rating: <span id="rating-content"></span></p>
+					<p id="genre">Genre: <span id="genre-content"></span></p>
+                    <p id="release">Release Date: <span id="release-content"></span></p>
+					<button id="add-movie" class="btn btn-success">Add to the Cart</button>
+                </div>
             </div>
-        
-        <% });%>
-        </div>
-        
-<%- include('partials/footer.ejs') %>
-
+			<div id="featured-header"></div>
+            <div id="resultsContainer">
+            
+            </div>
+            
+        </main>
+		
     </body>
+	<script>
+			featuredResults = <%- JSON.stringify(resultArray) %>;
+			console.log(featuredResults);
+			
+	</script>
+	
 </html>
