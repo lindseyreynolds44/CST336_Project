@@ -134,7 +134,7 @@ exports.displayCartPage = async (req, res) => {
   let cartContents = await callDB(sql, user_id);
   let cart = [];
 
-  console.log(cartContents.length); // diagnostic
+  console.log("# of items in cart:", cartContents.length); // diagnostic
 
   for (cartItem of cartContents) {
     cart.push(await callDB(sql2, cartItem.movie_id));
