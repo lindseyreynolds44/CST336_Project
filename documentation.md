@@ -25,8 +25,17 @@ success: function(data, status){
 
 - Use AJAX call
 - url: "/updateCart"
-- Input Data: `movie_id, title, release_date, description, image_url, rating, genres and action: "add"`
-
+- Input Data:
+  ```
+  movie_id, 
+  title, 
+  release_date, 
+  description, 
+  image_url, 
+  rating, 
+  genres (array) 
+  action: "add"
+  ```
 ### Click “remove from cart” --Still may need to update this--
 
 - Use AJAX call
