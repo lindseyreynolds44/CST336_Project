@@ -162,10 +162,14 @@ async function getMovie(query) {
   // console.log(genreList.genres.length);
   console.log("getMovie");
   //console.log(parsedData);
-  parsedData.results.forEach(async (movie) => {
+  
+  // remove async from forEach, otherwise the return resultArray executed before the resultArray is ready
+  parsedData.results.forEach((movie) => {
     // creates Date object for formatting
     let date = new Date(movie.release_date);
-    let genreNameArr = await genreToString(movie.genre_ids);
+    
+    // change genreToString to normal function rather than async function
+    let genreNameArr = genreToString(movie.genre_ids);
 
     let result = {
       title: movie.original_title,
@@ -227,7 +231,7 @@ async function getGenreNames() {
  * @param {Int} genreIDs
  * @param {Object} genreNames
  */
-async function genreToString(genreIDs) {
+function genreToString(genreIDs) {
   let genreNameArr = [];
 
   genreIDs.forEach((genreID) => {
