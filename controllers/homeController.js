@@ -105,7 +105,7 @@ exports.displaySearchResults = async (req, res) => {
  */
 exports.updateCart = async (req, res) => {
   let user_id = req.session.name;
-  let movie_id = req.query.movie_id;
+  let movie_id = parseInt(req.query.movie_id);
   let action = req.query.action; //add or delete
   let sql = "";
   let sqlParams;
@@ -119,33 +119,38 @@ exports.updateCart = async (req, res) => {
       let image_url = req.query.image_url; // check
       let rating = req.query.rating; // check
       sql =
-        "INSERT INTO movie (movie_id, title, release_date, description, image_url, rating) VALUES (?,?,?,?,?,?)";
-      sqlParams = {
-        movie_id: movie_id,
-        title: title,
-        release_date: release_date,
-        description: description,
-        image_url: image_url,
-        rating: rating,
-      };
+        "REPLACE INTO movie (movie_id, title, release_date, description, image_url, rating) VALUES (?,?,?,?,?,?)";
+      // sqlParams = {
+      //   movie_id: movie_id,
+      //   title: title,
+      //   release_date: release_date,
+      //   description: description,
+      //   image_url: image_url,
+      //   rating: rating,
+      // };
+      sqlParams = [
+        movie_id,
+        title,
+        release_date,
+        description,
+        image_url,
+        rating,
+      ];
       await callDB(sql, sqlParams);
       let genres = req.query.genres;
       sql =
         "INSERT INTO genre (genre_id, movie_id, genre_name) VALUES (?, ?, ?)";
       for (genre of genres) {
-        for (names of genreNames) {
-          if (names.id == genre.id) {
-            sqlParams = {
-              genre_id: genre.id,
-              movie_id: movie_id,
-              genre_name: names.name,
-            };
+        for (names of genreNames.genres) {
+          if (names.id == parseInt(genre)) {
+            sqlParams = [parseInt(genre), movie_id, names.name];
             await callDB(sql, sqlParams);
           }
         }
       }
       sql = "INSERT INTO cart (user_id, movie_id) VALUES (?, ?)";
-      sqlParams = { user_id: user_id, movie_id: movie_id };
+      sqlParams = [user_id, movie_id];
+      // sqlParams = { user_id: user_id, movie_id: movie_id };
       await callDB(sql, sqlParams);
 
       break;
