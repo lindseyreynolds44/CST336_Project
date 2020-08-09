@@ -108,36 +108,26 @@ resultArray[] { title, imageUrl, rating, movieID, release_date, overview, genres
 
 - Route: "/shoppingCart"
 - Return: cart.ejs is rendered with JSON data
-- JSON Value (It is a 2D array and will nested `for` loops):
-  - First Loop iterate through Cart
-    - Second Loop iterate through the cart contents to get details
+- JSON Value: `cartContents[] {movie_id, title, image_url}`
 - Example:
 
 ```
 [
   RowDataPacket {
+    movie_id: 120,
     title: 'The Lord of the Rings: The Fellowship of the Ring',
     image_url: 'http://image.tmdb.org/t/p/w342/6oom5QYQ2yQTMJIbnvbkBL9cHo6.jpg'
+  },
+  RowDataPacket {
+    movie_id: 597,
+    title: 'Titanic',
+    image_url: 'http://image.tmdb.org/t/p/w342/9xjZS2rlVxm8SFx8kPC3aIGCOYQ.jpg'
+  },
+  RowDataPacket {
+    movie_id: 496243,
+    title: 'Parasite',
+    image_url: 'http://image.tmdb.org/t/p/w342/7IiTTgloJzvGI1TAYymCfbfl3vT.jpg'
   }
 ]
-[
-  [
-    RowDataPacket {
-      title: 'The Lord of the Rings: The Fellowship of the Ring',
-      image_url: 'http://image.tmdb.org/t/p/w342/6oom5QYQ2yQTMJIbnvbkBL9cHo6.jpg'
-    }
-  ],
-  [
-    RowDataPacket {
-      title: 'Titanic',
-      image_url: 'http://image.tmdb.org/t/p/w342/9xjZS2rlVxm8SFx8kPC3aIGCOYQ.jpg'
-    }
-  ],
-  [
-    RowDataPacket {
-      title: 'Parasite',
-      image_url: 'http://image.tmdb.org/t/p/w342/7IiTTgloJzvGI1TAYymCfbfl3vT.jpg'
-    }
-  ]
-]
+
 ```
