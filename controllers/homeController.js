@@ -134,27 +134,14 @@ exports.displayCartPage = async (req, res) => {
   let cartContents = await callDB(sql, user_id);
   let cart = [];
 
-  console.log(cartContents.length);
-  // cart.push(await callDB(sql2, cartContents[0].movie_id));
+  console.log(cartContents.length); // diagnostic
 
   for (cartItem of cartContents) {
-    // console.log(cartItem.movie_id);
     cart.push(await callDB(sql2, cartItem.movie_id));
   }
 
-  // await cartContents.forEach(async (cartItem) => {
-  //   console.log(cartItem.movie_id);
-  //   cart.push(await callDB(sql2, cartItem.movie_id));
-  // });
-
-  // console.log(cartContents);
-  console.log(cart[0]);
-  console.log(cart[0]["title"]);
-
+  // console.log(cart); // diagnostic
   res.render("shoppingcart", { cart: cart });
-
-  // use user_id to get all records from the cart table
-  // Returns "rows"
 };
 
 /*******************************************************************************
