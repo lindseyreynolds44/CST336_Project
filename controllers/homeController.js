@@ -129,19 +129,13 @@ exports.updateCart = async (req, res) => {
  */
 exports.displayCartPage = async (req, res) => {
   let user_id = req.session.name;
-  let sql = "SELECT movie_id FROM cart WHERE user_id = ?";
-  let sql2 = "SELECT title, image_url from movie WHERE movie_id = ?";
+  let sql =
+    "SELECT movie_id, title, image_url FROM cart JOIN movie USING (movie_id) WHERE user_id = ?";
   let cartContents = await callDB(sql, user_id);
-  let cart = [];
 
   console.log("# of items in cart:", cartContents.length); // diagnostic
-
-  for (cartItem of cartContents) {
-    cart.push(await callDB(sql2, cartItem.movie_id));
-  }
-
-  // console.log(cart); // diagnostic
-  res.render("shoppingcart", { cart: cart });
+  // console.log(cartContents); // diagnostic
+  res.render("shoppingcart", { cartContents: cartContents });
 };
 
 /*******************************************************************************

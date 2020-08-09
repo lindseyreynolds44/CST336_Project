@@ -2,20 +2,17 @@
     <body>
     <h2>SHOPPING CART</h2>
 
-    <% cart.forEach((item) => { %>
-      <%  item.forEach((details) => { %>
-            <div class="card">
-                <div class="card-body flex-row">
-                    <div class="title">
-                      <img src="<%= details.image_url %>" alt="movie image">  
-                    </div>
-                    <div class="title">
-                        <%= details.title %>
-                    </div>
+    <% cartContents.forEach((item) => { %>
+        <div class="card">
+            <div class="card-body flex-row">
+                <div class="title">
+                  <img src="<%= item.image_url %>" alt="movie image">  
+                </div>
+                <div class="title">
+                    <%= item.title %>
                 </div>
             </div>
-      <% }); %>
-       
+        </div>
    <% }); %>
     
     
