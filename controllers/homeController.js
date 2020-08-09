@@ -101,7 +101,7 @@ exports.displaySearchResults = async (req, res) => {
 
 /**
  * Handles the GET "/updateCart" route
- * --- TO DO ( DAN ) ---
+ * --- PENDING ( DAN ) ---
  */
 exports.updateCart = async (req, res) => {
   let user_id = req.session.name;
@@ -120,14 +120,7 @@ exports.updateCart = async (req, res) => {
       let rating = req.query.rating; // check
       sql =
         "REPLACE INTO movie (movie_id, title, release_date, description, image_url, rating) VALUES (?,?,?,?,?,?)";
-      // sqlParams = {
-      //   movie_id: movie_id,
-      //   title: title,
-      //   release_date: release_date,
-      //   description: description,
-      //   image_url: image_url,
-      //   rating: rating,
-      // };
+
       sqlParams = [
         movie_id,
         title,
@@ -216,10 +209,10 @@ async function getMovie(query) {
   let resultArray = [];
   // console.log(genreList.genres.length);
 
-  parsedData.results.forEach(async (movie) => {
+  parsedData.results.forEach((movie) => {
     // creates Date object for formatting
     let date = new Date(movie.release_date);
-    let genreNameArr = await genreToString(movie.genre_ids);
+    let genreNameArr = genreToString(movie.genre_ids);
 
     let result = {
       title: movie.original_title,
