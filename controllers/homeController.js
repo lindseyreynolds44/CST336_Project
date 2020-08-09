@@ -22,7 +22,7 @@ setInterval(loadConfig, interval);
  * Handles the GET "/" route
  *  --- DONE ---
  */
-exports.displaySignInPage = (req, res) => {
+exports.displaySignInPage = async (req, res) => {
   //res.redirect("/index"); // Only for testing purposes
   res.render("sign-in");
 };
@@ -34,10 +34,10 @@ exports.displaySignInPage = (req, res) => {
  * --- TO DO (LINDSEY) ---
  */
 exports.displayIndexPage = async (req, res) => {
-  let resultArray = await getFeaturedMovies(); 
+  let resultArray = await getFeaturedMovies();
   //let query = "Jack Reacher"; // For testing purposes only
   //let resultArray = await getMovie(query);
-  res.render("index", {"resultArray": resultArray});
+  res.render("index", { resultArray: resultArray });
 };
 
 /**
@@ -49,19 +49,19 @@ exports.createAccount = (req, res) => {
   let passwordInput = req.body.password;
   let firstNameInput = req.body.firstName;
   let lastNameInput = req.body.lastName;
-  
+
   bcrypt.hash(passwordInput, saltRounds, function (err, hash) {
-    
-    let sql = "INSERT INTO user (admin_privledges, username, password, firstName, lastName) VALUES (false, ?, ?, ?, ?);";
+    let sql =
+      "INSERT INTO user (admin_privledges, username, password, firstName, lastName) VALUES (false, ?, ?, ?, ?);";
     let sqlParams = [usernameInput, hash, firstNameInput, lastNameInput];
     pool.query(sql, sqlParams, function (err, rows, fields) {
       if (err) throw err;
       let userValues = {
         username: usernameInput,
         firstName: firstNameInput,
-        lastName: lastNameInput
+        lastName: lastNameInput,
       };
-      res.render("confirmation", {"userValues": userValues});
+      res.render("confirmation", { userValues: userValues });
     });
   });
 };
@@ -76,14 +76,14 @@ exports.isUsernameAvailable = (req, res) => {
   pool.query(sql, [username], function (err, rows, fields) {
     if (err) throw err;
     let response;
-    
+
     // This username is already in use
-    if(rows.length > 0){ 
+    if (rows.length > 0) {
       response = false;
     } else {
       response = true;
     }
-    res.send({"response": response});
+    res.send({ response: response });
   });
 };
 
@@ -95,20 +95,20 @@ exports.displaySearchResults = async (req, res) => {
   let query = req.query.search_string;
   //query = "Jack Reacher"; // For testing purposes only
   let resultArray = await getMovie(query);
-  res.render("selection", {"resultArray": resultArray});
+  res.render("selection", { resultArray: resultArray });
 };
 
 /**
- * Handles the GET "/updateCart" route 
+ * Handles the GET "/updateCart" route
  * --- TO DO ( DAN ) ---
  */
 exports.updateCart = async (req, res) => {
   let user_id = req.session.name;
   let action = req.query.action; //add or delete
   // check if this is an "add" or "delete" action
-  
+
   // If it is delete, just remove record from cart table
-  
+
   // If it is add, do the following...
   let movie_id = req.query.movie_id;
   let title = req.query.title;
@@ -119,7 +119,7 @@ exports.updateCart = async (req, res) => {
   let genres = req.query.genres;
 
   // 1) Use user_id and movie_id to add a record to the cart table
-  
+
   // 2) Use all movie info to add records to the movie table and genre table
 };
 
@@ -129,11 +129,33 @@ exports.updateCart = async (req, res) => {
  */
 exports.displayCartPage = async (req, res) => {
   let user_id = req.session.name;
+  let sql = "SELECT movie_id FROM cart WHERE user_id = ?";
+  let sql2 = "SELECT title, image_url from movie WHERE movie_id = ?";
+  let cartContents = await callDB(sql, user_id);
+  let cart = [];
+
+  console.log(cartContents.length);
+  // cart.push(await callDB(sql2, cartContents[0].movie_id));
+
+  for (cartItem of cartContents) {
+    // console.log(cartItem.movie_id);
+    cart.push(await callDB(sql2, cartItem.movie_id));
+  }
+
+  // await cartContents.forEach(async (cartItem) => {
+  //   console.log(cartItem.movie_id);
+  //   cart.push(await callDB(sql2, cartItem.movie_id));
+  // });
+
+  // console.log(cartContents);
+  console.log(cart[0]);
+  console.log(cart[0]["title"]);
+
+  res.render("shoppingcart", { cart: cart });
 
   // use user_id to get all records from the cart table
   // Returns "rows"
 };
-
 
 /*******************************************************************************
  *                            API functions                                    *
@@ -248,40 +270,39 @@ async function loadConfig() {
   console.log("Loaded config");
 }
 
-
 /*******************************************************************************
  *                            Database Functions                               *
  ******************************************************************************/
 
 /**
- * Get the top ten rated movies from our Database 
+ * Get the top ten rated movies from our Database
  * @return {resultArray} an array containing 10 JSON-formatted movies
  */
-async function getFeaturedMovies(){
-  return new Promise (function (resolve, reject){
+async function getFeaturedMovies() {
+  return new Promise(function (resolve, reject) {
     let sql = "SELECT * FROM movie ORDER BY rating DESC LIMIT 10;";
     pool.query(sql, function (err, rows, fields) {
-        if (err) throw err;
-        let resultArray = [];
-        
-        rows.forEach( async (movie) => {
-          let genreNameArray = ["temp"];
-          // The next line is giving an error saying we cannot do this many sql queries
-          //let genreNameArray = await getGenreNamesFromDB(movie.movie_id);
-          
-          let result = {
-            title: movie.title,
-            imageUrl: movie.image_url,
-            rating: movie.rating,
-            movieID: movie.movie_id,
-            release_date: movie.release_date, // formats date to locale's style
-            overview: movie.description,
-            genres: genreNameArray,
-          };
-          resultArray.push(result);
-        });
-        
-        resolve(resultArray);
+      if (err) throw err;
+      let resultArray = [];
+
+      rows.forEach(async (movie) => {
+        let genreNameArray = ["temp"];
+        // The next line is giving an error saying we cannot do this many sql queries
+        //let genreNameArray = await getGenreNamesFromDB(movie.movie_id);
+
+        let result = {
+          title: movie.title,
+          imageUrl: movie.image_url,
+          rating: movie.rating,
+          movieID: movie.movie_id,
+          release_date: movie.release_date, // formats date to locale's style
+          overview: movie.description,
+          genres: genreNameArray,
+        };
+        resultArray.push(result);
+      });
+
+      resolve(resultArray);
     });
   });
 }
@@ -290,19 +311,42 @@ async function getFeaturedMovies(){
  * Get the names of all genres associated with the movie id
  * @param {movieID} the movie
  * @return {resultArray} an array of genres
- */ 
-function getGenreNamesFromDB(movieID){
-  return new Promise (function (resolve, reject){
+ */
+
+function getGenreNamesFromDB(movieID) {
+  return new Promise(function (resolve, reject) {
     let sql = "SELECT genre_name FROM genre WHERE movie_id = ?;";
     pool.query(sql, [movieID], function (err, rows, fields) {
-        
-        if (err) throw err;
-        let resultArray = [];
-        
-        rows.forEach( async (genre) => {
-          resultArray.push(genre.genre_name);
-        });
-        resolve(resultArray);
+      if (err) throw err;
+      let resultArray = [];
+
+      rows.forEach(async (genre) => {
+        resultArray.push(genre.genre_name);
+      });
+      resolve(resultArray);
     });
   });
+}
+
+/**
+ * Overloaded function to call DB with or without params
+ * @param {String} sql
+ * @param {String} params
+ */
+function callDB(sql, params) {
+  if (arguments.length == 2) {
+    return new Promise((resolve, reject) => {
+      pool.query(sql, params, (err, rows, field) => {
+        if (err) throw err;
+        resolve(rows);
+      }); // query
+    }); // promise
+  } else {
+    return new Promise((resolve, reject) => {
+      pool.query(sql, (err, rows, fields) => {
+        if (err) throw err;
+        resolve(rows);
+      }); // query
+    }); // promise
+  }
 }

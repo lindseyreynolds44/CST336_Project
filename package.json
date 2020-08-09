@@ -10,7 +10,7 @@
     "delay": 1000,
     "watch": [
       "./",
-      "controllers/"
+      "./controllers/"
     ]
   },
   "repository": {
