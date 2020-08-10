@@ -13,6 +13,7 @@
                 </div>
                 <div class="title">
                     <%= item.title %>
+                    Price: $<%= item.price %>
                 </div>
             </div>
         </div>
@@ -36,7 +37,7 @@
                 action: "add"
             },
             success: (results, status) => {
-                console.log(status)
+                console.log("Add:",status)
             },
         });
      });
@@ -46,7 +47,9 @@
              method: "get",
              url: "/updateCart",
              data: { movie_id: 1, action: "delete"},
-             success: (results, status) => {},
+             success: (results, status) => {
+                 console.log("Delete:", status)
+             },
          });
      });
 
