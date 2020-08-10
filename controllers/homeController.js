@@ -240,6 +240,8 @@ exports.updateDB = async (req, res) => {
       await callDB(sql, sqlParams);
     });
   }
+
+  res.send({status: 200});
 };
 
 /**

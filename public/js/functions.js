@@ -226,7 +226,7 @@ $(document).ready(function () {
         price: price,
       },
       success: function (data, status) {
-        console.log("updateDB done!");
+        console.log("updateDB:", status);
       },
     }); //ajax
   }
