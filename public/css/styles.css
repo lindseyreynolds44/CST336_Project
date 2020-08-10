@@ -5,6 +5,13 @@
     font-size: 3.0rem;
 }
 
+#logo2 {
+    /* need to select a google font here for logo*/
+    color:red;
+    font-size: 3.0rem;
+    text-align:left;
+}
+
 /* 
 ** Styles for home and index page 
 */
@@ -29,9 +36,24 @@
 #home-signIn {
     background-color:red;
     color:white;
+    /* text-decoration:none; */
+    text-align: center;
+    width:100%;
+    padding:10px 15px 10px 15px;
+}
+
+#home-signIn2 {
+    /* background-color:#5F5F5F; */
+    color:white;
     text-decoration:none;
     text-align: center;
     padding:10px 15px 10px 15px;
+}
+
+#sign-in-wrapper {
+    background-color:#5F5F5F;
+    opacity: 80%;
+    width:100%;
 }
 
 #home-menu, #search-form {

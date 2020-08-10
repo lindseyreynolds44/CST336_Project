@@ -25,7 +25,7 @@ setInterval(loadConfig, interval);
 exports.displaySignInPage = (req, res) => {
   //res.redirect("/index"); // Only for testing purposes
   //res.render("sign-in");
-  res.render("home"); // for testing home page
+  res.render("sign-in"); // for testing home page
 };
 
 /**

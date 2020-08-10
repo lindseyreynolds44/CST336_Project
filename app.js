@@ -19,7 +19,7 @@ app.use(express.urlencoded({extended: true})); //to be able to parse POST parame
 
 // Routes
 // Root route for sign in page
-app.get("/", homeController.displaySignInPage);
+app.get("/signIn", homeController.displaySignInPage);
 
 // Route to display main page of our website, once user is logged in
 //app.get("/index", isAuthenticated, homeController.displayIndexPage);
