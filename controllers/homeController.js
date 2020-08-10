@@ -108,25 +108,25 @@ exports.displaySearchResults = async (req, res) => {
 
 /**
  * Handles the GET "/updateCart" route
- * --- PENDING ( DAN ) ---
+ * --- DONE ( DAN ) ---
  */
 exports.updateCart = async (req, res) => {
-  console.log(Date.now() / 1000);
-
   let user_id = req.session.name;
   let movie_id = parseInt(req.query.movie_id);
+  let title = req.query.title;
+  let release_date = req.query.release_date;
+  let description = req.query.description;
+  let image_url = req.query.image_url;
+  let rating = req.query.rating;
   let action = req.query.action; //add or delete
+
   let sql = "";
   let sqlParams;
+
   // check if this is an "add" or "delete" action
   switch (action) {
     case "add":
       //add here
-      let title = req.query.title; // check
-      let release_date = req.query.release_date; // check
-      let description = req.query.description; // check
-      let image_url = req.query.image_url; // check
-      let rating = req.query.rating; // check
       // INSERT MOVIE TO MOVIE TABLE
       sql =
         "REPLACE INTO movie (movie_id, title, release_date, description, image_url, rating) VALUES (?,?,?,?,?,?)";
@@ -170,7 +170,7 @@ exports.updateCart = async (req, res) => {
 
 /**
  * Handles the GET "/displayCartPage" route
- * --- Tentatively DONE ( DAN ) ---
+ * --- DONE ( DAN ) ---
  */
 exports.displayCartPage = async (req, res) => {
   let user_id = req.session.name;
