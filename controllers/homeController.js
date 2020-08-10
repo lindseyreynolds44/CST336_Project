@@ -155,7 +155,6 @@ exports.updateCart = async (req, res) => {
       // INSERT MOVIE INTO CART TABLE
       sql = "INSERT INTO cart (user_id, movie_id) VALUES (?, ?)";
       sqlParams = [user_id, movie_id];
-      // sqlParams = { user_id: user_id, movie_id: movie_id };
       await callDB(sql, sqlParams);
       res.send({ status: 200 });
       break;
@@ -167,21 +166,6 @@ exports.updateCart = async (req, res) => {
       res.send({ status: 200 });
       break;
   }
-
-  // If it is delete, just remove record from cart table
-
-  // If it is add, do the following...
-  // let movie_id = req.query.movie_id;
-  // let title = req.query.title;
-  // let release_date = req.query.release_date;
-  // let description = req.query.description;
-  // let image_url = req.query.image_url;
-  // let rating = req.query.rating;
-  // let genres = req.query.genres;
-
-  // 1) Use user_id and movie_id to add a record to the cart table
-
-  // 2) Use all movie info to add records to the movie table and genre table
 };
 
 /**
@@ -191,11 +175,11 @@ exports.updateCart = async (req, res) => {
 exports.displayCartPage = async (req, res) => {
   let user_id = req.session.name;
   let sql =
-    "SELECT movie_id, title, image_url FROM cart JOIN movie USING (movie_id) WHERE user_id = ?";
+    "SELECT movie_id, title, image_url, price FROM cart JOIN movie USING (movie_id) WHERE user_id = ?";
   let cartContents = await callDB(sql, user_id);
 
   console.log("# of items in cart:", cartContents.length); // diagnostic
-  // console.log(cartContents); // diagnostic
+  //console.log(cartContents); // diagnostic
   res.render("shoppingcart", { cartContents: cartContents });
 };
 
