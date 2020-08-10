@@ -85,7 +85,34 @@ $(document).ready(function () {
         $("#admin-search-results").html(html);
       },
     }); //ajax
-  }); //admin search
+  }); 
+
+    // UPDATE button on the Database table 
+    $("#db-results").on("click", "#admin-update-btn", function() {
+        $(this).html("Updated");
+        let movie_id = 120;
+        let price = 4.99;
+        /*
+        $.ajax({
+            method: "GET",
+            url: "/api/updateMovie",
+            data: {
+                "movie_id": movie_id,
+                "price": price
+            },
+            success: function(data, status) {
+            }
+        }); //ajax
+        */
+    }); 
+    
+    // DELETE button on the Database table 
+    $("#db-results").on("click", "#admin-delete-btn", function() {
+        $(this).html("Deleted");
+        let movie_id = 120;
+        
+        updateDB("delete", movie_id);
+    }); 
     
     // Testing for admin page to display search results 
     $("#admin-search-form").on("submit", function(e){
@@ -103,6 +130,8 @@ $(document).ready(function () {
                     "<td>Rating</td> <td>Date</td> <td>Description</td>" + 
                     "<td>Genres</td> <td>Price</td> <td>Action</td> </tr>";
 
+/************* THIS IS WHERE WE ADD EVERYTHING THAT WE TRAVERSE IN THE NEXT FUNCTION ****************/
+
                 data.forEach( (movie) => {
                     html += "<tr>";
                     html += `<td> ${movie.movie_id} </td>`;
@@ -118,6 +147,9 @@ $(document).ready(function () {
                 });
                 html += "</table>";
                 $("#admin-search-results").html(html);
+                
+/**********************************************************************************/
+
             }
         });//ajax
     }); //admin search
@@ -127,19 +159,35 @@ $(document).ready(function () {
     // IMPORTANT NOTE: because the add buttons are added dynamically, this event must
     // be written like this
     $("#admin-search-results").on("click", ".admin-add-btn", function() {
-        console.log($(this).html());
+        
+        // Check if the button says "Add Movie" or "Remove Movie"
         if($(this).html() == "Add Movie"){
             $(this).html("Remove Movie");
-            let movieID = $(this).siblings("td").attr("movie-id");
-            //title, imageUrl, rating, release_date, overview, price;
-            // $(this).siblings("a").attr("href").trim();
-            // $(this).siblings("span").html().trim();
+            
+/************* THIS IS WHERE WE NEED TO TEST TRAVERSING FUNCTIONS ****************/
+            
+            // We need to figure out what "this" is. Is it "admin-search-results" or
+            // admin-add-btn"??
+            let movieID = $(this).next();
+            console.log("test" + movieID);
+            
+/**********************************************************************************/
+            
+            let title, imageUrl, rating, release_date, overview, price;
+            // Use Traversing functions to get all values of this movie
+                // $(this).siblings("a").attr("href").trim();
+                // $(this).siblings("span").html().trim();
+            
             //updateDB("add", movieID, title, imageUrl, rating, release_date, overview, genre price);
-            console.log("movie id: " + movieID);
+            
+            // This line is to test the backend functionality. It works correctly.
             //updateDB("add", 2887, "faker", "www.fake.com", "1", "12/2/2020", "This is fake", "Drama,History,Romance", 4.99);
+        
+            
+        // If the button said "Remove Movie"    
         } else {
             $(this).html("Add Movie");
-            //let title = $(this).siblings("h3").html().trim();
+            //let movieID = $(this).children().html().trim();
             //updateDB("delete", movieID);
         }
     }); 
