@@ -205,34 +205,37 @@ exports.updateDB = async (req, res) => {
   let movie_id = req.query.movieID;
   let title, image_url, rating, release_date, description, genreArr, price;
   
-  if(action == "add"){
+      price = req.query.price;
     title = req.query.title;
     image_url = req.query.imageUrl;
     rating = req.query.rating;
     release_date = req.query.release_date;
     description = req.query.overview;
+  
+  if(action == "add"){
     genreArr = (req.query.genre).split(',');
-    price = req.query.price;
   }
   
   // Add/Delete record from movie table
-  switch (action) { 
-      case "add": 
+  switch (action) {
+      case "add":
         sql = "INSERT INTO movie (movie_id, title, image_url, rating, " +
           "release_date, description, price) VALUES (?, ?, ?, ?, ?, ?, ?);";
         sqlParams = [movie_id, title, image_url, rating, release_date, description, price];
         break;
-      case "delete": 
+      case "delete":
         sql = "DELETE FROM movie WHERE movie_id = ?";
           sqlParams = [movie_id];
           break;
+      case "update": // update the price
+        sql = "UPDATE movie SET price = ? WHERE movie_id = ?";
+        sqlParams = [price, movie_id];
+        break;
   }//switch
   await callDB(sql, sqlParams);
-  
-  // Add all genres into the genre table that are associated with the movie_id 
+  // Add all genres into the genre table that are associated with the movie_id
   if(action == "add"){
     sql = "INSERT INTO genre (genre_id, movie_id, genre_name) VALUES (?, ?, ?);";
-    
     genreArr.forEach( async (genre) => {
       let genreID = await getGenreIDFromName(genre);
       sqlParams = [genreID, movie_id, genre];

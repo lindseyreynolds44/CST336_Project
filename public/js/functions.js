@@ -61,6 +61,7 @@ $(document).ready(function () {
         search_string: keyword,
       },
       success: function (data, status) {
+        console.log("movie id " + data[0].movieID);
         // You can make some of these attributes hidden. We will just need all of them
         // in the html, so we can add all this info into our DB if the admin chooses to
         // press the "add movie" button
@@ -70,7 +71,7 @@ $(document).ready(function () {
           "<td>Genres</td> <td>Price</td> <td>Action</td> </tr>";
             data.forEach((movie) => {
               html += "<tr>";
-              html += `<td> ${movie.movie_id} </td>`;
+              html += `<td> ${movie.movieID} </td>`;
               html += `<td> ${movie.title} </td>`;
               html += `<td> <img height="80" src="${movie.imageUrl}"> </td>`;
               html += `<td> ${movie.rating} </td>`;
