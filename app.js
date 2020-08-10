@@ -70,9 +70,16 @@ app.get("/updateCart", isAuthenticated, homeController.updateCart);
 app.get("/shoppingCart", isAuthenticated, homeController.displayCartPage);
 
 // Display the admin page
-app.get("/adminPage", isAuthenticated, isAdmin, function (req, res) {
+//app.get("/adminPage", isAuthenticated, isAdmin, function (req, res) {
+app.get("/adminPage", function (req, res) { //for testing
   res.render("admin");
 });
+
+// Called from ADMIN page in order to display a table of the movies from the DB
+app.get("/api/getMoviesFromDB", homeController.getMoviesFromDB);
+
+// Called from ADMIN page to add or delete from our DB
+app.get("/api/updateDB", homeController.updateDB);
 
 // Start server
 app.listen(process.env.PORT, process.env.IP, function () {

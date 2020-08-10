@@ -7,6 +7,7 @@ const saltRounds = 10;
 //global vars
 var config;
 var genreNames;
+var genrePairArray; // Array of genre name and id pairs 
 var interval = 24 * 60 * 60 * 1000; // 1 day
 
 // Loads the configuration settings for the API
@@ -183,6 +184,71 @@ exports.displayCartPage = async (req, res) => {
   res.render("shoppingcart", { cartContents: cartContents });
 };
 
+
+/**
+ * Handles the GET "/getMoviesFromDB" route
+ * --- PENDING ( Lindsey ) ---
+ */
+exports.getMoviesFromDB = async (req, res) => {
+  let sql = "SELECT movie_id, title, price FROM movie;";
+  let moviesInDB = await callDB(sql);
+  res.send({"moviesInDB": moviesInDB });
+};
+
+/**
+ * Handles the GET "/api/updateDB" route
+ * --- PENDING ( Lindsey ) ---
+ */
+exports.updateDB = async (req, res) => {
+  let sql;
+  let sqlParams;
+  let movie_id = req.query.movieID;
+  let title = req.query.title;
+  let image_url = req.query.imageUrl;
+  let rating = req.query.rating;
+  let release_date = req.query.release_date;
+  let description = req.query.overview;
+  var genreArr = (req.query.genre).split(',');
+  let price = req.query.price;
+
+  // Add/Delete record from movie table
+  switch (req.query.action) { 
+      case "add": 
+        sql = "INSERT INTO movie (movie_id, title, image_url, rating, " +
+          "release_date, description, price) VALUES (?, ?, ?, ?, ?, ?, ?);";
+        sqlParams = [movie_id, title, image_url, rating, release_date, description, price];
+        break;
+      case "delete": 
+        sql = "DELETE FROM movie WHERE movie_id = ?";
+          sqlParams = [movie_id];
+          break;
+  }//switch
+  await callDB(sql, sqlParams);
+  
+  // Add all genres into the genre table that are associated with the movie_id 
+  if(req.query.action == "add"){
+    sql = "INSERT INTO genre (genre_id, movie_id, genre_name) VALUES (?, ?, ?);";
+    
+    genreArr.forEach( async (genre) => {
+      let genreID = await getGenreIDFromName(genre);
+      sqlParams = [genreID, movie_id, genre];
+      await callDB(sql, sqlParams);
+    });
+  }
+};
+
+function getGenreIDFromName(genreName){
+  return new Promise((resolve, reject) => {
+    let returnID = 0;
+    genrePairArray.forEach( (genre) => {
+      if(genre.name == genreName){
+        returnID = genre.id;
+      }
+    });
+    resolve(returnID);
+  });
+}
+
 /*******************************************************************************
  *                            API functions                                    *
  ******************************************************************************/
@@ -295,6 +361,24 @@ function genreToString(genreIDs) {
 }
 
 /**
+ * Create an array of all genres, including their id and name
+ * How to call: genrePairArray[0].id OR genrePairArray[0].name
+ */
+function getGenrePairs() {
+  return new Promise((resolve, reject) => {
+    let genreArray = [];
+    genreNames.genres.forEach( (genre) => {
+      let pair = {
+        id: genre.id,
+        name: genre.name
+      };
+      genreArray.push(pair);
+    });
+    resolve(genreArray);
+  });
+}
+
+/**
  * Loads the static configuration information from API
  */
 async function loadConfig() {
@@ -307,6 +391,7 @@ async function loadConfig() {
   //sets value of call to global var
   config = await callAPI(requestUrl);
   genreNames = await getGenreNames();
+  genrePairArray = await getGenrePairs();
   console.log("Loaded config");
 }
 
@@ -378,7 +463,7 @@ function callDB(sql, params) {
   // console.log(params); // Diagnostic
   if (arguments.length == 2) {
     return new Promise((resolve, reject) => {
-      pool.query(sql, params, (err, rows, field) => {
+      pool.query(sql, params, (err, rows, fields) => {
         if (err) throw err;
         resolve(rows);
       }); // query
