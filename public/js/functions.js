@@ -5,11 +5,10 @@ var featuredResults; // list of featured movies
 var selectedMovieID; // current selected moive ID from the search
 var adminSearchResults; // list of search results from WEB
 var adminDBResults; // list of movies from Database
-var moviePrice = 5.99;
 
-  /******************************************************************************
-   *                             Sign In Page Code
-   *******************************************************************************/
+/******************************************************************************
+ *                             Sign In Page Code
+ *******************************************************************************/
 
 $(document).ready(function () {
   // Testing check user availability
@@ -27,7 +26,6 @@ $(document).ready(function () {
       },
     }); //ajax
   });
-
 
   /******************************************************************************
    *                            Admin page Code
@@ -58,131 +56,84 @@ $(document).ready(function () {
         $("#db-results").html(html);
       },
     }); //ajax
-  }); 
-  
-  // Update the price of a movie in the Database table 
-  $("#db-results").on("click", ".admin-update-btn", function() {
+  });
+
+  // Update the price of a movie in the Database table
+  $("#db-results").on("click", ".admin-update-btn", function () {
     $(this).html("Updated");
     let currentRow = $(this).closest("tr");
     let index = $(this).val();
     let price = Number(currentRow.find(".admin-db-price").html());
     console.log("Update:" + adminDBResults[index].movie_id + ", " + price);
-    
+
     if (!Number.isNaN(price) && price > 0.0) {
       // update price only need movie id and price
-      updateDB("update", adminDBResults[index].movie_id, null, null, null, null, null, null, price);
+      updateDB(
+        "update",
+        adminDBResults[index].movie_id,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        price
+      );
     } else {
-        console.log("price is invalid");
+      console.log("price is invalid");
     }
-  }); 
-  
-  // Delete a movie from the Database table 
-  $("#db-results").on("click", ".admin-delete-btn", function() {
+  });
+
+  // Delete a movie from the Database table
+  $("#db-results").on("click", ".admin-delete-btn", function () {
     $(this).html("Deleted");
     let index = $(this).val();
     console.log("Delete Movie from DB:" + adminDBResults[index].movie_id);
     updateDB("delete", adminDBResults[index].movie_id);
-  }); 
-    
-  // Testing for admin page to display search results 
-  $("#admin-search-form").on("submit", function(e){
-      $("#admin-search-results").html(""); // clean up the search table content
-      e.preventDefault(); 
-      let keyword = $("#admin-search-text").val().trim();
-      $.ajax({
-      method: "get",
-          url: "/search",
-          data: {
-                  "search_string": keyword
-              },
-          success: function (data, status) {
-              adminSearchResults = data;
-              let html = "<table><th style='width:100px'>Movie ID</th>" +
-                  "<th style='width:100px'>Title</th> <th style='width:60px'>Image</th>" +
-                  "<th style='width:30px'>Rating</th> <th style='width:100px'>Date</th> <th style='width:150px'>Description</th>" + 
-                  "<th style='width:80px'>Genres</th> <th style='width:50px'>Price($)</th> <th style='width:50px'>Action</th> </tr>";
-
-              data.forEach( (movie, i) => {
-                  let genreString = "";
-                  movie.genres.forEach((name) => {
-                      genreString += name;
-                      genreString += " ";
-                  });
-                  html += `<tr id='admin-search-row' value=${i}>`;
-                  html += `<td class='movie-id'> ${movie.movieID} </td>`;
-                  html += `<td> ${movie.title} </td>`;
-                  html += `<td> <img height='80' src='${movie.imageUrl}' alt='${movie.title}' > </td>`;
-                  html += `<td> ${movie.rating} </td>`;
-                  html += `<td> ${movie.release_date} </td>`;
-                  html += `<td > ${movie.overview} </td>`;
-                  html += `<td > ${genreString} </td>`;
-                  html += `<td class='admin-search-price' contenteditable='true'> 5.99 </td>`;
-                  html += `<td> <button class='admin-add-btn' value=${i}>Add Movie</button> </td>`;
-                  html += "</tr>";
-              });
-              html += "</table>";
-              $("#admin-search-results").html(html);
-          }
-      });//ajax
-  }); //admin search
-  
-  $("#admin-search-results").on("click", ".admin-add-btn", function() {
-      console.log("Add button is clicked");
-      let currentRow = $(this).closest("tr");
-      let index = $(this).val();
-      let price = Number(currentRow.find(".admin-search-price").html());
-      console.log("Add Movie:" + adminSearchResults[index].movieID + ", " + price);
-      
-      // Check if the button says "Add" or "Remove"
-      if ($(this).html() == "Add Movie") {
-        $(this).html("Remove Movie");
-        if (!Number.isNaN(price) && price > 0.0) {
-          // update price only need movie id and price
-          updateDB("add", adminSearchResults[index].movieID, 
-              adminSearchResults[index].title, 
-              adminSearchResults[index].imageUrl, 
-              adminSearchResults[index].rating, 
-              adminSearchResults[index].release_date, 
-              adminSearchResults[index].overview,
-              adminSearchResults[index].genres,
-              price);
-        } else {
-          console.log("price is invalid");
-        }
-      } else {
-          $(this).html("Add Movie");
-          updateDB("delete", adminSearchResults[index].movieID);
-      }
-  }); 
-    
-  // Function to add, delete or update the price of a record in the movie table
-  function updateDB(action, movieID, title, imageUrl, rating, release_date, overview, genre, price) {
-      $.ajax({
-          method: "get",
-          url: "/api/updateDB",
-          data: {
-              action: action,
-              movieID: movieID,
-              title: title,
-              imageUrl: imageUrl,
-              rating: rating,
-              release_date: release_date,
-              overview: overview,
-              genre: genre,
-              price: price
-          },
-          success: function(data, status){
-              console.log("updateDB done!");
-          }
-      }); //ajax
-  }
-
-  $("#db-results").on("click", ".admin-delete-btn", function () {
-    console.log("Delete Button is clicked");
-    let index = $(this).val();
-    console.log("Delete Movie from DB:" + adminDBResults[index].movie_id);
-    //updateDB("delete", adminDBResults[index].movie_id, null, null, null, null, null, null, null);
   });
+
+  // Testing for admin page to display search results
+  $("#admin-search-form").on("submit", function (e) {
+    $("#admin-search-results").html(""); // clean up the search table content
+    e.preventDefault();
+    let keyword = $("#admin-search-text").val().trim();
+    $.ajax({
+      method: "get",
+      url: "/search",
+      data: {
+        search_string: keyword,
+      },
+      success: function (data, status) {
+        adminSearchResults = data;
+        let html =
+          "<table><th style='width:100px'>Movie ID</th>" +
+          "<th style='width:100px'>Title</th> <th style='width:60px'>Image</th>" +
+          "<th style='width:30px'>Rating</th> <th style='width:100px'>Date</th> <th style='width:150px'>Description</th>" +
+          "<th style='width:80px'>Genres</th> <th style='width:50px'>Price($)</th> <th style='width:50px'>Action</th> </tr>";
+
+        data.forEach((movie, i) => {
+          let genreString = "";
+          movie.genres.forEach((name) => {
+            genreString += name;
+            genreString += " ";
+          });
+          html += `<tr id='admin-search-row' value=${i}>`;
+          html += `<td class='movie-id'> ${movie.movieID} </td>`;
+          html += `<td> ${movie.title} </td>`;
+          html += `<td> <img height='80' src='${movie.imageUrl}' alt='${movie.title}' > </td>`;
+          html += `<td> ${movie.rating} </td>`;
+          html += `<td> ${movie.release_date} </td>`;
+          html += `<td > ${movie.overview} </td>`;
+          html += `<td > ${genreString} </td>`;
+          html += `<td class='admin-search-price' contenteditable='true'> 5.99 </td>`;
+          html += `<td> <button class='admin-add-btn' value=${i}>Add Movie</button> </td>`;
+          html += "</tr>";
+        });
+        html += "</table>";
+        $("#admin-search-results").html(html);
+      },
+    }); //ajax
+  }); //admin search
 
   $("#admin-search-results").on("click", ".admin-add-btn", function () {
     console.log("Add button is clicked");
@@ -193,35 +144,32 @@ $(document).ready(function () {
       "Add Movie:" + adminSearchResults[index].movieID + ", " + price
     );
 
-    // Change the button to say "Remove Movie" or "Add Movie"
+    // Check if the button says "Add" or "Remove"
     if ($(this).html() == "Add Movie") {
       $(this).html("Remove Movie");
-      // ADD MOVIE TO DB HERE
+      if (!Number.isNaN(price) && price > 0.0) {
+        // update price only need movie id and price
+        updateDB(
+          "add",
+          adminSearchResults[index].movieID,
+          adminSearchResults[index].title,
+          adminSearchResults[index].imageUrl,
+          adminSearchResults[index].rating,
+          adminSearchResults[index].release_date,
+          adminSearchResults[index].overview,
+          adminSearchResults[index].genres,
+          price
+        );
+      } else {
+        console.log("price is invalid");
+      }
     } else {
       $(this).html("Add Movie");
-      // DELETE MOVIE FROM DB HERE
-      //updateDB("delete", movieID);
-    }
-
-    if (!Number.isNaN(price) && price > 0.0) {
-      // update price only need movie id and price
-      updateDB(
-        "add",
-        adminSearchResults[index].movieID,
-        adminSearchResults[index].title,
-        adminSearchResults[index].imageUrl,
-        adminSearchResults[index].rating,
-        adminSearchResults[index].release_date,
-        adminSearchResults[index].overview,
-        adminSearchResults[index].genres,
-        price
-      );
-    } else {
-      console.log("price is invalid");
+      updateDB("delete", adminSearchResults[index].movieID);
     }
   });
 
-  // WORK IN PROGRESS
+  // Function to add, delete or update the price of a record in the movie table
   function updateDB(
     action,
     movieID,
@@ -233,7 +181,6 @@ $(document).ready(function () {
     genre,
     price
   ) {
-    console.log(genre);
     $.ajax({
       method: "get",
       url: "/api/updateDB",
@@ -249,7 +196,7 @@ $(document).ready(function () {
         price: price,
       },
       success: function (data, status) {
-        console.log("updateDB:", status);
+        console.log("updateDB done!");
       },
     }); //ajax
   }
@@ -280,8 +227,7 @@ $(document).ready(function () {
       },
     }); //ajax
   });
-  
-  
+
   /******************************************************************************
    *                           Home Page Code
    *******************************************************************************/
