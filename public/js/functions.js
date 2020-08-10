@@ -34,16 +34,25 @@ $(document).ready(function () {
         method: "GET",
         url: "/api/getMoviesFromDB",
         success: function(data, status) {
+            let html = "<table><tr> <td>Movie ID</td> <td>Title</td> <td>Price</td> <td>Update</td> <td>Delete</td> </tr>";
             data.moviesInDB.forEach( (movie) => {
-                $("#db-results").append(`Movie ID: ${movie.movie_id} - Title: ${movie.title} 
-                - Price: ${movie.price}<br>`);
+                html += "<tr>";
+                html += `<td> ${movie.movie_id} </td>`;
+                html += `<td> ${movie.title} </td>`;
+                html += `<td contenteditable='true' > ${movie.price} </td>`;
+                html += `<td> <button id="admin-update-btn">Update</button> </td>`;
+                html += `<td> <button id="admin-delete-btn">Delete</button> </td>`;
+                html += "</tr>";
             });
+            html += "</table>";
+            $("#db-results").html(html);
         }
     }); //ajax
   }); 
     
     // Testing for admin page to display search results 
     $("#admin-search-form").on("submit", function(e){
+        $("#admin-search-results").html("");
         e.preventDefault(); 
         let keyword = $("#admin-search-text").val().trim();
         $.ajax({
@@ -56,12 +65,25 @@ $(document).ready(function () {
                 // You can make some of these attributes hidden. We will just need all of them
                 // in the html, so we can add all this info into our DB if the admin chooses to 
                 // press the "add movie" button
+                let html = "<table><tr> <td>Movie ID</td> <td>Title</td> <td>Image</td>" +
+                    "<td>Rating</td> <td>Date</td> <td>Description</td>" + 
+                    "<td>Genres</td> <td>Price</td> <td>Action</td> </tr>";
+
                 data.forEach( (movie) => {
-                    $("#admin-search-results").append(`${movie.movieID} - ${movie.title} - ${movie.imageUrl} - 
-                        ${movie.rating} - ${movie.release_date} - ${movie.overview} - ${movie.genres} 
-                        - ${movie.price}<br>`);
-                    $("#admin-search-results").append("<button class='add-movie-btn'>Add Movie</button><br><br>");
+                    html += "<tr>";
+                    html += `<td> ${movie.movie_id} </td>`;
+                    html += `<td> ${movie.title} </td>`;
+                    html += `<td> <img height="80" src="${movie.imageUrl}"> </td>`;
+                    html += `<td> ${movie.rating} </td>`;
+                    html += `<td> ${movie.release_date} </td>`;
+                    html += `<td style='width:200px'> ${movie.overview} </td>`;
+                    html += `<td style='width:80px'> ${movie.genres} </td>`;
+                    html += `<td> ${movie.price} </td>`;
+                    html += `<td> <button class='admin-add-btn'>Add Movie</button> </td>`;
+                    html += "</tr>";
                 });
+                html += "</table>";
+                $("#admin-search-results").html(html);
             }
         });//ajax
     }); //admin search
@@ -70,7 +92,7 @@ $(document).ready(function () {
     // html elements in order to get all the info I need.
     // IMPORTANT NOTE: because the add buttons are added dynamically, this event must
     // be written like this
-    $("#admin-search-results").on("click", ".add-movie-btn", function() {
+    $("#admin-search-results").on("click", ".admin-add-btn", function() {
         console.log($(this).html());
         if($(this).html() == "Add Movie"){
             $(this).html("Remove Movie");
