@@ -25,7 +25,7 @@ setInterval(loadConfig, interval);
 exports.displaySignInPage = async (req, res) => {
   //res.redirect("/index"); // Only for testing purposes
   //res.render("sign-in");
-  res.render("home"); // for testing home page
+  res.render("sign-in"); // for testing home page
 };
 
 /**
@@ -97,15 +97,13 @@ exports.displaySearchResults = async (req, res) => {
   //query = "Jack Reacher"; // For testing purposes only
   let resultArray = await getMovie(query);
 
-
-//   res.render("selection", { resultArray: resultArray });
+  //   res.render("selection", { resultArray: resultArray });
 
   //MAIN CHANGES
   //res.render("selection", {"resultArray": resultArray});
   console.log(resultArray);
-  res.send(resultArray);  // index page will be used as selection as well without reloading the page
+  res.send(resultArray); // index page will be used as selection as well without reloading the page
   //MAIN END
-
 };
 
 /**
@@ -224,20 +222,19 @@ async function getMovie(query) {
   let resultArray = [];
   // console.log(genreList.genres.length);
 
-
-//   parsedData.results.forEach((movie) => {
-//     // creates Date object for formatting
-//     let date = new Date(movie.release_date);
+  //   parsedData.results.forEach((movie) => {
+  //     // creates Date object for formatting
+  //     let date = new Date(movie.release_date);
 
   // MAIN CHANGES
   console.log("getMovie");
   //console.log(parsedData);
-  
+
   // remove async from forEach, otherwise the return resultArray executed before the resultArray is ready
   parsedData.results.forEach((movie) => {
     // creates Date object for formatting
     let date = new Date(movie.release_date);
-    
+
     // change genreToString to normal function rather than async function
     //MAIN END
 
@@ -256,7 +253,6 @@ async function getMovie(query) {
   });
   console.log(resultArray);
   return resultArray;
-
 }
 
 /**
@@ -394,8 +390,8 @@ function getGenreNamesFromDB(movieID) {
  * @param {String} params
  */
 function callDB(sql, params) {
-  console.log(sql); // Diagnostic
-  console.log(params); // Diagnostic
+  // console.log(sql); // Diagnostic
+  // console.log(params); // Diagnostic
   if (arguments.length == 2) {
     return new Promise((resolve, reject) => {
       pool.query(sql, params, (err, rows, field) => {
