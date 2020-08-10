@@ -201,19 +201,20 @@ exports.getMoviesFromDB = async (req, res) => {
 exports.updateDB = async (req, res) => {
   let sql;
   let sqlParams;
+  let genre, genreArr;
+  
   let action = req.query.action;
   let movie_id = req.query.movieID;
-  let title, image_url, rating, release_date, description, genreArr, price;
-  
-      price = req.query.price;
-    title = req.query.title;
-    image_url = req.query.imageUrl;
-    rating = req.query.rating;
-    release_date = req.query.release_date;
-    description = req.query.overview;
+  let price = req.query.price;
+  let title = req.query.title;
+  let image_url = req.query.imageUrl;
+  let rating = req.query.rating;
+  let release_date = req.query.release_date;
+  let description = req.query.overview;
   
   if(action == "add"){
-    genreArr = (req.query.genre).split(',');
+    genre = req.query.genre.toString();
+    genreArr = genre.split(',');
   }
   
   // Add/Delete record from movie table
