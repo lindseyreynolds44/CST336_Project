@@ -13,6 +13,7 @@
                 </div>
                 <div class="title">
                     <%= item.title %>
+                    Price: $<%= item.price %>
                 </div>
             </div>
         </div>
@@ -21,6 +22,7 @@
     <script>
 
      $("#add").on("click", function () {
+         console.log("updateCart")
         $.ajax({
             method: "get",
             url: "/updateCart",
@@ -34,7 +36,9 @@
                 genres: [18,14],
                 action: "add"
             },
-            success: (results, status) => {},
+            success: (results, status) => {
+                console.log("Add:",status)
+            },
         });
      });
 
@@ -43,7 +47,9 @@
              method: "get",
              url: "/updateCart",
              data: { movie_id: 1, action: "delete"},
-             success: (results, status) => {},
+             success: (results, status) => {
+                 console.log("Delete:", status)
+             },
          });
      });
 

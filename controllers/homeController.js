@@ -25,7 +25,7 @@ setInterval(loadConfig, interval);
 exports.displaySignInPage = async (req, res) => {
   //res.redirect("/index"); // Only for testing purposes
   //res.render("sign-in");
-  res.render("home"); // for testing home page
+  res.render("sign-in"); // for testing home page
 };
 
 /**
@@ -97,39 +97,39 @@ exports.displaySearchResults = async (req, res) => {
   //query = "Jack Reacher"; // For testing purposes only
   let resultArray = await getMovie(query);
 
-
-//   res.render("selection", { resultArray: resultArray });
+  //   res.render("selection", { resultArray: resultArray });
 
   //MAIN CHANGES
   //res.render("selection", {"resultArray": resultArray});
   console.log(resultArray);
-  res.send(resultArray);  // index page will be used as selection as well without reloading the page
+  res.send(resultArray); // index page will be used as selection as well without reloading the page
   //MAIN END
-
 };
 
 /**
  * Handles the GET "/updateCart" route
- * --- PENDING ( DAN ) ---
+ * --- DONE ( DAN ) ---
  */
 exports.updateCart = async (req, res) => {
   let user_id = req.session.name;
   let movie_id = parseInt(req.query.movie_id);
+  let title = req.query.title;
+  let release_date = req.query.release_date;
+  let description = req.query.description;
+  let image_url = req.query.image_url;
+  let rating = req.query.rating;
   let action = req.query.action; //add or delete
+
   let sql = "";
   let sqlParams;
+
   // check if this is an "add" or "delete" action
   switch (action) {
     case "add":
       //add here
-      let title = req.query.title; // check
-      let release_date = req.query.release_date; // check
-      let description = req.query.description; // check
-      let image_url = req.query.image_url; // check
-      let rating = req.query.rating; // check
+      // INSERT MOVIE TO MOVIE TABLE
       sql =
         "REPLACE INTO movie (movie_id, title, release_date, description, image_url, rating) VALUES (?,?,?,?,?,?)";
-
       sqlParams = [
         movie_id,
         title,
@@ -138,7 +138,9 @@ exports.updateCart = async (req, res) => {
         image_url,
         rating,
       ];
+
       await callDB(sql, sqlParams);
+      // INSERT GENRES INTO GENRE TABLE
       let genres = req.query.genres;
       sql =
         "INSERT INTO genre (genre_id, movie_id, genre_name) VALUES (?, ?, ?)";
@@ -150,48 +152,34 @@ exports.updateCart = async (req, res) => {
           }
         }
       }
+      // INSERT MOVIE INTO CART TABLE
       sql = "INSERT INTO cart (user_id, movie_id) VALUES (?, ?)";
       sqlParams = [user_id, movie_id];
-      // sqlParams = { user_id: user_id, movie_id: movie_id };
       await callDB(sql, sqlParams);
-
+      res.send({ status: 200 });
       break;
     case "delete":
       //delete here
       sql = "DELETE FROM cart WHERE user_id = ? AND movie_id = ?;";
-      sqlParams = { user_id: user_id, movie_id: movie_id };
+      sqlParams = [user_id, movie_id];
       await callDB(sql, sqlParams);
+      res.send({ status: 200 });
       break;
   }
-
-  // If it is delete, just remove record from cart table
-
-  // If it is add, do the following...
-  // let movie_id = req.query.movie_id;
-  // let title = req.query.title;
-  // let release_date = req.query.release_date;
-  // let description = req.query.description;
-  // let image_url = req.query.image_url;
-  // let rating = req.query.rating;
-  // let genres = req.query.genres;
-
-  // 1) Use user_id and movie_id to add a record to the cart table
-
-  // 2) Use all movie info to add records to the movie table and genre table
 };
 
 /**
  * Handles the GET "/displayCartPage" route
- * --- Tentatively DONE ( DAN ) ---
+ * --- DONE ( DAN ) ---
  */
 exports.displayCartPage = async (req, res) => {
   let user_id = req.session.name;
   let sql =
-    "SELECT movie_id, title, image_url FROM cart JOIN movie USING (movie_id) WHERE user_id = ?";
+    "SELECT movie_id, title, image_url, price FROM cart JOIN movie USING (movie_id) WHERE user_id = ?";
   let cartContents = await callDB(sql, user_id);
 
   console.log("# of items in cart:", cartContents.length); // diagnostic
-  // console.log(cartContents); // diagnostic
+  //console.log(cartContents); // diagnostic
   res.render("shoppingcart", { cartContents: cartContents });
 };
 
@@ -218,20 +206,19 @@ async function getMovie(query) {
   let resultArray = [];
   // console.log(genreList.genres.length);
 
-
-//   parsedData.results.forEach((movie) => {
-//     // creates Date object for formatting
-//     let date = new Date(movie.release_date);
+  //   parsedData.results.forEach((movie) => {
+  //     // creates Date object for formatting
+  //     let date = new Date(movie.release_date);
 
   // MAIN CHANGES
   console.log("getMovie");
   //console.log(parsedData);
-  
+
   // remove async from forEach, otherwise the return resultArray executed before the resultArray is ready
   parsedData.results.forEach((movie) => {
     // creates Date object for formatting
     let date = new Date(movie.release_date);
-    
+
     // change genreToString to normal function rather than async function
     //MAIN END
 
@@ -250,7 +237,6 @@ async function getMovie(query) {
   });
   console.log(resultArray);
   return resultArray;
-
 }
 
 /**
@@ -388,6 +374,8 @@ function getGenreNamesFromDB(movieID) {
  * @param {String} params
  */
 function callDB(sql, params) {
+  // console.log(sql); // Diagnostic
+  // console.log(params); // Diagnostic
   if (arguments.length == 2) {
     return new Promise((resolve, reject) => {
       pool.query(sql, params, (err, rows, field) => {
