@@ -9,11 +9,11 @@
 #logo2 {
     /* need to select a google font here for logo*/
     color:red;
-    font-size: 3.5rem;
+    font-size: 5.5rem;
     display:flex;
     align-content: space-around;
-
-    /* margin: 2em 0 0 2em; */
+    margin: -1em 0 -2em -1em;
+    padding: 1em 0em 0em 2em;
 
 }
 
