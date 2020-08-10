@@ -5,7 +5,7 @@ var featuredResults; // list of featured movies
 var selectedMovieID; // current selected moive ID from the search
 var adminSearchResults; // list of search results from WEB
 var adminDBResults; // list of movies from Database
-var moviePrice = 0;
+var moviePrice = 5.99;
 
 $(document).ready(function () {
   // Testing check user availability
@@ -115,7 +115,7 @@ $(document).ready(function () {
           html += `<td> ${movie.release_date} </td>`;
           html += `<td > ${movie.overview} </td>`;
           html += `<td > ${genreString} </td>`;
-          html += `<td class='admin-search-price' contenteditable='true'> ${5.99} </td>`;
+          html += `<td class='admin-search-price' contenteditable='true'> ${moviePrice} </td>`;
           html += `<td> <button class='admin-add-btn' value=${i}>Add Movie</button> </td>`;
           html += "</tr>";
         });
