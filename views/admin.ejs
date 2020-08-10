@@ -1,7 +1,7 @@
 <%- include('partials/header.ejs') %>
     <body>
         
-        <h3> Admins Only </h3>
+        <h1> Admins Only </h1>
         
         <button id="db-btn">Database table</button>
         
@@ -16,6 +16,15 @@
         </form>
         
         <div id="admin-search-results"></div>
+
+        <h2>Reports</h2>
+        <hr>
+        <div >
+            <button id="admin-get-avg-price">Average Movie Price</button>
+            <button id="admin-get-avg-rating">Average Movie Rating</button>
+        </div>
+        <hr>
+        <div id="reportResults"></div>
         
     </body>
 </html>
