@@ -173,7 +173,7 @@ exports.updateCart = async (req, res) => {
  * Handles the GET "/displayCartPage" route
  * --- DONE ( DAN ) ---
  */
- exports.displayCartPage = async (req, res) => {
+exports.displayCartPage = async (req, res) => {
   let user_id = req.session.name;
   let sql =
     "SELECT movie_id, title, image_url, price FROM cart JOIN movie USING (movie_id) WHERE user_id = ?";
