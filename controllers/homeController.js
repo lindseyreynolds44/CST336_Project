@@ -113,7 +113,7 @@ exports.displaySearchResults = async (req, res) => {
  */
 exports.updateCart = async (req, res) => {
   let user_id = req.session.name;
-  let movie_id = parseInt(req.query.movie_id);
+  let movie_id = Number(req.query.movie_id);
   let title = req.query.title;
   let release_date = req.query.release_date;
   let description = req.query.description;
@@ -222,6 +222,10 @@ exports.updateDB = async (req, res) => {
         sql = "DELETE FROM movie WHERE movie_id = ?";
           sqlParams = [movie_id];
           break;
+      case "update": // update the price
+        sql = "UPDATE movie SET price = ? WHERE movie_id = ?";
+        sqlParams = [price, movie_id];
+        break;
   }//switch
   await callDB(sql, sqlParams);
   
