@@ -51,6 +51,33 @@ $(document).ready(function () {
         }
     }); //ajax
   }); 
+
+    // UPDATE button on the Database table 
+    $("#db-results").on("click", "#admin-update-btn", function() {
+        $(this).html("Updated");
+        let movie_id = 120;
+        let price = 4.99;
+        /*
+        $.ajax({
+            method: "GET",
+            url: "/api/updateMovie",
+            data: {
+                "movie_id": movie_id,
+                "price": price
+            },
+            success: function(data, status) {
+            }
+        }); //ajax
+        */
+    }); 
+    
+    // DELETE button on the Database table 
+    $("#db-results").on("click", "#admin-delete-btn", function() {
+        $(this).html("Deleted");
+        let movie_id = 120;
+        
+        updateDB("delete", movie_id);
+    }); 
     
     // Testing for admin page to display search results 
     $("#admin-search-form").on("submit", function(e){
