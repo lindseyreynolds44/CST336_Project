@@ -1,7 +1,19 @@
-<%- include('partials/header.ejs') %>
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>QueueFlix Admin</title>
+        <meta charset="UTF-8">
+        <script 
+            src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js">
+        </script>
+        <script src="js/functions.js"></script>
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+		<link rel="stylesheet" href="css/styles.css" />
+        
+    </head>
     <body>
         
-        <h1> Admins Only </h1>
+        <h3>QueueFlix Admins Only </h3>
         
         <button id="db-btn">Database table</button>
         
@@ -9,11 +21,13 @@
         
         <br><br>
         
-        
+        <h4>Search and Add Movie to Database</h4><br>
         <form id="admin-search-form">
-            <input type="text" id="admin-search-text" placeholder="Search movie">
+            <input type="text" id="admin-search-text" placeholder="Search movie" size=40>
             <button id="admin-search-btn">Search</button>
+            <span id="admin-search-warning"></span>
         </form>
+        <br>
         <div id="admin-search-results"></div>
 
         <h2>Reports</h2>

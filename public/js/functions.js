@@ -3,6 +3,8 @@
 var results; // list of movies resulted from searching for the keywords
 var featuredResults; // list of featured movies
 var selectedMovieID; // current selected moive ID from the search
+var adminSearchResults;  // list of search results from WEB
+var adminDBResults;     // list of movies from Database
 
 $(document).ready(function () {
   // Testing check user availability
@@ -30,60 +32,24 @@ $(document).ready(function () {
     $("#db-results").html("");
     $.ajax({
       method: "GET",
-      url: "/api/getMoviesFromDB",
-      success: function (data, status) {
-        let html =
-          "<table><tr> <td>Movie ID</td> <td>Title</td> <td>Price</td> <td>Update</td> <td>Delete</td> </tr>";
-        data.moviesInDB.forEach((movie) => {
-          html += "<tr>";
-          html += `<td> ${movie.movie_id} </td>`;
-          html += `<td> ${movie.title} </td>`;
-          html += `<td contenteditable='true' > ${movie.price} </td>`;
-          html += `<td> <button id="admin-update-btn">Update</button> </td>`;
-          html += `<td> <button id="admin-delete-btn">Delete</button> </td>`;
-          html += "</tr>";
-        });
-        html += "</table>";
-        $("#db-results").html(html);
-      },
-    }); //ajax
-  });
-
-  // Testing for admin page to display search results
-  $("#admin-search-form").on("submit", function (e) {
-    $("#admin-search-results").html("");
-    e.preventDefault();
-    let keyword = $("#admin-search-text").val().trim();
-    $.ajax({
-      method: "get",
-      url: "/search",
-      data: {
-        search_string: keyword,
-      },
-      success: function (data, status) {
-        // You can make some of these attributes hidden. We will just need all of them
-        // in the html, so we can add all this info into our DB if the admin chooses to
-        // press the "add movie" button
-        let html =
-          "<table><tr> <td>Movie ID</td> <td>Title</td> <td>Image</td>" +
-          "<td>Rating</td> <td>Date</td> <td>Description</td>" +
-          "<td>Genres</td> <td>Price</td> <td>Action</td> </tr>";
-            data.forEach((movie) => {
-              html += "<tr>";
-              html += `<td> ${movie.movie_id} </td>`;
-              html += `<td> ${movie.title} </td>`;
-              html += `<td> <img height="80" src="${movie.imageUrl}"> </td>`;
-              html += `<td> ${movie.rating} </td>`;
-              html += `<td> ${movie.release_date} </td>`;
-              html += `<td style='width:200px'> ${movie.overview} </td>`;
-              html += `<td style='width:80px'> ${movie.genres} </td>`;
-              html += `<td> ${movie.price} </td>`;
-              html += `<td> <button class='admin-add-btn'>Add Movie</button> </td>`;
-              html += "</tr>";
+        url: "/api/getMoviesFromDB",
+        success: function(data, status) {
+            adminDBResults = data.moviesInDB;
+            let html = "<table><tr> <th style='width:100px'>Movie ID</th> <th style='width:200px'>Title</th>" + 
+                "<th style='width:50px'>Price($)</th> <th style='width:50px'>Update</th>" +
+                "<th style='width:50px' >Delete</th> </tr>";
+            data.moviesInDB.forEach( (movie, i) => {
+                html += "<tr>";
+                html += `<td> ${movie.movie_id} </td>`;
+                html += `<td> ${movie.title} </td>`;
+                html += `<td class='admin-db-price' contenteditable='true' > ${movie.price} </td>`;
+                html += `<td> <button class="admin-update-btn" value=${i}>Update</button> </td>`;
+                html += `<td> <button class="admin-delete-btn" value=${i}>Delete</button> </td>`;
+                html += "</tr>";
             });
-         html += "</table>";
-        $("#admin-search-results").html(html);
-      },
+            html += "</table>";
+            $("#db-results").html(html);
+        }
     }); //ajax
   }); 
 
@@ -116,7 +82,7 @@ $(document).ready(function () {
     
     // Testing for admin page to display search results 
     $("#admin-search-form").on("submit", function(e){
-        $("#admin-search-results").html("");
+        $("#admin-search-results").html(""); // clean up the search table content
         e.preventDefault(); 
         let keyword = $("#admin-search-text").val().trim();
         $.ajax({
@@ -126,70 +92,97 @@ $(document).ready(function () {
                     "search_string": keyword
                 },
             success: function (data, status) {
-                let html = "<table><tr> <td>Movie ID</td> <td>Title</td> <td>Image</td>" +
-                    "<td>Rating</td> <td>Date</td> <td>Description</td>" + 
-                    "<td>Genres</td> <td>Price</td> <td>Action</td> </tr>";
+                adminSearchResults = data;
+                let html = "<table><th style='width:100px'>Movie ID</th>" +
+                    "<th style='width:100px'>Title</th> <th style='width:60px'>Image</th>" +
+                    "<th style='width:30px'>Rating</th> <th style='width:100px'>Date</th> <th style='width:150px'>Description</th>" + 
+                    "<th style='width:80px'>Genres</th> <th style='width:50px'>Price($)</th> <th style='width:50px'>Action</th> </tr>";
 
-/************* THIS IS WHERE WE ADD EVERYTHING THAT WE TRAVERSE IN THE NEXT FUNCTION ****************/
-
-                data.forEach( (movie) => {
-                    html += "<tr>";
-                    html += `<td> ${movie.movie_id} </td>`;
-                    html += `<td class="movie-id"> ${movie.title} </td>`;
-                    html += `<td> <img height="80" src="${movie.imageUrl}"> </td>`;
+                data.forEach( (movie, i) => {
+                    let genreString = "";
+                    movie.genres.forEach((name) => {
+                        genreString += name;
+                        genreString += " ";
+                    });
+                    html += `<tr id='admin-search-row' value=${i}>`;
+                    html += `<td class='movie-id'> ${movie.movieID} </td>`;
+                    html += `<td> ${movie.title} </td>`;
+                    html += `<td> <img height='80' src='${movie.imageUrl}' alt='${movie.title}' > </td>`;
                     html += `<td> ${movie.rating} </td>`;
                     html += `<td> ${movie.release_date} </td>`;
-                    html += `<td style='width:200px'> ${movie.overview} </td>`;
-                    html += `<td style='width:80px'> ${movie.genres} </td>`;
-                    html += `<td> ${movie.price} </td>`;
-                    html += `<td> <button class='admin-add-btn'>Add Movie</button> </td>`;
+                    html += `<td > ${movie.overview} </td>`;
+                    html += `<td > ${genreString} </td>`;
+                    html += `<td class='admin-search-price' contenteditable='true'> ? </td>`;
+                    html += `<td> <button class='admin-add-btn' value=${i}>Add Movie</button> </td>`;
                     html += "</tr>";
                 });
                 html += "</table>";
                 $("#admin-search-results").html(html);
-                
-/**********************************************************************************/
-
             }
         });//ajax
     }); //admin search
+  
     
     // WORK IN PROGRESS -- need search table to be done, so I know how to traverse the 
     // html elements in order to get all the info I need.
     // IMPORTANT NOTE: because the add buttons are added dynamically, this event must
     // be written like this
+    $("#db-results").on("click", ".admin-update-btn", function() {
+        console.log("Update Button is clicked");
+        let currentRow = $(this).closest("tr");
+        let index = $(this).val();
+        let price = Number(currentRow.find(".admin-db-price").html());
+        console.log("Update:" + adminDBResults[index].movie_id + ", " + price);
+        
+        if (!Number.isNaN(price) && price > 0.0) {
+            // update price only need movie id and price
+            updateDB("update", adminDBResults[index].movie_id, null, null, null, null, null, null, price);
+        } else {
+            console.log("price is invalid");
+        }
+
+    }); 
+    
+    $("#db-results").on("click", ".admin-delete-btn", function() {
+        console.log("Delete Button is clicked");
+        let index = $(this).val();
+        console.log("Delete Movie from DB:" + adminDBResults[index].movie_id);
+        //updateDB("delete", adminDBResults[index].movie_id, null, null, null, null, null, null, null);
+        
+
+    }); 
+    
     $("#admin-search-results").on("click", ".admin-add-btn", function() {
+        console.log("Add button is clicked");
+        let currentRow = $(this).closest("tr");
+        let index = $(this).val();
+        let price = Number(currentRow.find(".admin-search-price").html());
+        console.log("Add Movie:" + adminSearchResults[index].movieID + ", " + price);
         
-        // Check if the button says "Add Movie" or "Remove Movie"
-        if($(this).html() == "Add Movie"){
+        // Change the button to say "Remove Movie" or "Add Movie"
+        if ($(this).html() == "Add Movie") {
             $(this).html("Remove Movie");
-            
-/************* THIS IS WHERE WE NEED TO TEST TRAVERSING FUNCTIONS ****************/
-            
-            // We need to figure out what "this" is. Is it "admin-search-results" or
-            // admin-add-btn"??
-            let movieID = $(this).next();
-            console.log("test" + movieID);
-            
-/**********************************************************************************/
-            
-            let title, imageUrl, rating, release_date, overview, price;
-            // Use Traversing functions to get all values of this movie
-                // $(this).siblings("a").attr("href").trim();
-                // $(this).siblings("span").html().trim();
-            
-            //updateDB("add", movieID, title, imageUrl, rating, release_date, overview, genre price);
-            
-            // This line is to test the backend functionality. It works correctly.
-            //updateDB("add", 2887, "faker", "www.fake.com", "1", "12/2/2020", "This is fake", "Drama,History,Romance", 4.99);
-        
-            
-        // If the button said "Remove Movie"    
+            // ADD MOVIE TO DB HERE
         } else {
             $(this).html("Add Movie");
-            //let movieID = $(this).children().html().trim();
+            // DELETE MOVIE FROM DB HERE
             //updateDB("delete", movieID);
         }
+      
+        if (!Number.isNaN(price) && price > 0.0) {
+            // update price only need movie id and price
+            updateDB("add", adminSearchResults[index].movieID, 
+                adminSearchResults[index].title, 
+                adminSearchResults[index].imageUrl, 
+                adminSearchResults[index].rating, 
+                adminSearchResults[index].release_date, 
+                adminSearchResults[index].overview,
+                adminSearchResults[index].genres,
+                price);
+        } else {
+            console.log("price is invalid");
+        }
+        
     }); 
     
     // WORK IN PROGRESS
@@ -209,69 +202,11 @@ $(document).ready(function () {
                 price: price
             },
             success: function(data, status){
+                console.log("updateDB done!");
             }
         }); //ajax
     }
 
-  // WORK IN PROGRESS -- need search table to be done, so I know how to traverse the
-  // html elements in order to get all the info I need.
-  // IMPORTANT NOTE: because the add buttons are added dynamically, this event must
-  // be written like this
-  $("#admin-search-results").on("click", ".admin-add-btn", function () {
-    console.log($(this).html());
-    if ($(this).html() == "Add Movie") {
-      $(this).html("Remove Movie");
-      //let movieID, title, imageUrl, rating, release_date, overview, price;
-      // $(this).siblings("a").attr("href").trim();
-      // $(this).siblings("span").html().trim();
-      //updateDB("add", movieID, title, imageUrl, rating, release_date, overview, genre price);
-      updateDB(
-        "add",
-        2887,
-        "faker",
-        "www.fake.com",
-        "1",
-        "12/2/2020",
-        "This is fake",
-        "Drama,History,Romance",
-        4.99
-      );
-    } else {
-      $(this).html("Add Movie");
-      //let title = $(this).siblings("h3").html().trim();
-      //updateDB("delete", movieID);
-    }
-  });
-
-  // WORK IN PROGRESS
-  function updateDB(
-    action,
-    movieID,
-    title,
-    imageUrl,
-    rating,
-    release_date,
-    overview,
-    genre,
-    price
-  ) {
-    $.ajax({
-      method: "get",
-      url: "/api/updateDB",
-      data: {
-        action: action,
-        movieID: movieID,
-        title: title,
-        imageUrl: imageUrl,
-        rating: rating,
-        release_date: release_date,
-        overview: overview,
-        genre: genre,
-        price: price,
-      },
-      success: function (data, status) {},
-    }); //ajax
-  }
 
   // GET AVERAGE MOVIE PRICE
   $("#admin-get-avg-price").on("click", function () {
@@ -311,15 +246,15 @@ $(document).ready(function () {
       $("#home-warning").html("** Email address is required!");
     }
   });
-
+  
   function isFormValid() {
     if ($("#home-text").val() == "") {
       return false;
     }
     return true;
   }
-
-  /**
+  
+   /**
    * Index Page action event and functions
    */
   hideMovieDetail(); //hide the movie detail when the page is freshly loaded
@@ -332,40 +267,43 @@ $(document).ready(function () {
     }
   }
 
-  // Request to search for movies using an AJAX call to server "/index" route
-  // when keyword is entered
-  $("#search-form").on("submit", function (e) {
-    e.preventDefault(); // not going to reload the page
-    let keyword = $("#search-text").val().trim();
-    console.log("search:" + keyword);
-    if (keyword == "") {
-      $("#search-warning").css("color", "red");
-      $("#search-warning").html("** Keyword is required!");
-    } else {
-      $.ajax({
-        method: "get",
-        url: "/search",
-        data: {
-          search_string: keyword,
-        },
-        success: function (data, status) {
-          //result = JSON.parse(data);
-          console.log(data);
-          results = data;
+    // Request to search for movies using an AJAX call to server "/index" route
+    // when keyword is entered
+    $("#search-form").on("submit", function(e){
+        e.preventDefault(); // not going to reload the page
+        let keyword = $("#search-text").val().trim();
+        console.log("search:" + keyword);
+        if ( keyword == "" ) {
+          $("#search-warning").css("color", "red");
+          $("#search-warning").html("** Keyword is required!");
+        }
+        else {
+            $("#search-warning").html(""); // clear any warning message
+            $.ajax({
+            method: "get",
+                url: "/search",
+                data: {
+                        "search_string": keyword
+                    },
+                success: function (data, status) {
+                    //result = JSON.parse(data);
+                    console.log(data);
+                    results = data;
 
-          // display all the movie posters in the results
-          $("#featured-header").html(""); // remove the featured header
-          displayAllMovies(results);
+                    // display all the movie posters in the results
+                    $("#featured-header").html(""); // remove the featured header
+                    displayAllMovies(results);
 
-          // display the first movie image/trailer and detail from the list
-          // displayMovieTrailer(0);
-          displayMovieImage(0);
-          displayMovieDetail(0);
-          $("#selected-movie-container").show();
-        },
-      }); //ajax
-    }
-  }); //index - keyword search
+                    // display the first movie image/trailer and detail from the list
+                    // displayMovieTrailer(0);
+                    displayMovieImage(0);
+                    displayMovieDetail(0);
+                    $("#selected-movie-container").show();
+                }
+            });//ajax
+        }
+    
+    }); //index - keyword search
 
   // event for dynamically filled content
   $("#resultsContainer").on("click", ".movie-poster", function () {
