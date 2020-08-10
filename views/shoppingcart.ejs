@@ -1,0 +1,61 @@
+<%- include('partials/header.ejs') %>
+    <body>
+    <h2>SHOPPING CART</h2>
+
+    <button id="add">Add To Cart</button>
+    <button id="delete">Delete From Cart</button>
+
+    <% cartContents.forEach((item) => { %>
+        <div class="card">
+            <div class="card-body flex-row">
+                <div class="title">
+                  <img src="<%= item.image_url %>" alt="movie image">  
+                </div>
+                <div class="title">
+                    <%= item.title %>
+                    Price: $<%= item.price %>
+                </div>
+            </div>
+        </div>
+   <% }); %>
+    
+    <script>
+
+     $("#add").on("click", function () {
+         console.log("updateCart")
+        $.ajax({
+            method: "get",
+            url: "/updateCart",
+            data: {
+                movie_id: 1,
+                title: "Test Movie",
+                release_date: "01/01/1990",
+                description: "Test Description",
+                image_url: "www.google.com",
+                rating: "9.9",
+                genres: [18,14],
+                action: "add"
+            },
+            success: (results, status) => {
+                console.log("Add:",status)
+            },
+        });
+     });
+
+     $("#delete").on("click", function () {
+         $.ajax({
+             method: "get",
+             url: "/updateCart",
+             data: { movie_id: 1, action: "delete"},
+             success: (results, status) => {
+                 console.log("Delete:", status)
+             },
+         });
+     });
+
+    </script>
+        
+<%- include('partials/footer.ejs') %>
+
+    </body>
+</html>

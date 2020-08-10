@@ -7,6 +7,7 @@ const saltRounds = 10;
 //global vars
 var config;
 var genreNames;
+var genrePairArray; // Array of genre name and id pairs 
 var interval = 24 * 60 * 60 * 1000; // 1 day
 
 // Loads the configuration settings for the API
@@ -22,10 +23,10 @@ setInterval(loadConfig, interval);
  * Handles the GET "/" route
  *  --- DONE ---
  */
-exports.displaySignInPage = (req, res) => {
+exports.displaySignInPage = async (req, res) => {
   //res.redirect("/index"); // Only for testing purposes
   //res.render("sign-in");
-  res.render("home"); // for testing home page
+  res.render("sign-in"); // for testing home page
 };
 
 /**
@@ -35,10 +36,10 @@ exports.displaySignInPage = (req, res) => {
  * --- TO DO (LINDSEY) ---
  */
 exports.displayIndexPage = async (req, res) => {
-  let resultArray = await getFeaturedMovies(); 
+  let resultArray = await getFeaturedMovies();
   //let query = "Jack Reacher"; // For testing purposes only
   //let resultArray = await getMovie(query);
-  res.render("index", {"resultArray": resultArray});
+  res.render("index", { resultArray: resultArray });
 };
 
 /**
@@ -50,19 +51,19 @@ exports.createAccount = (req, res) => {
   let passwordInput = req.body.password;
   let firstNameInput = req.body.firstName;
   let lastNameInput = req.body.lastName;
-  
+
   bcrypt.hash(passwordInput, saltRounds, function (err, hash) {
-    
-    let sql = "INSERT INTO user (admin_privledges, username, password, firstName, lastName) VALUES (false, ?, ?, ?, ?);";
+    let sql =
+      "INSERT INTO user (admin_privledges, username, password, firstName, lastName) VALUES (false, ?, ?, ?, ?);";
     let sqlParams = [usernameInput, hash, firstNameInput, lastNameInput];
     pool.query(sql, sqlParams, function (err, rows, fields) {
       if (err) throw err;
       let userValues = {
         username: usernameInput,
         firstName: firstNameInput,
-        lastName: lastNameInput
+        lastName: lastNameInput,
       };
-      res.render("confirmation", {"userValues": userValues});
+      res.render("confirmation", { userValues: userValues });
     });
   });
 };
@@ -77,14 +78,14 @@ exports.isUsernameAvailable = (req, res) => {
   pool.query(sql, [username], function (err, rows, fields) {
     if (err) throw err;
     let response;
-    
+
     // This username is already in use
-    if(rows.length > 0){ 
+    if (rows.length > 0) {
       response = false;
     } else {
       response = true;
     }
-    res.send({"response": response});
+    res.send({ response: response });
   });
 };
 
@@ -96,47 +97,157 @@ exports.displaySearchResults = async (req, res) => {
   let query = req.query.search_string;
   //query = "Jack Reacher"; // For testing purposes only
   let resultArray = await getMovie(query);
+
+  //   res.render("selection", { resultArray: resultArray });
+
+  //MAIN CHANGES
   //res.render("selection", {"resultArray": resultArray});
   console.log(resultArray);
-  res.send(resultArray);  // index page will be used as selection as well without reloading the page
+  res.send(resultArray); // index page will be used as selection as well without reloading the page
+  //MAIN END
 };
 
 /**
- * Handles the GET "/updateCart" route 
- * --- TO DO ( DAN ) ---
+ * Handles the GET "/updateCart" route
+ * --- DONE ( DAN ) ---
  */
 exports.updateCart = async (req, res) => {
   let user_id = req.session.name;
-  let action = req.query.action; //add or delete
-  // check if this is an "add" or "delete" action
-  
-  // If it is delete, just remove record from cart table
-  
-  // If it is add, do the following...
-  let movie_id = req.query.movie_id;
+  let movie_id = parseInt(req.query.movie_id);
   let title = req.query.title;
   let release_date = req.query.release_date;
   let description = req.query.description;
   let image_url = req.query.image_url;
   let rating = req.query.rating;
-  let genres = req.query.genres;
+  let action = req.query.action; //add or delete
 
-  // 1) Use user_id and movie_id to add a record to the cart table
-  
-  // 2) Use all movie info to add records to the movie table and genre table
+  let sql = "";
+  let sqlParams;
+
+  // check if this is an "add" or "delete" action
+  switch (action) {
+    case "add":
+      //add here
+      // INSERT MOVIE TO MOVIE TABLE
+      sql =
+        "REPLACE INTO movie (movie_id, title, release_date, description, image_url, rating) VALUES (?,?,?,?,?,?)";
+      sqlParams = [
+        movie_id,
+        title,
+        release_date,
+        description,
+        image_url,
+        rating,
+      ];
+
+      await callDB(sql, sqlParams);
+      // INSERT GENRES INTO GENRE TABLE
+      let genres = req.query.genres;
+      sql =
+        "INSERT INTO genre (genre_id, movie_id, genre_name) VALUES (?, ?, ?)";
+      for (genre of genres) {
+        for (names of genreNames.genres) {
+          if (names.id == parseInt(genre)) {
+            sqlParams = [parseInt(genre), movie_id, names.name];
+            await callDB(sql, sqlParams);
+          }
+        }
+      }
+      // INSERT MOVIE INTO CART TABLE
+      sql = "INSERT INTO cart (user_id, movie_id) VALUES (?, ?)";
+      sqlParams = [user_id, movie_id];
+      await callDB(sql, sqlParams);
+      res.send({ status: 200 });
+      break;
+    case "delete":
+      //delete here
+      sql = "DELETE FROM cart WHERE user_id = ? AND movie_id = ?;";
+      sqlParams = [user_id, movie_id];
+      await callDB(sql, sqlParams);
+      res.send({ status: 200 });
+      break;
+  }
 };
 
 /**
  * Handles the GET "/displayCartPage" route
- * --- TO DO ( DAN ) ---
+ * --- DONE ( DAN ) ---
  */
 exports.displayCartPage = async (req, res) => {
   let user_id = req.session.name;
+  let sql =
+    "SELECT movie_id, title, image_url, price FROM cart JOIN movie USING (movie_id) WHERE user_id = ?";
+  let cartContents = await callDB(sql, user_id);
 
-  // use user_id to get all records from the cart table
-  // Returns "rows"
+  console.log("# of items in cart:", cartContents.length); // diagnostic
+  //console.log(cartContents); // diagnostic
+  res.render("shoppingcart", { cartContents: cartContents });
 };
 
+
+/**
+ * Handles the GET "/getMoviesFromDB" route
+ * --- PENDING ( Lindsey ) ---
+ */
+exports.getMoviesFromDB = async (req, res) => {
+  let sql = "SELECT movie_id, title, price FROM movie;";
+  let moviesInDB = await callDB(sql);
+  res.send({"moviesInDB": moviesInDB });
+};
+
+/**
+ * Handles the GET "/api/updateDB" route
+ * --- PENDING ( Lindsey ) ---
+ */
+exports.updateDB = async (req, res) => {
+  let sql;
+  let sqlParams;
+  let movie_id = req.query.movieID;
+  let title = req.query.title;
+  let image_url = req.query.imageUrl;
+  let rating = req.query.rating;
+  let release_date = req.query.release_date;
+  let description = req.query.overview;
+  var genreArr = (req.query.genre).split(',');
+  let price = req.query.price;
+
+  // Add/Delete record from movie table
+  switch (req.query.action) { 
+      case "add": 
+        sql = "INSERT INTO movie (movie_id, title, image_url, rating, " +
+          "release_date, description, price) VALUES (?, ?, ?, ?, ?, ?, ?);";
+        sqlParams = [movie_id, title, image_url, rating, release_date, description, price];
+        break;
+      case "delete": 
+        sql = "DELETE FROM movie WHERE movie_id = ?";
+          sqlParams = [movie_id];
+          break;
+  }//switch
+  await callDB(sql, sqlParams);
+  
+  // Add all genres into the genre table that are associated with the movie_id 
+  if(req.query.action == "add"){
+    sql = "INSERT INTO genre (genre_id, movie_id, genre_name) VALUES (?, ?, ?);";
+    
+    genreArr.forEach( async (genre) => {
+      let genreID = await getGenreIDFromName(genre);
+      sqlParams = [genreID, movie_id, genre];
+      await callDB(sql, sqlParams);
+    });
+  }
+};
+
+function getGenreIDFromName(genreName){
+  return new Promise((resolve, reject) => {
+    let returnID = 0;
+    genrePairArray.forEach( (genre) => {
+      if(genre.name == genreName){
+        returnID = genre.id;
+      }
+    });
+    resolve(returnID);
+  });
+}
 
 /*******************************************************************************
  *                            API functions                                    *
@@ -160,15 +271,23 @@ async function getMovie(query) {
   let base_url = config.images.base_url;
   let resultArray = [];
   // console.log(genreList.genres.length);
+
+  //   parsedData.results.forEach((movie) => {
+  //     // creates Date object for formatting
+  //     let date = new Date(movie.release_date);
+
+  // MAIN CHANGES
   console.log("getMovie");
   //console.log(parsedData);
-  
+
   // remove async from forEach, otherwise the return resultArray executed before the resultArray is ready
   parsedData.results.forEach((movie) => {
     // creates Date object for formatting
     let date = new Date(movie.release_date);
-    
+
     // change genreToString to normal function rather than async function
+    //MAIN END
+
     let genreNameArr = genreToString(movie.genre_ids);
 
     let result = {
@@ -184,7 +303,6 @@ async function getMovie(query) {
   });
   console.log(resultArray);
   return resultArray;
-
 }
 
 /**
@@ -243,6 +361,24 @@ function genreToString(genreIDs) {
 }
 
 /**
+ * Create an array of all genres, including their id and name
+ * How to call: genrePairArray[0].id OR genrePairArray[0].name
+ */
+function getGenrePairs() {
+  return new Promise((resolve, reject) => {
+    let genreArray = [];
+    genreNames.genres.forEach( (genre) => {
+      let pair = {
+        id: genre.id,
+        name: genre.name
+      };
+      genreArray.push(pair);
+    });
+    resolve(genreArray);
+  });
+}
+
+/**
  * Loads the static configuration information from API
  */
 async function loadConfig() {
@@ -255,43 +391,43 @@ async function loadConfig() {
   //sets value of call to global var
   config = await callAPI(requestUrl);
   genreNames = await getGenreNames();
+  genrePairArray = await getGenrePairs();
   console.log("Loaded config");
 }
-
 
 /*******************************************************************************
  *                            Database Functions                               *
  ******************************************************************************/
 
 /**
- * Get the top ten rated movies from our Database 
+ * Get the top ten rated movies from our Database
  * @return {resultArray} an array containing 10 JSON-formatted movies
  */
-async function getFeaturedMovies(){
-  return new Promise (function (resolve, reject){
+async function getFeaturedMovies() {
+  return new Promise(function (resolve, reject) {
     let sql = "SELECT * FROM movie ORDER BY rating DESC LIMIT 10;";
     pool.query(sql, function (err, rows, fields) {
-        if (err) throw err;
-        let resultArray = [];
-        
-        rows.forEach( async (movie) => {
-          let genreNameArray = ["temp"];
-          // The next line is giving an error saying we cannot do this many sql queries
-          //let genreNameArray = await getGenreNamesFromDB(movie.movie_id);
-          
-          let result = {
-            title: movie.title,
-            imageUrl: movie.image_url,
-            rating: movie.rating,
-            movieID: movie.movie_id,
-            release_date: movie.release_date, // formats date to locale's style
-            overview: movie.description,
-            genres: genreNameArray,
-          };
-          resultArray.push(result);
-        });
-        
-        resolve(resultArray);
+      if (err) throw err;
+      let resultArray = [];
+
+      rows.forEach(async (movie) => {
+        let genreNameArray = ["temp"];
+        // The next line is giving an error saying we cannot do this many sql queries
+        //let genreNameArray = await getGenreNamesFromDB(movie.movie_id);
+
+        let result = {
+          title: movie.title,
+          imageUrl: movie.image_url,
+          rating: movie.rating,
+          movieID: movie.movie_id,
+          release_date: movie.release_date, // formats date to locale's style
+          overview: movie.description,
+          genres: genreNameArray,
+        };
+        resultArray.push(result);
+      });
+
+      resolve(resultArray);
     });
   });
 }
@@ -300,19 +436,44 @@ async function getFeaturedMovies(){
  * Get the names of all genres associated with the movie id
  * @param {movieID} the movie
  * @return {resultArray} an array of genres
- */ 
-function getGenreNamesFromDB(movieID){
-  return new Promise (function (resolve, reject){
+ */
+
+function getGenreNamesFromDB(movieID) {
+  return new Promise(function (resolve, reject) {
     let sql = "SELECT genre_name FROM genre WHERE movie_id = ?;";
     pool.query(sql, [movieID], function (err, rows, fields) {
-        
-        if (err) throw err;
-        let resultArray = [];
-        
-        rows.forEach( async (genre) => {
-          resultArray.push(genre.genre_name);
-        });
-        resolve(resultArray);
+      if (err) throw err;
+      let resultArray = [];
+
+      rows.forEach(async (genre) => {
+        resultArray.push(genre.genre_name);
+      });
+      resolve(resultArray);
     });
   });
+}
+
+/**
+ * Overloaded function to call DB with or without params
+ * @param {String} sql
+ * @param {String} params
+ */
+function callDB(sql, params) {
+  // console.log(sql); // Diagnostic
+  // console.log(params); // Diagnostic
+  if (arguments.length == 2) {
+    return new Promise((resolve, reject) => {
+      pool.query(sql, params, (err, rows, fields) => {
+        if (err) throw err;
+        resolve(rows);
+      }); // query
+    }); // promise
+  } else {
+    return new Promise((resolve, reject) => {
+      pool.query(sql, (err, rows, fields) => {
+        if (err) throw err;
+        resolve(rows);
+      }); // query
+    }); // promise
+  }
 }
