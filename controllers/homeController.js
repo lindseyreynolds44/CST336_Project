@@ -7,7 +7,7 @@ const saltRounds = 10;
 //global vars
 var config;
 var genreNames;
-var genrePairArray; // Array of genre name and id pairs 
+var genrePairArray; // Array of genre name and id pairs
 var interval = 24 * 60 * 60 * 1000; // 1 day
 
 // Loads the configuration settings for the API
@@ -113,7 +113,7 @@ exports.displaySearchResults = async (req, res) => {
  */
 exports.updateCart = async (req, res) => {
   let user_id = req.session.name;
-  let movie_id = Number(req.query.movie_id);
+  let movie_id = parseInt(req.query.movie_id);
   let title = req.query.title;
   let release_date = req.query.release_date;
   let description = req.query.description;
@@ -173,7 +173,7 @@ exports.updateCart = async (req, res) => {
  * Handles the GET "/displayCartPage" route
  * --- DONE ( DAN ) ---
  */
-exports.displayCartPage = async (req, res) => {
+ exports.displayCartPage = async (req, res) => {
   let user_id = req.session.name;
   let sql =
     "SELECT movie_id, title, image_url, price FROM cart JOIN movie USING (movie_id) WHERE user_id = ?";
@@ -184,7 +184,6 @@ exports.displayCartPage = async (req, res) => {
   res.render("shoppingcart", { cartContents: cartContents });
 };
 
-
 /**
  * Handles the GET "/getMoviesFromDB" route
  * --- PENDING ( Lindsey ) ---
@@ -192,7 +191,7 @@ exports.displayCartPage = async (req, res) => {
 exports.getMoviesFromDB = async (req, res) => {
   let sql = "SELECT movie_id, title, price FROM movie;";
   let moviesInDB = await callDB(sql);
-  res.send({"moviesInDB": moviesInDB });
+  res.send({ moviesInDB: moviesInDB });
 };
 
 /**
@@ -202,17 +201,22 @@ exports.getMoviesFromDB = async (req, res) => {
 exports.updateDB = async (req, res) => {
   let sql;
   let sqlParams;
+  let action = req.query.action;
   let movie_id = req.query.movieID;
-  let title = req.query.title;
-  let image_url = req.query.imageUrl;
-  let rating = req.query.rating;
-  let release_date = req.query.release_date;
-  let description = req.query.overview;
-  var genreArr = (req.query.genre).split(',');
-  let price = req.query.price;
-
+  let title, image_url, rating, release_date, description, genreArr, price;
+  
+  if(action == "add"){
+    title = req.query.title;
+    image_url = req.query.imageUrl;
+    rating = req.query.rating;
+    release_date = req.query.release_date;
+    description = req.query.overview;
+    genreArr = (req.query.genre).split(',');
+    price = req.query.price;
+  }
+  
   // Add/Delete record from movie table
-  switch (req.query.action) { 
+  switch (action) { 
       case "add": 
         sql = "INSERT INTO movie (movie_id, title, image_url, rating, " +
           "release_date, description, price) VALUES (?, ?, ?, ?, ?, ?, ?);";
@@ -222,15 +226,11 @@ exports.updateDB = async (req, res) => {
         sql = "DELETE FROM movie WHERE movie_id = ?";
           sqlParams = [movie_id];
           break;
-      case "update": // update the price
-        sql = "UPDATE movie SET price = ? WHERE movie_id = ?";
-        sqlParams = [price, movie_id];
-        break;
   }//switch
   await callDB(sql, sqlParams);
   
   // Add all genres into the genre table that are associated with the movie_id 
-  if(req.query.action == "add"){
+  if(action == "add"){
     sql = "INSERT INTO genre (genre_id, movie_id, genre_name) VALUES (?, ?, ?);";
     
     genreArr.forEach( async (genre) => {
@@ -241,11 +241,31 @@ exports.updateDB = async (req, res) => {
   }
 };
 
-function getGenreIDFromName(genreName){
+/**
+ * Handles the GET  "/averagePrice" route
+ */
+exports.getAvgPrice = async (req, res) => {
+  let sql = "SELECT AVG(price) AS avgPrice FROM movie";
+  const averagePrice = await callDB(sql);
+  // res.send({ status: 200, averagePrice: averagePrice });
+  res.send({ averagePrice: averagePrice });
+};
+
+/**
+ * Handles the GET "/averageRating" route
+ */
+exports.getAvgRating = async (req, res) => {
+  let sql = "SELECT AVG(rating) AS avgRating FROM movie";
+  const averageRating = await callDB(sql);
+  // res.send({ status: 200, averageRating: averageRating });
+  res.send({ averageRating: averageRating });
+};
+
+function getGenreIDFromName(genreName) {
   return new Promise((resolve, reject) => {
     let returnID = 0;
-    genrePairArray.forEach( (genre) => {
-      if(genre.name == genreName){
+    genrePairArray.forEach((genre) => {
+      if (genre.name == genreName) {
         returnID = genre.id;
       }
     });
@@ -371,10 +391,10 @@ function genreToString(genreIDs) {
 function getGenrePairs() {
   return new Promise((resolve, reject) => {
     let genreArray = [];
-    genreNames.genres.forEach( (genre) => {
+    genreNames.genres.forEach((genre) => {
       let pair = {
         id: genre.id,
-        name: genre.name
+        name: genre.name,
       };
       genreArray.push(pair);
     });
@@ -463,8 +483,8 @@ function getGenreNamesFromDB(movieID) {
  * @param {String} params
  */
 function callDB(sql, params) {
-  // console.log(sql); // Diagnostic
-  // console.log(params); // Diagnostic
+  console.log(sql); // Diagnostic
+  console.log(params); // Diagnostic
   if (arguments.length == 2) {
     return new Promise((resolve, reject) => {
       pool.query(sql, params, (err, rows, fields) => {
