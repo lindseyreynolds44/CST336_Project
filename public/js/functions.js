@@ -68,28 +68,39 @@ $(document).ready(function () {
     
     // WORK IN PROGRESS -- need search table to be done, so I know how to traverse the 
     // html elements in order to get all the info I need.
-    $(".add-movie-btn").on("click", function() {
+    // IMPORTANT NOTE: because the add buttons are added dynamically, this event must
+    // be written like this
+    $("#admin-search-results").on("click", ".add-movie-btn", function() {
+        console.log($(this).html());
         if($(this).html() == "Add Movie"){
             $(this).html("Remove Movie");
-            let movieID, title, imageUrl, rating, release_date, overview, price;
+            //let movieID, title, imageUrl, rating, release_date, overview, price;
             // $(this).siblings("a").attr("href").trim();
             // $(this).siblings("span").html().trim();
-            updateDB("add", movieID, title, imageUrl, rating, release_date, overview, price);
-            
+            //updateDB("add", movieID, title, imageUrl, rating, release_date, overview, genre price);
+            updateDB("add", 2887, "faker", "www.fake.com", "1", "12/2/2020", "This is fake", "Drama,History,Romance", 4.99);
         } else {
             $(this).html("Add Movie");
-            let title = $(this).siblings("h3").html().trim();
-            updateDB("delete", movieID);
+            //let title = $(this).siblings("h3").html().trim();
+            //updateDB("delete", movieID);
         }
     }); 
     
     // WORK IN PROGRESS
-    function updateDB(action, movieID, title, imageUrl, rating, release_date, overview, price) {
+    function updateDB(action, movieID, title, imageUrl, rating, release_date, overview, genre, price) {
         $.ajax({
             method: "get",
             url: "/api/updateDB",
             data: {
-                
+                action: action,
+                movieID: movieID,
+                title: title,
+                imageUrl: imageUrl,
+                rating: rating,
+                release_date: release_date,
+                overview: overview,
+                genre: genre,
+                price: price
             },
             success: function(data, status){
             }

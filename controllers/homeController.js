@@ -212,7 +212,51 @@ exports.getMoviesFromDB = async (req, res) => {
  * --- PENDING ( Lindsey ) ---
  */
 exports.updateDB = async (req, res) => {
-  // Insert or delete movie from DB
+  let sql;
+  let sqlParams;
+  let movie_id = req.query.movieID;
+  let title = req.query.title;
+  let image_url = req.query.imageUrl;
+  let rating = req.query.rating;
+  let release_date = req.query.release_date;
+  let description = req.query.overview;
+  let genre = req.query.genre;
+  var genreArr = genre.split(',');
+  let price = req.query.price;
+  
+  console.log("Variable: " + genre);
+  console.log("Array: " + genreArr[0]);
+  
+  // Add/Delete record from movie table
+  switch (req.query.action) { 
+      case "add": 
+        sql = "INSERT INTO movie (movie_id, title, image_url, rating, " +
+          "release_date, description, price) VALUES (?, ?, ?, ?, ?, ?, ?);";
+        sqlParams = [movie_id, title, image_url, rating, release_date, description, price];
+        break;
+      case "delete": 
+        sql = "DELETE FROM movie WHERE movie_id = ?";
+          sqlParams = [movie_id];
+          break;
+  }//switch
+  await callDB(sql, sqlParams);
+  
+  // Add/Delete all records in genre table that are associated with the movie_id 
+  switch (req.query.action) { 
+      case "add": 
+        sql = "INSERT INTO genre (genre_id, movie_id, genre_name) VALUES";
+        
+        sqlParams = [movie_id, title, image_url, rating, release_date, description, price];
+        break;
+      case "delete": 
+        sql = "DELETE FROM genre WHERE movie_id = ?;";
+          sqlParams = [movie_id];
+          break;
+  }//switch
+  await callDB(sql, sqlParams);
+  
+  // Add/Delete recond from genre table
+  
 };
 
 /*******************************************************************************
