@@ -102,7 +102,7 @@ exports.displaySearchResults = async (req, res) => {
 
   //MAIN CHANGES
   //res.render("selection", {"resultArray": resultArray});
-  console.log(resultArray);
+  // console.log(resultArray);
   res.send(resultArray); // index page will be used as selection as well without reloading the page
   //MAIN END
 };
@@ -201,44 +201,48 @@ exports.getMoviesFromDB = async (req, res) => {
 exports.updateDB = async (req, res) => {
   let sql;
   let sqlParams;
+  let genre, genreArr;
   let action = req.query.action;
   let movie_id = req.query.movieID;
-  let title, image_url, rating, release_date, description, genreArr, price;
-  
+  let price = req.query.price;
+  let title = req.query.title;
+  let image_url = req.query.imageUrl;
+  let rating = req.query.rating;
+  let release_date = req.query.release_date;
+  let description = req.query.overview;
+
   if(action == "add"){
-    title = req.query.title;
-    image_url = req.query.imageUrl;
-    rating = req.query.rating;
-    release_date = req.query.release_date;
-    description = req.query.overview;
-    genreArr = (req.query.genre).split(',');
-    price = req.query.price;
+    genre = req.query.genre.toString();
+    genreArr = genre.split(',');
   }
-  
   // Add/Delete record from movie table
-  switch (action) { 
-      case "add": 
-        sql = "INSERT INTO movie (movie_id, title, image_url, rating, " +
+  switch (action) {
+      case "add":
+        sql = "REPLACE INTO movie (movie_id, title, image_url, rating, " +
           "release_date, description, price) VALUES (?, ?, ?, ?, ?, ?, ?);";
         sqlParams = [movie_id, title, image_url, rating, release_date, description, price];
         break;
-      case "delete": 
+      case "delete":
         sql = "DELETE FROM movie WHERE movie_id = ?";
           sqlParams = [movie_id];
           break;
+      case "update": // update the price
+        sql = "UPDATE movie SET price = ? WHERE movie_id = ?";
+        sqlParams = [price, movie_id];
+        break;
   }//switch
   await callDB(sql, sqlParams);
-  
-  // Add all genres into the genre table that are associated with the movie_id 
+  // Add all genres into the genre table that are associated with the movie_id
   if(action == "add"){
-    sql = "INSERT INTO genre (genre_id, movie_id, genre_name) VALUES (?, ?, ?);";
-    
+    sql = "REPLACE INTO genre (genre_id, movie_id, genre_name) VALUES (?, ?, ?);";
     genreArr.forEach( async (genre) => {
       let genreID = await getGenreIDFromName(genre);
       sqlParams = [genreID, movie_id, genre];
       await callDB(sql, sqlParams);
     });
   }
+
+  res.send({status: 200});
 };
 
 /**
@@ -325,7 +329,7 @@ async function getMovie(query) {
     };
     resultArray.push(result);
   });
-  console.log(resultArray);
+  // console.log(resultArray);
   return resultArray;
 }
 
