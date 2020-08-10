@@ -210,6 +210,7 @@ exports.updateDB = async (req, res) => {
   let rating = req.query.rating;
   let release_date = req.query.release_date;
   let description = req.query.overview;
+
   if(action == "add"){
     genre = req.query.genre.toString();
     genreArr = genre.split(',');
