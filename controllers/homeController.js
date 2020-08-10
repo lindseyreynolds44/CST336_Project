@@ -24,7 +24,8 @@ setInterval(loadConfig, interval);
  */
 exports.displaySignInPage = async (req, res) => {
   //res.redirect("/index"); // Only for testing purposes
-  res.render("sign-in");
+  //res.render("sign-in");
+  res.render("home"); // for testing home page
 };
 
 /**
@@ -96,7 +97,15 @@ exports.displaySearchResults = async (req, res) => {
   //query = "Jack Reacher"; // For testing purposes only
   let resultArray = await getMovie(query);
 
-  res.render("selection", { resultArray: resultArray });
+
+//   res.render("selection", { resultArray: resultArray });
+
+  //MAIN CHANGES
+  //res.render("selection", {"resultArray": resultArray});
+  console.log(resultArray);
+  res.send(resultArray);  // index page will be used as selection as well without reloading the page
+  //MAIN END
+
 };
 
 /**
@@ -215,9 +224,23 @@ async function getMovie(query) {
   let resultArray = [];
   // console.log(genreList.genres.length);
 
+
+//   parsedData.results.forEach((movie) => {
+//     // creates Date object for formatting
+//     let date = new Date(movie.release_date);
+
+  // MAIN CHANGES
+  console.log("getMovie");
+  //console.log(parsedData);
+  
+  // remove async from forEach, otherwise the return resultArray executed before the resultArray is ready
   parsedData.results.forEach((movie) => {
     // creates Date object for formatting
     let date = new Date(movie.release_date);
+    
+    // change genreToString to normal function rather than async function
+    //MAIN END
+
     let genreNameArr = genreToString(movie.genre_ids);
 
     let result = {
@@ -231,7 +254,9 @@ async function getMovie(query) {
     };
     resultArray.push(result);
   });
+  console.log(resultArray);
   return resultArray;
+
 }
 
 /**
@@ -278,7 +303,7 @@ async function getGenreNames() {
  * @param {Int} genreIDs
  * @param {Object} genreNames
  */
-async function genreToString(genreIDs) {
+function genreToString(genreIDs) {
   let genreNameArr = [];
 
   genreIDs.forEach((genreID) => {
