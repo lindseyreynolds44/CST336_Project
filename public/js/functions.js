@@ -62,9 +62,6 @@ $(document).ready(function () {
                     "search_string": keyword
                 },
             success: function (data, status) {
-                // You can make some of these attributes hidden. We will just need all of them
-                // in the html, so we can add all this info into our DB if the admin chooses to 
-                // press the "add movie" button
                 let html = "<table><tr> <td>Movie ID</td> <td>Title</td> <td>Image</td>" +
                     "<td>Rating</td> <td>Date</td> <td>Description</td>" + 
                     "<td>Genres</td> <td>Price</td> <td>Action</td> </tr>";
@@ -72,7 +69,7 @@ $(document).ready(function () {
                 data.forEach( (movie) => {
                     html += "<tr>";
                     html += `<td> ${movie.movie_id} </td>`;
-                    html += `<td> ${movie.title} </td>`;
+                    html += `<td class="movie-id"> ${movie.title} </td>`;
                     html += `<td> <img height="80" src="${movie.imageUrl}"> </td>`;
                     html += `<td> ${movie.rating} </td>`;
                     html += `<td> ${movie.release_date} </td>`;
@@ -96,11 +93,13 @@ $(document).ready(function () {
         console.log($(this).html());
         if($(this).html() == "Add Movie"){
             $(this).html("Remove Movie");
-            //let movieID, title, imageUrl, rating, release_date, overview, price;
+            let movieID = $(this).siblings("td").attr("movie-id");
+            //title, imageUrl, rating, release_date, overview, price;
             // $(this).siblings("a").attr("href").trim();
             // $(this).siblings("span").html().trim();
             //updateDB("add", movieID, title, imageUrl, rating, release_date, overview, genre price);
-            updateDB("add", 2887, "faker", "www.fake.com", "1", "12/2/2020", "This is fake", "Drama,History,Romance", 4.99);
+            console.log("movie id: " + movieID);
+            //updateDB("add", 2887, "faker", "www.fake.com", "1", "12/2/2020", "This is fake", "Drama,History,Romance", 4.99);
         } else {
             $(this).html("Add Movie");
             //let title = $(this).siblings("h3").html().trim();
