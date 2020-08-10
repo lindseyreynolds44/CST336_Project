@@ -195,6 +195,26 @@ exports.displayCartPage = async (req, res) => {
   res.render("shoppingcart", { cartContents: cartContents });
 };
 
+
+/**
+ * Handles the GET "/getMoviesFromDB" route
+ * --- PENDING ( Lindsey ) ---
+ */
+exports.getMoviesFromDB = async (req, res) => {
+  let sql = "SELECT movie_id, title, price FROM movie;";
+  let moviesInDB = await callDB(sql);
+  console.log(moviesInDB[0].title);
+  res.send({"moviesInDB": moviesInDB });
+};
+
+/**
+ * Handles the GET "/api/updateDB" route
+ * --- PENDING ( Lindsey ) ---
+ */
+exports.updateDB = async (req, res) => {
+  // Insert or delete movie from DB
+};
+
 /*******************************************************************************
  *                            API functions                                    *
  ******************************************************************************/
@@ -390,7 +410,7 @@ function getGenreNamesFromDB(movieID) {
 function callDB(sql, params) {
   if (arguments.length == 2) {
     return new Promise((resolve, reject) => {
-      pool.query(sql, params, (err, rows, field) => {
+      pool.query(sql, params, (err, rows, fields) => {
         if (err) throw err;
         resolve(rows);
       }); // query

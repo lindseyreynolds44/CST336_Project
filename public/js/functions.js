@@ -5,9 +5,8 @@ var featuredResults; // list of featured movies
 var selectedMovieID; // current selected moive ID from the search
 
 $(document).ready(function () {
-  
+ 
   // Testing check user availability 
-  // Display City from API after typing a zip code
   $("#new-username").on("change", function() {
     let user = $("#new-username").val();
     
@@ -22,7 +21,86 @@ $(document).ready(function () {
           $("#userError").html(`Is this username available? ${data.response}`);
         }
     }); //ajax
-  }); //zip
+  }); 
+  
+/******************************************************************************
+ *                           START Admin page Code 
+*******************************************************************************/
+
+  // Testing admin page to display DB info 
+  $("#db-btn").on("click", function() {
+    $("#db-results").html("");
+    $.ajax({
+        method: "GET",
+        url: "/api/getMoviesFromDB",
+        success: function(data, status) {
+            data.moviesInDB.forEach( (movie) => {
+                $("#db-results").append(`Movie ID: ${movie.movie_id} - Title: ${movie.title} 
+                - Price: ${movie.price}<br>`);
+            });
+        }
+    }); //ajax
+  }); 
+    
+    // Testing for admin page to display search results 
+    $("#admin-search-form").on("submit", function(e){
+        e.preventDefault(); 
+        let keyword = $("#admin-search-text").val().trim();
+        $.ajax({
+        method: "get",
+            url: "/search",
+            data: {
+                    "search_string": keyword
+                },
+            success: function (data, status) {
+                // You can make some of these attributes hidden. We will just need all of them
+                // in the html, so we can add all this info into our DB if the admin chooses to 
+                // press the "add movie" button
+                data.forEach( (movie) => {
+                    $("#admin-search-results").append(`${movie.movieID} - ${movie.title} - ${movie.imageUrl} - 
+                        ${movie.rating} - ${movie.release_date} - ${movie.overview} - ${movie.genres} 
+                        - ${movie.price}<br>`);
+                    $("#admin-search-results").append("<button class='add-movie-btn'>Add Movie</button><br><br>");
+                });
+            }
+        });//ajax
+    }); //admin search
+    
+    // WORK IN PROGRESS -- need search table to be done, so I know how to traverse the 
+    // html elements in order to get all the info I need.
+    $(".add-movie-btn").on("click", function() {
+        if($(this).html() == "Add Movie"){
+            $(this).html("Remove Movie");
+            let movieID, title, imageUrl, rating, release_date, overview, price;
+            // $(this).siblings("a").attr("href").trim();
+            // $(this).siblings("span").html().trim();
+            updateDB("add", movieID, title, imageUrl, rating, release_date, overview, price);
+            
+        } else {
+            $(this).html("Add Movie");
+            let title = $(this).siblings("h3").html().trim();
+            updateDB("delete", movieID);
+        }
+    }); 
+    
+    // WORK IN PROGRESS
+    function updateDB(action, movieID, title, imageUrl, rating, release_date, overview, price) {
+        $.ajax({
+            method: "get",
+            url: "/api/updateDB",
+            data: {
+                
+            },
+            success: function(data, status){
+            }
+        }); //ajax
+    }
+    
+    
+/******************************************************************************
+ *                           END Admin Page Code 
+*******************************************************************************/
+
   
   $("#home-form").on("submit", function(e) {
           
