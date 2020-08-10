@@ -102,7 +102,7 @@ exports.displaySearchResults = async (req, res) => {
 
   //MAIN CHANGES
   //res.render("selection", {"resultArray": resultArray});
-  console.log(resultArray);
+  // console.log(resultArray);
   res.send(resultArray); // index page will be used as selection as well without reloading the page
   //MAIN END
 };
@@ -202,7 +202,6 @@ exports.updateDB = async (req, res) => {
   let sql;
   let sqlParams;
   let genre, genreArr;
-  
   let action = req.query.action;
   let movie_id = req.query.movieID;
   let price = req.query.price;
@@ -211,16 +210,15 @@ exports.updateDB = async (req, res) => {
   let rating = req.query.rating;
   let release_date = req.query.release_date;
   let description = req.query.overview;
-  
+
   if(action == "add"){
     genre = req.query.genre.toString();
     genreArr = genre.split(',');
   }
-  
   // Add/Delete record from movie table
   switch (action) {
       case "add":
-        sql = "INSERT INTO movie (movie_id, title, image_url, rating, " +
+        sql = "REPLACE INTO movie (movie_id, title, image_url, rating, " +
           "release_date, description, price) VALUES (?, ?, ?, ?, ?, ?, ?);";
         sqlParams = [movie_id, title, image_url, rating, release_date, description, price];
         break;
@@ -236,13 +234,15 @@ exports.updateDB = async (req, res) => {
   await callDB(sql, sqlParams);
   // Add all genres into the genre table that are associated with the movie_id
   if(action == "add"){
-    sql = "INSERT INTO genre (genre_id, movie_id, genre_name) VALUES (?, ?, ?);";
+    sql = "REPLACE INTO genre (genre_id, movie_id, genre_name) VALUES (?, ?, ?);";
     genreArr.forEach( async (genre) => {
       let genreID = await getGenreIDFromName(genre);
       sqlParams = [genreID, movie_id, genre];
       await callDB(sql, sqlParams);
     });
   }
+
+  res.send({status: 200});
 };
 
 /**
@@ -329,7 +329,7 @@ async function getMovie(query) {
     };
     resultArray.push(result);
   });
-  console.log(resultArray);
+  // console.log(resultArray);
   return resultArray;
 }
 

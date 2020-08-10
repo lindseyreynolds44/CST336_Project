@@ -3,8 +3,9 @@
 var results; // list of movies resulted from searching for the keywords
 var featuredResults; // list of featured movies
 var selectedMovieID; // current selected moive ID from the search
-var adminSearchResults;  // list of search results from WEB
-var adminDBResults;     // list of movies from Database
+var adminSearchResults; // list of search results from WEB
+var adminDBResults; // list of movies from Database
+var moviePrice = 5.99;
 
   /******************************************************************************
    *                             Sign In Page Code
@@ -37,24 +38,25 @@ $(document).ready(function () {
     $("#db-results").html("");
     $.ajax({
       method: "GET",
-        url: "/api/getMoviesFromDB",
-        success: function(data, status) {
-            adminDBResults = data.moviesInDB;
-            let html = "<table><tr> <th style='width:100px'>Movie ID</th> <th style='width:200px'>Title</th>" + 
-                "<th style='width:50px'>Price($)</th> <th style='width:50px'>Update</th>" +
-                "<th style='width:50px' >Delete</th> </tr>";
-            data.moviesInDB.forEach( (movie, i) => {
-                html += "<tr>";
-                html += `<td> ${movie.movie_id} </td>`;
-                html += `<td> ${movie.title} </td>`;
-                html += `<td class='admin-db-price' contenteditable='true' > ${movie.price} </td>`;
-                html += `<td> <button class="admin-update-btn" value=${i}>Update</button> </td>`;
-                html += `<td> <button class="admin-delete-btn" value=${i}>Delete</button> </td>`;
-                html += "</tr>";
-            });
-            html += "</table>";
-            $("#db-results").html(html);
-        }
+      url: "/api/getMoviesFromDB",
+      success: function (data, status) {
+        adminDBResults = data.moviesInDB;
+        let html =
+          "<table><tr> <th style='width:100px'>Movie ID</th> <th style='width:200px'>Title</th>" +
+          "<th style='width:50px'>Price($)</th> <th style='width:50px'>Update</th>" +
+          "<th style='width:50px' >Delete</th> </tr>";
+        data.moviesInDB.forEach((movie, i) => {
+          html += "<tr>";
+          html += `<td> ${movie.movie_id} </td>`;
+          html += `<td> ${movie.title} </td>`;
+          html += `<td class='admin-db-price' contenteditable='true' > ${movie.price} </td>`;
+          html += `<td> <button class="admin-update-btn" value=${i}>Update</button> </td>`;
+          html += `<td> <button class="admin-delete-btn" value=${i}>Delete</button> </td>`;
+          html += "</tr>";
+        });
+        html += "</table>";
+        $("#db-results").html(html);
+      },
     }); //ajax
   }); 
   
@@ -175,6 +177,82 @@ $(document).ready(function () {
       }); //ajax
   }
 
+  $("#db-results").on("click", ".admin-delete-btn", function () {
+    console.log("Delete Button is clicked");
+    let index = $(this).val();
+    console.log("Delete Movie from DB:" + adminDBResults[index].movie_id);
+    //updateDB("delete", adminDBResults[index].movie_id, null, null, null, null, null, null, null);
+  });
+
+  $("#admin-search-results").on("click", ".admin-add-btn", function () {
+    console.log("Add button is clicked");
+    let currentRow = $(this).closest("tr");
+    let index = $(this).val();
+    let price = Number(currentRow.find(".admin-search-price").html());
+    console.log(
+      "Add Movie:" + adminSearchResults[index].movieID + ", " + price
+    );
+
+    // Change the button to say "Remove Movie" or "Add Movie"
+    if ($(this).html() == "Add Movie") {
+      $(this).html("Remove Movie");
+      // ADD MOVIE TO DB HERE
+    } else {
+      $(this).html("Add Movie");
+      // DELETE MOVIE FROM DB HERE
+      //updateDB("delete", movieID);
+    }
+
+    if (!Number.isNaN(price) && price > 0.0) {
+      // update price only need movie id and price
+      updateDB(
+        "add",
+        adminSearchResults[index].movieID,
+        adminSearchResults[index].title,
+        adminSearchResults[index].imageUrl,
+        adminSearchResults[index].rating,
+        adminSearchResults[index].release_date,
+        adminSearchResults[index].overview,
+        adminSearchResults[index].genres,
+        price
+      );
+    } else {
+      console.log("price is invalid");
+    }
+  });
+
+  // WORK IN PROGRESS
+  function updateDB(
+    action,
+    movieID,
+    title,
+    imageUrl,
+    rating,
+    release_date,
+    overview,
+    genre,
+    price
+  ) {
+    console.log(genre);
+    $.ajax({
+      method: "get",
+      url: "/api/updateDB",
+      data: {
+        action: action,
+        movieID: movieID,
+        title: title,
+        imageUrl: imageUrl,
+        rating: rating,
+        release_date: release_date,
+        overview: overview,
+        genre: genre,
+        price: price,
+      },
+      success: function (data, status) {
+        console.log("updateDB:", status);
+      },
+    }); //ajax
+  }
 
   // GET AVERAGE MOVIE PRICE
   $("#admin-get-avg-price").on("click", function () {
@@ -216,15 +294,15 @@ $(document).ready(function () {
       $("#home-warning").html("** Email address is required!");
     }
   });
-  
+
   function isFormValid() {
     if ($("#home-text").val() == "") {
       return false;
     }
     return true;
   }
-  
-   /**
+
+  /**
    * Index Page action event and functions
    */
   hideMovieDetail(); //hide the movie detail when the page is freshly loaded
@@ -237,43 +315,41 @@ $(document).ready(function () {
     }
   }
 
-    // Request to search for movies using an AJAX call to server "/index" route
-    // when keyword is entered
-    $("#search-form").on("submit", function(e){
-        e.preventDefault(); // not going to reload the page
-        let keyword = $("#search-text").val().trim();
-        console.log("search:" + keyword);
-        if ( keyword == "" ) {
-          $("#search-warning").css("color", "red");
-          $("#search-warning").html("** Keyword is required!");
-        }
-        else {
-            $("#search-warning").html(""); // clear any warning message
-            $.ajax({
-            method: "get",
-                url: "/search",
-                data: {
-                        "search_string": keyword
-                    },
-                success: function (data, status) {
-                    //result = JSON.parse(data);
-                    console.log(data);
-                    results = data;
+  // Request to search for movies using an AJAX call to server "/index" route
+  // when keyword is entered
+  $("#search-form").on("submit", function (e) {
+    e.preventDefault(); // not going to reload the page
+    let keyword = $("#search-text").val().trim();
+    console.log("search:" + keyword);
+    if (keyword == "") {
+      $("#search-warning").css("color", "red");
+      $("#search-warning").html("** Keyword is required!");
+    } else {
+      $("#search-warning").html(""); // clear any warning message
+      $.ajax({
+        method: "get",
+        url: "/search",
+        data: {
+          search_string: keyword,
+        },
+        success: function (data, status) {
+          //result = JSON.parse(data);
+          console.log(data);
+          results = data;
 
-                    // display all the movie posters in the results
-                    $("#featured-header").html(""); // remove the featured header
-                    displayAllMovies(results);
+          // display all the movie posters in the results
+          $("#featured-header").html(""); // remove the featured header
+          displayAllMovies(results);
 
-                    // display the first movie image/trailer and detail from the list
-                    // displayMovieTrailer(0);
-                    displayMovieImage(0);
-                    displayMovieDetail(0);
-                    $("#selected-movie-container").show();
-                }
-            });//ajax
-        }
-    
-    }); //index - keyword search
+          // display the first movie image/trailer and detail from the list
+          // displayMovieTrailer(0);
+          displayMovieImage(0);
+          displayMovieDetail(0);
+          $("#selected-movie-container").show();
+        },
+      }); //ajax
+    }
+  }); //index - keyword search
 
   // event for dynamically filled content
   $("#resultsContainer").on("click", ".movie-poster", function () {
