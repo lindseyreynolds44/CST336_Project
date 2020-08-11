@@ -85,8 +85,11 @@ app.get("/api/updateDB", homeController.updateDB);
 // Called from ADMIN page to retrieve the average movie price
 app.get("/averagePrice", homeController.getAvgPrice);
 
-// Called from ADMIN page to retrive the avrage movie rating
+// Called from ADMIN page to retrieve the average movie rating
 app.get("/averageRating", homeController.getAvgRating);
+
+// Called from ADMIN page to retrieve the most popular movie in cart.
+app.get("/mostInCart", homeController.getMostInCart);
 
 // Start server
 app.listen(process.env.PORT, process.env.IP, function () {

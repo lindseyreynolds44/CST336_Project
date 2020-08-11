@@ -211,38 +211,48 @@ exports.updateDB = async (req, res) => {
   let release_date = req.query.release_date;
   let description = req.query.overview;
 
-  if(action == "add"){
+  if (action == "add") {
     genre = req.query.genre.toString();
-    genreArr = genre.split(',');
+    genreArr = genre.split(",");
   }
   // Add/Delete record from movie table
   switch (action) {
-      case "add":
-        sql = "REPLACE INTO movie (movie_id, title, image_url, rating, " +
-          "release_date, description, price) VALUES (?, ?, ?, ?, ?, ?, ?);";
-        sqlParams = [movie_id, title, image_url, rating, release_date, description, price];
-        break;
-      case "delete":
-        sql = "DELETE FROM movie WHERE movie_id = ?";
-          sqlParams = [movie_id];
-          break;
-      case "update": // update the price
-        sql = "UPDATE movie SET price = ? WHERE movie_id = ?";
-        sqlParams = [price, movie_id];
-        break;
-  }//switch
+    case "add":
+      sql =
+        "REPLACE INTO movie (movie_id, title, image_url, rating, " +
+        "release_date, description, price) VALUES (?, ?, ?, ?, ?, ?, ?);";
+      sqlParams = [
+        movie_id,
+        title,
+        image_url,
+        rating,
+        release_date,
+        description,
+        price,
+      ];
+      break;
+    case "delete":
+      sql = "DELETE FROM movie WHERE movie_id = ?";
+      sqlParams = [movie_id];
+      break;
+    case "update": // update the price
+      sql = "UPDATE movie SET price = ? WHERE movie_id = ?";
+      sqlParams = [price, movie_id];
+      break;
+  } //switch
   await callDB(sql, sqlParams);
   // Add all genres into the genre table that are associated with the movie_id
-  if(action == "add"){
-    sql = "REPLACE INTO genre (genre_id, movie_id, genre_name) VALUES (?, ?, ?);";
-    genreArr.forEach( async (genre) => {
+  if (action == "add") {
+    sql =
+      "REPLACE INTO genre (genre_id, movie_id, genre_name) VALUES (?, ?, ?);";
+    genreArr.forEach(async (genre) => {
       let genreID = await getGenreIDFromName(genre);
       sqlParams = [genreID, movie_id, genre];
       await callDB(sql, sqlParams);
     });
   }
 
-  res.send({status: 200});
+  res.send({ status: 200 });
 };
 
 /**
@@ -251,7 +261,6 @@ exports.updateDB = async (req, res) => {
 exports.getAvgPrice = async (req, res) => {
   let sql = "SELECT AVG(price) AS avgPrice FROM movie";
   const averagePrice = await callDB(sql);
-  // res.send({ status: 200, averagePrice: averagePrice });
   res.send({ averagePrice: averagePrice });
 };
 
@@ -261,8 +270,14 @@ exports.getAvgPrice = async (req, res) => {
 exports.getAvgRating = async (req, res) => {
   let sql = "SELECT AVG(rating) AS avgRating FROM movie";
   const averageRating = await callDB(sql);
-  // res.send({ status: 200, averageRating: averageRating });
   res.send({ averageRating: averageRating });
+};
+
+exports.getMostInCart = async (req, res) => {
+  let sql =
+    "SELECT cart.movie_id, title, COUNT(cart.movie_id) AS num_times FROM cart JOIN movie ON cart.movie_id = movie.movie_id GROUP BY cart.movie_id ORDER BY num_times DESC LIMIT 1;";
+  const mostInCart = await callDB(sql);
+  res.send({ mostInCart: mostInCart });
 };
 
 function getGenreIDFromName(genreName) {
