@@ -1,3 +1,8 @@
+html {
+    margin: 0px 15px;
+    
+}
+
 
 #logo {
    
@@ -238,6 +243,41 @@ background-color: white;
 color: white;
 }
 
+
 .links a{
 margin-left: 4px;
+} 
+
+
+/**********************************/
+/***** styles for Admin Page ******/
+/**********************************/
+#db-results, #admin-search-results {
+    display: flex;
+    justify-content: center;
+    padding: 25px;
+    
+}
+
+#admin-db-btn, #admin-search-form {
+    display: flex;
+    justify-content: center;
+}
+
+#admin-db-table tr:nth-child(even), #admin-search-table tr:nth-child(even) {
+    /*background-color: #f2f2f2;*/
+    background-color: lightblue;
+    
+}
+
+#admin-search-table {
+    width: 80%;
+}
+
+#admin-db-table td, #admin-db-table th, #admin-search-table td, #admin-search-table th {
+    padding: 12px;
+}
+
+#reportResults {
+    color: green;
 }

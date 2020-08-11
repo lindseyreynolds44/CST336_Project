@@ -72,6 +72,21 @@ app.get("/adminPage", isAuthenticated, isAdmin, function(req, res){
   res.render("admin");
 });
 
+// Called from ADMIN page in order to display a table of the movies from the DB
+app.get("/api/getMoviesFromDB", homeController.getMoviesFromDB);
+
+// Called from ADMIN page to add or delete from our DB
+app.get("/api/updateDB", homeController.updateDB);
+
+// Called from ADMIN page to retrieve the average movie price
+app.get("/averagePrice", homeController.getAvgPrice);
+
+// Called from ADMIN page to retrieve the average movie rating
+app.get("/averageRating", homeController.getAvgRating);
+
+// Called from ADMIN page to retrieve the most popular movie in cart.
+app.get("/mostInCart", homeController.getMostInCart);
+
 // Start server
 app.listen(process.env.PORT, process.env.IP, function () {
   console.log("Express server is running...");
