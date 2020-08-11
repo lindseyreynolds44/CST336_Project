@@ -12,21 +12,24 @@
         
     </head>
     <body>
-        
-        <h3>QueueFlix Admins Only </h3>
-        
-        <button id="db-btn">Database table</button>
-        
+        <div id="logo">QueueFlix</div>
+        <h3 class="text-center">Admins Only </h3>
+        <hr>
+        <div id="admin-db-btn">
+            <button id="db-btn" class="btn btn-info">Database table</button>
+        </div>
         <div id="db-results"></div>
-        
+
         <br><br>
         
-        <h4>Search and Add Movie to Database</h4><br>
+
+        <h4 class="text-center">Search and Add Movie to Database</h4><br>
         <form id="admin-search-form">
             <input type="text" id="admin-search-text" placeholder="Search movie" size=40>
-            <button id="admin-search-btn">Search</button>
-            <span id="admin-search-warning"></span>
+            <button id="admin-search-btn" class="btn btn-info">Search</button>
+            
         </form>
+        <div id="admin-search-warning" class="text-center"></div>
         <br>
         <div id="admin-search-results"></div>
 
@@ -35,6 +38,7 @@
         <div >
             <button id="admin-get-avg-price">Average Movie Price</button>
             <button id="admin-get-avg-rating">Average Movie Rating</button>
+            <button id="admin-get-most-inCart">Most added to Cart Movie</button>
         </div>
         <hr>
         <div id="reportResults"></div>

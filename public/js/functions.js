@@ -40,7 +40,8 @@ $(document).ready(function () {
       success: function (data, status) {
         adminDBResults = data.moviesInDB;
         let html =
-          "<table><tr> <th style='width:100px'>Movie ID</th> <th style='width:200px'>Title</th>" +
+          "<table id='admin-db-table'>" +
+          "<tr> <th style='width:100px'>Movie ID</th> <th style='width:200px'>Title</th>" +
           "<th style='width:50px'>Price($)</th> <th style='width:50px'>Update</th>" +
           "<th style='width:50px' >Delete</th> </tr>";
         data.moviesInDB.forEach((movie, i) => {
@@ -86,53 +87,70 @@ $(document).ready(function () {
 
   // Delete a movie from the Database table
   $("#db-results").on("click", ".admin-delete-btn", function () {
-    $(this).html("Deleted");
     let index = $(this).val();
     console.log("Delete Movie from DB:" + adminDBResults[index].movie_id);
     updateDB("delete", adminDBResults[index].movie_id);
+    
+    // Disable buttons and price input
+    $(this).html("Deleted");
+    let currentRow = $(this).closest("tr");
+    currentRow.find(".admin-db-price").prop("contenteditable", false);
+    currentRow.find(".admin-delete-btn").prop("disabled", true);
+    currentRow.find(".admin-update-btn").prop("disabled", true);
+    
   });
 
-  // Testing for admin page to display search results
+  // Display search results from a TMDB web
   $("#admin-search-form").on("submit", function (e) {
+    
     $("#admin-search-results").html(""); // clean up the search table content
     e.preventDefault();
     let keyword = $("#admin-search-text").val().trim();
-    $.ajax({
-      method: "get",
-      url: "/search",
-      data: {
-        search_string: keyword,
-      },
-      success: function (data, status) {
-        adminSearchResults = data;
-        let html =
-          "<table><th style='width:100px'>Movie ID</th>" +
-          "<th style='width:100px'>Title</th> <th style='width:60px'>Image</th>" +
-          "<th style='width:30px'>Rating</th> <th style='width:100px'>Date</th> <th style='width:150px'>Description</th>" +
-          "<th style='width:80px'>Genres</th> <th style='width:50px'>Price($)</th> <th style='width:50px'>Action</th> </tr>";
-
-        data.forEach((movie, i) => {
-          let genreString = "";
-          movie.genres.forEach((name) => {
-            genreString += name;
-            genreString += " ";
+    if (keyword == "") {
+      $("#admin-search-warning").css("color", "red");
+      $("#admin-search-warning").html("** Keyword is required!");
+    } else {
+      console.log("Search Web:", keyword);
+      $("#db-results").html(""); // close the db table while searching
+      $("#admin-search-warning").html("");
+      $.ajax({
+        method: "get",
+        url: "/search",
+        data: {
+          search_string: keyword
+        },
+        success: function (data, status) {
+          console.log(data);
+          adminSearchResults = data;
+          let html =
+            "<table><th style='width:100px'>Movie ID</th>" +
+            "<th style='width:100px'>Title</th> <th style='width:60px'>Image</th>" +
+            "<th style='width:30px'>Rating</th> <th style='width:100px'>Date</th> <th style='width:150px'>Description</th>" +
+            "<th style='width:80px'>Genres</th> <th style='width:50px'>Price($)</th> <th style='width:50px'>Action</th> </tr>";
+  
+          data.forEach((movie, i) => {
+            let genreString = "";
+            movie.genres.forEach((name) => {
+              genreString += name;
+              genreString += " ";
+            });
+            html += `<tr id='admin-search-row' value=${i}>`;
+            html += `<td class='movie-id'> ${movie.movieID} </td>`;
+            html += `<td> ${movie.title} </td>`;
+            html += `<td> <img height='80' src='${movie.imageUrl}' alt='${movie.title}' > </td>`;
+            html += `<td> ${movie.rating} </td>`;
+            html += `<td> ${movie.release_date} </td>`;
+            html += `<td > ${movie.overview} </td>`;
+            html += `<td > ${genreString} </td>`;
+            html += `<td class='admin-search-price' contenteditable='true'> 5.99 </td>`;
+            html += `<td> <button class='admin-add-btn' value=${i}>Add Movie</button> </td>`;
+            html += "</tr>";
           });
-          html += `<tr id='admin-search-row' value=${i}>`;
-          html += `<td class='movie-id'> ${movie.movieID} </td>`;
-          html += `<td> ${movie.title} </td>`;
-          html += `<td> <img height='80' src='${movie.imageUrl}' alt='${movie.title}' > </td>`;
-          html += `<td> ${movie.rating} </td>`;
-          html += `<td> ${movie.release_date} </td>`;
-          html += `<td > ${movie.overview} </td>`;
-          html += `<td > ${genreString} </td>`;
-          html += `<td class='admin-search-price' contenteditable='true'> 5.99 </td>`;
-          html += `<td> <button class='admin-add-btn' value=${i}>Add Movie</button> </td>`;
-          html += "</tr>";
-        });
-        html += "</table>";
-        $("#admin-search-results").html(html);
-      },
-    }); //ajax
+          html += "</table>";
+          $("#admin-search-results").html(html);
+        },
+      }); //ajax
+    }
   }); //admin search
 
   $("#admin-search-results").on("click", ".admin-add-btn", function () {
@@ -197,6 +215,10 @@ $(document).ready(function () {
       },
       success: function (data, status) {
         console.log("updateDB done!");
+        // if action="delete" disable the delete button and price change
+        if (action=="delete") {
+            
+        }
       },
     }); //ajax
   }
@@ -226,6 +248,22 @@ $(document).ready(function () {
         $("#reportResults").html(html);
       },
     }); //ajax
+  });
+  
+  // GET MOST PURCHASED MOVIE
+  $("#admin-get-most-inCart").on("click", () => {
+    $.ajax({
+      method: "get",
+      url: "/mostInCart",
+      success: (data, status) => {
+        console.log("mostPurchased:", status);
+        let mostInCart = data.mostInCart[0];
+        let html = `Most Popular Movie in Cart <br>` +
+         `Title: ${mostInCart.title} <br>` + 
+         `Times added: ${mostInCart.num_times}`;
+        $("#reportResults").html(html);
+      },
+    });
   });
 
   /******************************************************************************
