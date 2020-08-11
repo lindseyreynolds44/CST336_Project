@@ -130,8 +130,11 @@ html {
     padding-left: 20px;
 }
 
+
+/**********************************/
 /***** styles for Admin Page ******/
-#db-results {
+/**********************************/
+#db-results, #admin-search-results {
     display: flex;
     justify-content: center;
     padding: 25px;
@@ -143,14 +146,22 @@ html {
     justify-content: center;
 }
 
-#admin-db-table tr:nth-child(even) {
+#admin-db-table tr:nth-child(even), #admin-search-table tr:nth-child(even) {
     /*background-color: #f2f2f2;*/
     background-color: lightblue;
     
 }
 
-#admin-db-table td {
-    padding: 5px;
+#admin-search-table {
+    width: 80%;
+}
+
+#admin-db-table td, #admin-db-table th, #admin-search-table td, #admin-search-table th {
+    padding: 12px;
+}
+
+#reportResults {
+    color: green;
 }
 
 
