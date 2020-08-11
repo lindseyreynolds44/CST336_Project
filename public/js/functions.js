@@ -228,6 +228,21 @@ $(document).ready(function () {
     }); //ajax
   });
 
+  // GET MOST PURCHASED MOVIE
+  $("#admin-get-most-inCart").on("click", () => {
+    $.ajax({
+      method: "get",
+      url: "/mostInCart",
+      success: (data, status) => {
+        console.log("mostPurchased:", status);
+        let mostInCart = data.mostInCart[0];
+        let html = `Most Popular Movie in Cart <br>` +
+         `Title: ${mostInCart.title} <br>` + 
+         `Times added: ${mostInCart.num_times}`;
+        $("#reportResults").html(html);
+      },
+    });
+  });
   /******************************************************************************
    *                           Home Page Code
    *******************************************************************************/
