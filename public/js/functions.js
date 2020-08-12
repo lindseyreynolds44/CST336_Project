@@ -1,7 +1,7 @@
 /* global $ */
-
+var originalResults; // original movie list without any filtering
 var featuredResults; // list of featured movies
-var selectedMovieID; // current selected moive ID from the search
+var selectedMovieID; // current selected moive ID
 var adminSearchResults; // list of search results from WEB
 var adminDBResults; // list of movies from Database
 
@@ -428,6 +428,7 @@ $(document).ready(function () {
         genreString += " ";
       });
       $("#genre-content").html(genreString);
+      $("#price-content").html(featuredResults[index].price);
     } else {
       $("#selected-movie-container").hide();
     }
