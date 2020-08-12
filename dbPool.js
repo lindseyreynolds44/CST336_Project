@@ -3,7 +3,7 @@ require("dotenv").config();
 
 // It is best practice to create a pool of connections to a database
 const pool = mysql.createPool({
-  connectionLimit: 10,
+  connectionLimit: 12,
   host: process.env.HOST,
   user: process.env.DB_USER,
   password: process.env.DB_PASS,

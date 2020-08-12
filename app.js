@@ -19,10 +19,9 @@ app.use(express.urlencoded({extended: true})); //to be able to parse POST parame
 
 // Routes
 // Root route for sign in page
-app.get("/signIn", homeController.displaySignInPage);
+app.get("/", homeController.displaySignInPage);
 
 // Route to display main page of our website, once user is logged in
-//app.get("/index", isAuthenticated, homeController.displayIndexPage);
 app.get("/index", homeController.displayIndexPage); // for testing purpose
 
 // When user clicks "sign in" on the sign in page, using
@@ -52,7 +51,6 @@ app.get("/isUsernameAvailable", homeController.isUsernameAvailable);
 app.post("/createAccount", homeController.createAccount);
 
 // Route for returning movies from a search
-//app.get("/search", isAuthenticated, homeController.displaySearchResults);
 app.get("/search", homeController.displaySearchResults); // for testing without authentication
 
 // Route when user clicks the "logout" button
@@ -62,13 +60,13 @@ app.get("/logout", function(req, res){
 });
 
 // Route when user adds or deletes movies from their cart
-app.get("/updateCart", isAuthenticated, homeController.updateCart);
+app.get("/updateCart", homeController.updateCart);
 
 // Route to display the shopping cart page 
-app.get("/shoppingCart", isAuthenticated, homeController.displayCartPage);
+app.get("/shoppingCart", homeController.displayCartPage);
 
 // Display the admin page
-app.get("/adminPage", isAuthenticated, isAdmin, function(req, res){
+app.get("/adminPage", function(req, res){
   res.render("admin");
 });
 

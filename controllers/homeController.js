@@ -21,24 +21,18 @@ setInterval(loadConfig, interval);
 
 /**
  * Handles the GET "/" route
- *  --- DONE ---
  */
 exports.displaySignInPage = async (req, res) => {
-  //res.redirect("/index"); // Only for testing purposes
-  //res.render("sign-in");
-  res.render("sign-in"); // for testing home page
+  res.render("sign-in");
 };
 
 /**
  * Handles the GET "/index" route
  * This method gets the top 10 rated movies from our database and sends
  * them to index.ejs to be displayed
- * --- TO DO (LINDSEY) ---
  */
 exports.displayIndexPage = async (req, res) => {
   let resultArray = await getFeaturedMovies();
-  //let query = "Jack Reacher"; // For testing purposes only
-  //let resultArray = await getMovie(query);
   res.render("index", { resultArray: resultArray });
 };
 
@@ -52,6 +46,8 @@ exports.createAccount = (req, res) => {
   let firstNameInput = req.body.firstName;
   let lastNameInput = req.body.lastName;
 
+  console.log("username " + usernameInput);
+  
   bcrypt.hash(passwordInput, saltRounds, function (err, hash) {
     let sql =
       "INSERT INTO user (admin_privledges, username, password, firstName, lastName) VALUES (false, ?, ?, ?, ?);";
@@ -63,7 +59,7 @@ exports.createAccount = (req, res) => {
         firstName: firstNameInput,
         lastName: lastNameInput,
       };
-      res.render("confirmation", { userValues: userValues });
+      res.render("sign-in");
     });
   });
 };
@@ -95,16 +91,9 @@ exports.isUsernameAvailable = (req, res) => {
  */
 exports.displaySearchResults = async (req, res) => {
   let query = req.query.search_string;
-  //query = "Jack Reacher"; // For testing purposes only
   let resultArray = await getMovie(query);
-
-  //   res.render("selection", { resultArray: resultArray });
-
-  //MAIN CHANGES
-  //res.render("selection", {"resultArray": resultArray});
-  // console.log(resultArray);
+  console.dir(resultArray);
   res.send(resultArray); // index page will be used as selection as well without reloading the page
-  //MAIN END
 };
 
 /**
@@ -123,6 +112,7 @@ exports.updateCart = async (req, res) => {
 
   let sql = "";
   let sqlParams;
+  
 
   // check if this is an "add" or "delete" action
   switch (action) {

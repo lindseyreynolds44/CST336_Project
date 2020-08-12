@@ -11,7 +11,8 @@ var adminDBResults; // list of movies from Database
  *******************************************************************************/
 
 $(document).ready(function () {
-  // Testing check user availability
+  
+  // Check is the username is available
   $("#new-username").on("change", function () {
     let user = $("#new-username").val();
 
@@ -22,10 +23,16 @@ $(document).ready(function () {
         username: user,
       },
       success: function (data, status) {
-        $("#userError").html(`Is this username available? ${data.response}`);
+        if(!data.response){
+          $("#usernameError").html(`This username is not available`);
+          $("#usernameError").css("color", "red");
+        } else {
+          $("#usernameError").html("");
+        }
       },
     }); //ajax
   });
+  
 
   /******************************************************************************
    *                            Admin page Code
@@ -402,8 +409,9 @@ $(document).ready(function () {
   }
 
   // event handler when "Add to Cart" button is clicked
-  $("add-movie").on("click", function (e) {
+  $("#add-movie").on("click", function (e) {
     let movieInfo = results[selectedMovieID];
+    console.log("TESTING " + results[0]);
     console.log("Movie Info:" + movieInfo);
     $.ajax({
       method: "get",
