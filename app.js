@@ -67,7 +67,7 @@ app.get("/shoppingCart", homeController.displayCartPage);
 
 // Display the admin page
 app.get("/adminPage", function(req, res){
-  res.render("admin");
+  res.render("admin", {page_name: "adminPage"});
 });
 
 // Called from ADMIN page in order to display a table of the movies from the DB
