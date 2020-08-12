@@ -132,24 +132,16 @@ exports.updateCart = async (req, res) => {
         image_url,
         rating,
       ];
-      // console.log(sqlParams);
       await callDB(sql, sqlParams);
       // INSERT GENRES INTO GENRE TABLE
       sql =
         "INSERT INTO genre (genre_id, movie_id, genre_name) VALUES (?, ?, ?)";
-      for (genre of genres) {
-        for (names of genreNames.genres) {
-          console.log(
-            `Names:${names.name.trim()} | Genres: ${genre.trim()} | ${
-              names.id == parseInt(genre) ? "true" : "false"
-            }`
-          );
-          if (names.id == parseInt(genre)) {
-            sqlParams = [parseInt(genre), movie_id, names.name];
-            await callDB(sql, sqlParams);
-          }
-        }
+      for (genreName of genres) {
+        let genre_id = await getGenreIDFromName(genreName);
+        sqlParams = [genre_id, movie_id, genreName];
+        await callDB(sql, sqlParams);
       }
+
       // INSERT MOVIE INTO CART TABLE
       sql = "INSERT INTO cart (user_id, movie_id) VALUES (?, ?)";
       sqlParams = [user_id, movie_id];
@@ -178,7 +170,10 @@ exports.displayCartPage = async (req, res) => {
 
   console.log("# of items in cart:", cartContents.length); // diagnostic
   //console.log(cartContents); // diagnostic
-  res.render("shoppingcart", { cartContents: cartContents, page_name: "shoppingCart" });
+  res.render("shoppingcart", {
+    cartContents: cartContents,
+    page_name: "shoppingCart",
+  });
 };
 
 /**
