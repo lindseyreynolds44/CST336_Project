@@ -1,8 +1,6 @@
 html {
-    margin: 0px 15px;
-    
+  margin: 0px 15px;
 }
-
 
 #logo {
    
@@ -19,7 +17,6 @@ html {
     align-content: space-around;
     margin: -1em 0 -2em -1em;
     padding: 1em 0em 0em 2em;
-
 }
 
 .navbar-nav{
@@ -44,222 +41,150 @@ html {
 */
 
 .home {
-    text-align: center;
-    background-image: url("../img/movie-wall.jpg");
-    background-size: cover;
-    background-repeat: no-repeat;
-    color: white;
-    font-size: 2.0rem;
-    padding: 20px;
-}
-
-.selection {
-    background-color:black;
-    color: gold;
-    font-size: 2.0rem;
-    padding:20px;
+  text-align: center;
+  background-image: url("../img/movie-wall.jpg");
+  background-size: cover;
+  background-repeat: no-repeat;
+  color: white;
+  font-size: 2rem;
+  padding: 20px;
 }
 
 #home-signIn {
-    background-color:red;
-    color:white;
-    /* text-decoration:none; */
-    text-align: center;
-    width:100%;
-    padding:10px 15px 10px 15px;
+  background-color: red;
+  color: white;
+  text-decoration: none;
+  text-align: center;
+  padding: 10px 15px 10px 15px;
 }
 
-#home-signIn2 {
-    /* background-color:#5F5F5F; */
-    color:white;
-    text-decoration:none;
-    text-align: center;
-    padding:10px 15px 10px 15px;
-}
-
-#sign-in-wrapper {
-    background-color:red;
-    opacity: 80%;
-    width:100%;
-}
-
-#home-menu, #search-form {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin: 5px;
-    
+#home-menu {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 5px;
 }
 
 #home-form {
-    display: inline-block;
-    margin:0 auto;
-    background-color: rgba(0, 0, 0, 0.75);
-    width: 50%;
-    font-size:2.0rem;
-    padding: 15px 15px 20px 15px;
+  display: inline-block;
+  margin: 0 auto;
+  background-color: rgba(0, 0, 0, 0.75);
+  width: 50%;
+  font-size: 2rem;
+  padding: 15px 15px 20px 15px;
 }
 
-#home-form input[type=text], #search-form input[type=text] {
-    font-size: 1.6rem;
-    border: 2px solid red;
-    border-radius: 10px;
-    padding: 5px;
+#home-form input[type="text"] {
+  font-size: 1.6rem;
+  border: 2px solid red;
+  border-radius: 10px;
+  padding: 5px;
 }
 
-#home-form input[type=text]:focus, #search-form input[type=text]:focus {
-        background-color: lightblue;
-        
+#home-form input[type="text"]:focus {
+  background-color: lightblue;
 }
 
 .home-button {
-    background-color:red;
-    color:white;
-    font-size:1.6rem;
-    padding: 5px;
+  background-color: red;
+  color: white;
+  font-size: 1.6rem;
+  padding: 5px;
+}
+
+.selection {
+  background-color: black;
+  color: gold;
+  padding: 20px;
+}
+
+#selection-box {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+#search-box {
+  display: flex;
+  justify-content: space-between;
+  align-item: center;
+  font-size: 1rem;
+  padding: 10px;
+}
+
+#search-form input[type="text"]:focus {
+  background-color: lightblue;
+}
+
+#search-form input[type="text"] {
+  font-size: 1rem;
+  border: 2px solid red;
+  border-radius: 10px;
+  padding: 10px;
+}
+
+#genre-box,
+#rating-box {
+  padding: 10px;
 }
 
 #resultsContainer {
-    display: flex;
-    flex-wrap: wrap;
-    font-size: 1rem;
+  display: flex;
+  flex-wrap: wrap;
+  font-size: 1rem;
 }
 
 .poster-box {
-    background-color: black;
-    color: white;
-    margin: 20px;
-    min-width:200px;
+  background-color: black;
+  color: white;
+  margin: 20px;
+  min-width: 200px;
 }
 
 #selected-movie-container {
-    display: flex;
-    background-color: black;
+  display: flex;
+  background-color: black;
 }
 
 #selected-image {
-    padding:30px;
+  padding: 30px;
 }
 
 #movie-detail {
-    margin: 10px;
-    padding:40px;
+  margin: 10px;
+  padding: 40px;
+  font-size: 1.5rem;
 }
 
-
 #add-movie {
-    color:black;
+  color: black;
 }
 
 #title {
-    color:blue;
+  color: blue;
 }
 
 #synopsis {
-    color:gold;
+  color: gold;
 }
 
 #synopsis-content {
-    color: mediumturquoise;
-    padding-left: 20px;
+  color: mediumturquoise;
+  padding-left: 20px;
 }
 
-#rating, #genre, #release {
-    color: darkseagreen;
+#rating,
+#genre,
+#release {
+  color: darkseagreen;
 }
 
-#rating-content, #genre-content, #release-content {
-    color: white;
-    padding-left: 20px;
+#rating-content,
+#genre-content,
+#release-content {
+  color: white;
+  padding-left: 20px;
 }
-
-/* sign in page layout */
-/* Made with love by Mutiullah Samim*/
-
-@import url('https://fonts.googleapis.com/css?family=Numans');
-
-html,body{
-    background: linear-gradient( rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5) ), url('../img/movie-wall.jpg');
-background-size: cover;
-background-repeat: no-repeat;
-height: 100%;
-font-family: 'Numans', sans-serif;
-}
-
-.container{
-height: 100%;
-align-content: center;
-}
-
-.card{
-height: 370px;
-margin-top: auto;
-margin-bottom: auto;
-width: 400px;
-background-color: rgba(0,0,0,0.5) !important;
-}
-
-.social_icon span{
-font-size: 60px;
-margin-left: 10px;
-color: red;
-}
-
-.social_icon span:hover{
-color: white;
-cursor: pointer;
-}
-
-.card-header h3{
-color: white;
-}
-
-.social_icon{
-position: absolute;
-right: 20px;
-top: -45px;
-}
-
-.input-group-prepend span{
-width: 50px;
-background-color: red;
-color: black;
-border:0 !important;
-}
-
-input:focus{
-outline: 0 0 0 0  !important;
-box-shadow: 0 0 0 0 !important;
-
-}
-
-.remember{
-color: white;
-}
-
-.remember input
-{
-width: 20px;
-height: 20px;
-margin-left: 15px;
-margin-right: 5px;
-}
-
-.login_btn{
-color: black;
-background-color: red;
-width: 100px;
-}
-
-.login_btn:hover{
-color: black;
-background-color: white;
-}
-
-.links{
-color: white;
-}
-
 
 .links a{
 margin-left: 4px;
@@ -271,36 +196,39 @@ margin-left: 4px;
 
 }
 
-
 /**********************************/
 /***** styles for Admin Page ******/
 /**********************************/
-#db-results, #admin-search-results {
-    display: flex;
-    justify-content: center;
-    padding: 25px;
-    
+#db-results,
+#admin-search-results {
+  display: flex;
+  justify-content: center;
+  padding: 25px;
 }
 
-#admin-db-btn, #admin-search-form {
-    display: flex;
-    justify-content: center;
+#admin-db-btn,
+#admin-search-form {
+  display: flex;
+  justify-content: center;
 }
 
-#admin-db-table tr:nth-child(even), #admin-search-table tr:nth-child(even) {
-    /*background-color: #f2f2f2;*/
-    background-color: lightblue;
-    
+#admin-db-table tr:nth-child(even),
+#admin-search-table tr:nth-child(even) {
+  /*background-color: #f2f2f2;*/
+  background-color: lightblue;
 }
 
 #admin-search-table {
-    width: 80%;
+  width: 80%;
 }
 
-#admin-db-table td, #admin-db-table th, #admin-search-table td, #admin-search-table th {
-    padding: 12px;
+#admin-db-table td,
+#admin-db-table th,
+#admin-search-table td,
+#admin-search-table th {
+  padding: 12px;
 }
 
 #reportResults {
-    color: green;
+  color: green;
 }

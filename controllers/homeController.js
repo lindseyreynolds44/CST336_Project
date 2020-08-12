@@ -21,30 +21,23 @@ setInterval(loadConfig, interval);
 
 /**
  * Handles the GET "/" route
- *  --- DONE ---
  */
 exports.displaySignInPage = async (req, res) => {
-  //res.redirect("/index"); // Only for testing purposes
-  //res.render("sign-in");
-  res.render("sign-in"); // for testing home page
+  res.render("sign-in");
 };
 
 /**
  * Handles the GET "/index" route
  * This method gets the top 10 rated movies from our database and sends
  * them to index.ejs to be displayed
- * --- TO DO (LINDSEY) ---
  */
 exports.displayIndexPage = async (req, res) => {
   let resultArray = await getFeaturedMovies();
-  //let query = "Jack Reacher"; // For testing purposes only
-  //let resultArray = await getMovie(query);
   res.render("index", { resultArray: resultArray });
 };
 
 /**
  * Handles the POST "/createAccount" route
- * --- TO DO (LINDSEY) ---
  */
 exports.createAccount = (req, res) => {
   let usernameInput = req.body.username;
@@ -52,9 +45,12 @@ exports.createAccount = (req, res) => {
   let firstNameInput = req.body.firstName;
   let lastNameInput = req.body.lastName;
 
+  console.log("username " + usernameInput);
+
   bcrypt.hash(passwordInput, saltRounds, function (err, hash) {
     let sql =
-      "INSERT INTO user (admin_privledges, username, password, firstName, lastName) VALUES (false, ?, ?, ?, ?);";
+      "INSERT INTO user (admin_privledges, username, password, firstName, " +
+      "lastName) VALUES (false, ?, ?, ?, ?);";
     let sqlParams = [usernameInput, hash, firstNameInput, lastNameInput];
     pool.query(sql, sqlParams, function (err, rows, fields) {
       if (err) throw err;
@@ -63,7 +59,7 @@ exports.createAccount = (req, res) => {
         firstName: firstNameInput,
         lastName: lastNameInput,
       };
-      res.render("confirmation", { userValues: userValues });
+      res.render("sign-in");
     });
   });
 };
@@ -95,16 +91,8 @@ exports.isUsernameAvailable = (req, res) => {
  */
 exports.displaySearchResults = async (req, res) => {
   let query = req.query.search_string;
-  //query = "Jack Reacher"; // For testing purposes only
   let resultArray = await getMovie(query);
-
-  //   res.render("selection", { resultArray: resultArray });
-
-  //MAIN CHANGES
-  //res.render("selection", {"resultArray": resultArray});
-  // console.log(resultArray);
-  res.send(resultArray); // index page will be used as selection as well without reloading the page
-  //MAIN END
+  res.send(resultArray);
 };
 
 /**
@@ -119,10 +107,15 @@ exports.updateCart = async (req, res) => {
   let description = req.query.description;
   let image_url = req.query.image_url;
   let rating = req.query.rating;
+  let genres = req.query.genres;
   let action = req.query.action; //add or delete
+
+  
 
   let sql = "";
   let sqlParams;
+
+  console.log("QUERY:", req.query);
 
   // check if this is an "add" or "delete" action
   switch (action) {
@@ -139,10 +132,9 @@ exports.updateCart = async (req, res) => {
         image_url,
         rating,
       ];
-
+      console.log(sqlParams);
       await callDB(sql, sqlParams);
       // INSERT GENRES INTO GENRE TABLE
-      let genres = req.query.genres;
       sql =
         "INSERT INTO genre (genre_id, movie_id, genre_name) VALUES (?, ?, ?)";
       for (genre of genres) {
@@ -448,50 +440,42 @@ async function loadConfig() {
  */
 async function getFeaturedMovies() {
   return new Promise(function (resolve, reject) {
-    let sql = "SELECT * FROM movie ORDER BY rating DESC LIMIT 10;";
+    // Query to get the top ten rated movies from our database
+    let sql =
+      "SELECT movie.movie_id, title, release_date, description, image_url," +
+      " rating, price, genre_name FROM movie JOIN genre on movie.movie_id =" +
+      " genre.movie_id ORDER BY rating DESC, movie.movie_id;";
     pool.query(sql, function (err, rows, fields) {
       if (err) throw err;
-      let resultArray = [];
+      let movieObjArray = [];
+      let movieID = 0;
+      let index = -1;
 
-      rows.forEach(async (movie) => {
-        let genreNameArray = ["temp"];
-        // The next line is giving an error saying we cannot do this many sql queries
-        //let genreNameArray = await getGenreNamesFromDB(movie.movie_id);
+      // Loop through all the rows returned from the query
+      rows.forEach(async (record) => {
+        // If this is a new movie ID, create a movie object for it
+        if (movieID != record.movie_id) {
+          movieID = record.movie_id;
+          let movie = {
+            title: record.title,
+            imageUrl: record.image_url,
+            rating: record.rating,
+            movieID: record.movie_id,
+            release_date: record.release_date, // formats date to locale's style
+            overview: record.description,
+            genres: [],
+          };
+          index++;
+          movieObjArray.push(movie);
 
-        let result = {
-          title: movie.title,
-          imageUrl: movie.image_url,
-          rating: movie.rating,
-          movieID: movie.movie_id,
-          release_date: movie.release_date, // formats date to locale's style
-          overview: movie.description,
-          genres: genreNameArray,
-        };
-        resultArray.push(result);
+          // Otherwise, this is a repeat movie_id, with a new genre
+        } else {
+          // Add the genre from this record to this movie's genre list
+          movieObjArray[index].genres.push(record.genre_name);
+        }
       });
-
-      resolve(resultArray);
-    });
-  });
-}
-
-/**
- * Get the names of all genres associated with the movie id
- * @param {movieID} the movie
- * @return {resultArray} an array of genres
- */
-
-function getGenreNamesFromDB(movieID) {
-  return new Promise(function (resolve, reject) {
-    let sql = "SELECT genre_name FROM genre WHERE movie_id = ?;";
-    pool.query(sql, [movieID], function (err, rows, fields) {
-      if (err) throw err;
-      let resultArray = [];
-
-      rows.forEach(async (genre) => {
-        resultArray.push(genre.genre_name);
-      });
-      resolve(resultArray);
+      // Send back all ten movies in JSON format, including their details
+      resolve(movieObjArray);
     });
   });
 }

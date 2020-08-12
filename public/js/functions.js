@@ -1,6 +1,5 @@
 /* global $ */
 
-var results; // list of movies resulted from searching for the keywords
 var featuredResults; // list of featured movies
 var selectedMovieID; // current selected moive ID from the search
 var adminSearchResults; // list of search results from WEB
@@ -11,7 +10,7 @@ var adminDBResults; // list of movies from Database
  *******************************************************************************/
 
 $(document).ready(function () {
-  // Testing check user availability
+  // Check is the username is available
   $("#new-username").on("change", function () {
     let user = $("#new-username").val();
 
@@ -22,7 +21,12 @@ $(document).ready(function () {
         username: user,
       },
       success: function (data, status) {
-        $("#userError").html(`Is this username available? ${data.response}`);
+        if (!data.response) {
+          $("#usernameError").html(`This username is not available`);
+          $("#usernameError").css("color", "red");
+        } else {
+          $("#usernameError").html("");
+        }
       },
     }); //ajax
   });
@@ -61,7 +65,7 @@ $(document).ready(function () {
 
   // Update the price of a movie in the Database table
   $("#db-results").on("click", "#admin-update-btn", function () {
-    $(this).html("Updated");  
+    $(this).html("Updated");
     let currentRow = $(this).closest("tr");
     let index = $(this).val();
     let price = Number(currentRow.find(".admin-db-price").html());
@@ -90,19 +94,17 @@ $(document).ready(function () {
     let index = $(this).val();
     console.log("Delete Movie from DB:" + adminDBResults[index].movie_id);
     updateDB("delete", adminDBResults[index].movie_id);
-    
+
     // Disable buttons and price input
     $(this).html("Deleted");
     let currentRow = $(this).closest("tr");
     currentRow.find(".admin-db-price").prop("contenteditable", false);
     currentRow.find(".admin-delete-btn").prop("disabled", true);
     currentRow.find(".admin-update-btn").prop("disabled", true);
-    
   });
 
   // Display search results from a TMDB web
   $("#admin-search-form").on("submit", function (e) {
-    
     $("#admin-search-results").html(""); // clean up the search table content
     e.preventDefault();
     let keyword = $("#admin-search-text").val().trim();
@@ -116,7 +118,7 @@ $(document).ready(function () {
         method: "get",
         url: "/search",
         data: {
-          search_string: keyword
+          search_string: keyword,
         },
         success: function (data, status) {
           console.log(data);
@@ -126,7 +128,7 @@ $(document).ready(function () {
             "<th style='width:100px'>Title</th> <th style='width:60px'>Image</th>" +
             "<th style='width:30px'>Rating</th> <th style='width:100px'>Date</th> <th style='width:150px'>Description</th>" +
             "<th style='width:80px'>Genres</th> <th style='width:50px'>Price($)</th> <th style='width:50px'>Action</th> </tr>";
-  
+
           data.forEach((movie, i) => {
             let genreString = "";
             movie.genres.forEach((name) => {
@@ -154,11 +156,11 @@ $(document).ready(function () {
 
   $("#admin-search-results").on("click", "#admin-add-btn", function () {
     console.log("Add button is clicked");
-    
-    // clean the db table when this action is clicked, 
+
+    // clean the db table when this action is clicked,
     // otherwise need to make ajax call to reload the db table
     $("#db-results").html(""); // close the db table if a movie is added or removed
-      
+
     let currentRow = $(this).closest("tr");
     let index = $(this).val();
     let price = Number(currentRow.find(".admin-search-price").html());
@@ -220,8 +222,7 @@ $(document).ready(function () {
       success: function (data, status) {
         console.log("updateDB done!");
         // if action="delete" disable the delete button and price change
-        if (action=="delete") {
-            
+        if (action == "delete") {
         }
       },
     }); //ajax
@@ -253,7 +254,7 @@ $(document).ready(function () {
       },
     }); //ajax
   });
-  
+
   // GET MOST PURCHASED MOVIE
   $("#admin-get-most-inCart").on("click", () => {
     $.ajax({
@@ -262,9 +263,10 @@ $(document).ready(function () {
       success: (data, status) => {
         console.log("mostPurchased:", status);
         let mostInCart = data.mostInCart[0];
-        let html = `Most Popular Movie in Cart <br>` +
-         `Title: ${mostInCart.title} <br>` + 
-         `Times added: ${mostInCart.num_times}`;
+        let html =
+          `Most Popular Movie in Cart <br>` +
+          `Title: ${mostInCart.title} <br>` +
+          `Times added: ${mostInCart.num_times}`;
         $("#reportResults").html(html);
       },
     });
@@ -323,40 +325,70 @@ $(document).ready(function () {
         success: function (data, status) {
           //result = JSON.parse(data);
           console.log(data);
-          results = data;
+          featuredResults = data;
 
           // display all the movie posters in the results
           $("#featured-header").html(""); // remove the featured header
-          displayAllMovies(results);
+          displayAllMovies(featuredResults);
+          displayGenreOptions(featuredResults);
 
           // display the first movie image/trailer and detail from the list
-          // displayMovieTrailer(0);
-          displayMovieImage(0);
-          displayMovieDetail(0);
           $("#selected-movie-container").show();
+          displayMovieImageAndDetail(0);
         },
       }); //ajax
     }
   }); //index - keyword search
+
+  // genre option is selected
+  $("#filter-genre").on("change", function () {
+    let genre = $(this).children("option:selected").val();
+    console.log("Option is clicked:", genre);
+    if (genre != "") {
+      featuredResults = filterMovieByGenre(genre);
+      displayAllMovies(featuredResults);
+      displayGenreOptions(featuredResults);
+
+      // display the first movie image/trailer and detail from the list
+      displayMovieImageAndDetail(0);
+    }
+  });
+
+  // an option is selected
+  $("#filter-rating").on("change", function () {
+    let rating = $(this).children("option:selected").val();
+    console.log("Rating is clicked:", rating);
+    if (rating != "") {
+      featuredResults = filterMovieByRating(rating);
+
+      displayAllMovies(featuredResults);
+      displayGenreOptions(featuredResults);
+
+      // display the first movie image/trailer and detail from the list
+      displayMovieImageAndDetail(0);
+      // reset the selection
+      $("#filter-rating option:first").prop("selected", true);
+    }
+  });
 
   // event for dynamically filled content
   $("#resultsContainer").on("click", ".movie-poster", function () {
     console.log("A movie is clicked");
     let movieIndex = Number($(this).attr("value"));
     console.log("Movie Index:" + movieIndex);
-    displayMovieImage(movieIndex);
-    displayMovieDetail(movieIndex);
+    displayMovieImageAndDetail(movieIndex);
     $("#selected-movie-container").show();
-    selectedMovieID = results[movieIndex].moveID; // set it as current selected movie
+    selectedMovieID = results[movieIndex].movieID; // set it as current selected movie
+    console.log("SELECTED MOVIE ID", selectedMovieID);
     window.scrollTo(0, 0); // scroll back to the top
   });
 
   // display featured movies
   function displayFeaturedMovies(movies) {
     if ($("body").attr("page") == "index") {
-      results = movies;
       $("#featured-header").html("Recommended Movies");
-      displayAllMovies(results);
+      displayAllMovies(movies);
+      displayGenreOptions(movies);
     }
   }
 
@@ -368,7 +400,7 @@ $(document).ready(function () {
     let htmlString = "";
     var i;
     for (i in movies) {
-      console.log(movies[i]);
+      // console.log(movies[i]);
       let imgPath = movies[i].imageUrl;
       htmlString += "<div class='poster-box'>";
       htmlString += `<img class='movie-poster' src='${imgPath}' alt='${movies[i].title}' width='200' height='300' value=${i}>`;
@@ -380,41 +412,107 @@ $(document).ready(function () {
   }
 
   // display the poster image of the movie with given index
-  function displayMovieImage(index) {
-    let htmlString = `<img class='movie-image' src='${results[index].imageUrl}' alt='${results[index].title}' width='400' height='600' value=${index}>`;
-    $("#selected-image").html(htmlString);
-  }
-
-  // display the movie detail
-  function displayMovieDetail(index) {
-    $("#synopsis-content").html(results[index].overview);
-    $("#rating-content").html(results[index].rating);
-    $("#release-content").html(results[index].release_date);
-    // display the list of genres the movie belongs to
-    let genreString = "";
-    console.log(results[index].genres);
-    results[index].genres.forEach((name) => {
-      console.log("Genre: ", name);
-      genreString += name;
-      genreString += " ";
-    });
-    $("#genre-content").html(genreString);
+  function displayMovieImageAndDetail(index) {
+    console.log("index and length", index, featuredResults.length);
+    if (index < featuredResults.length) {
+      let htmlString = `<img class='movie-image' src='${featuredResults[index].imageUrl}' alt='${featuredResults[index].title}' width='400' height='600' value=${index}>`;
+      $("#selected-image").html(htmlString);
+      $("#synopsis-content").html(featuredResults[index].overview);
+      $("#rating-content").html(featuredResults[index].rating);
+      $("#release-content").html(featuredResults[index].release_date);
+      // display the list of genres the movie belongs to
+      let genreString = "";
+      featuredResults[index].genres.forEach((name) => {
+        console.log("Genre: ", name);
+        genreString += name;
+        genreString += " ";
+      });
+      $("#genre-content").html(genreString);
+    } else {
+      $("#selected-movie-container").hide();
+    }
   }
 
   // event handler when "Add to Cart" button is clicked
-  $("add-movie").on("click", function (e) {
-    let movieInfo = results[selectedMovieID];
-    console.log("Movie Info:" + movieInfo);
+  $("#add-movie").on("click", function (e) {
+    // let movieInfo = results[selectedMovieID];
+    let movieInfo = results.filter((movie) => {
+      console.log(
+        `${movie.movieID}: ${selectedMovieID} ?? ${
+          movie.movieID == selectedMovieID ? "True" : "False"
+        }`
+      );
+      return movie.movieID === selectedMovieID;
+    });
+    console.log("TESTING " + results[0]);
+    console.dir("Movie Info:" + movieInfo);
+
     $.ajax({
       method: "get",
       url: "/updateCart",
       data: {
+        // movieInfo: movieInfo,
         action: "add",
-        movie_info: movieInfo,
+        movie_id: movieInfo[0].movieID,
+        title: movieInfo[0].title,
+        release_date: movieInfo[0].release_date,
+        description: movieInfo[0].overview,
+        image_url: movieInfo[0].imageUrl,
+        rating: movieInfo[0].rating,
+        genres: movieInfo[0].genres,
       },
       success: function (data, status) {
         console.log("Movie is added");
       },
     }); // end of ajax
   });
+
+  // display genre option list
+  function displayGenreOptions(movies) {
+    // create available genre options
+    let genreOptions = [];
+    movies.forEach((movie) => {
+      movie.genres.forEach((name) => {
+        if (!genreOptions.includes(name)) {
+          genreOptions.push(name);
+        }
+      });
+    });
+    // sort the options list
+    let sortedGenreOptions = genreOptions.sort((a, b) => {
+      if (a < b) {
+        return -1;
+      }
+      if (a > b) {
+        return 1;
+      }
+      return 0;
+    });
+    console.log("Sorted Genre Options", sortedGenreOptions);
+
+    let html = "<option value=''>Select One </option>";
+    sortedGenreOptions.forEach((name) => {
+      html += `<option>${name}</option>`;
+    });
+    //console.log("genrehtml", html);
+    $("#filter-genre").html(html);
+  }
+
+  // filter the movie list by genre
+  function filterMovieByGenre(genre) {
+    let filteredMovies = featuredResults.filter((movie) => {
+      return movie.genres.includes(genre);
+    });
+    console.log(filteredMovies);
+    return filteredMovies;
+  }
+
+  // filter the movie list by rating
+  function filterMovieByRating(minRating) {
+    let filteredMovies = featuredResults.filter((movie) => {
+      return Number(movie.rating) >= Number(minRating);
+    });
+    console.log(filteredMovies);
+    return filteredMovies;
+  }
 });
