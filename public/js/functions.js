@@ -49,8 +49,8 @@ $(document).ready(function () {
           html += `<td> ${movie.movie_id} </td>`;
           html += `<td> ${movie.title} </td>`;
           html += `<td class='admin-db-price' contenteditable='true' > ${movie.price} </td>`;
-          html += `<td> <button id="admin-update-btn" class="btn btn-outline-success" value=${i}>Update</button> </td>`;
-          html += `<td> <button id="admin-delete-btn" class="btn btn-outline-success" value=${i}>Delete</button> </td>`;
+          html += `<td> <button class="admin-update-btn" value=${i}>Update</button> </td>`;
+          html += `<td> <button class="admin-delete-btn" value=${i}>Delete</button> </td>`;
           html += "</tr>";
         });
         html += "</table>";
@@ -60,8 +60,8 @@ $(document).ready(function () {
   });
 
   // Update the price of a movie in the Database table
-  $("#db-results").on("click", "#admin-update-btn", function () {
-    $(this).html("Updated");  
+  $("#db-results").on("click", ".admin-update-btn", function () {
+    $(this).html("Updated");
     let currentRow = $(this).closest("tr");
     let index = $(this).val();
     let price = Number(currentRow.find(".admin-db-price").html());
@@ -86,7 +86,7 @@ $(document).ready(function () {
   });
 
   // Delete a movie from the Database table
-  $("#db-results").on("click", "#admin-delete-btn", function () {
+  $("#db-results").on("click", ".admin-delete-btn", function () {
     let index = $(this).val();
     console.log("Delete Movie from DB:" + adminDBResults[index].movie_id);
     updateDB("delete", adminDBResults[index].movie_id);
@@ -111,6 +111,7 @@ $(document).ready(function () {
       $("#admin-search-warning").html("** Keyword is required!");
     } else {
       console.log("Search Web:", keyword);
+      $("#db-results").html(""); // close the db table while searching
       $("#admin-search-warning").html("");
       $.ajax({
         method: "get",
@@ -122,7 +123,7 @@ $(document).ready(function () {
           console.log(data);
           adminSearchResults = data;
           let html =
-            "<table id='admin-search-table'><th style='width:100px'>Movie ID</th>" +
+            "<table><th style='width:100px'>Movie ID</th>" +
             "<th style='width:100px'>Title</th> <th style='width:60px'>Image</th>" +
             "<th style='width:30px'>Rating</th> <th style='width:100px'>Date</th> <th style='width:150px'>Description</th>" +
             "<th style='width:80px'>Genres</th> <th style='width:50px'>Price($)</th> <th style='width:50px'>Action</th> </tr>";
@@ -142,7 +143,7 @@ $(document).ready(function () {
             html += `<td > ${movie.overview} </td>`;
             html += `<td > ${genreString} </td>`;
             html += `<td class='admin-search-price' contenteditable='true'> 5.99 </td>`;
-            html += `<td> <button id='admin-add-btn' class='btn btn-outline-success' value=${i}>Add Movie</button> </td>`;
+            html += `<td> <button class='admin-add-btn' value=${i}>Add Movie</button> </td>`;
             html += "</tr>";
           });
           html += "</table>";
@@ -152,13 +153,8 @@ $(document).ready(function () {
     }
   }); //admin search
 
-  $("#admin-search-results").on("click", "#admin-add-btn", function () {
+  $("#admin-search-results").on("click", ".admin-add-btn", function () {
     console.log("Add button is clicked");
-    
-    // clean the db table when this action is clicked, 
-    // otherwise need to make ajax call to reload the db table
-    $("#db-results").html(""); // close the db table if a movie is added or removed
-      
     let currentRow = $(this).closest("tr");
     let index = $(this).val();
     let price = Number(currentRow.find(".admin-search-price").html());
