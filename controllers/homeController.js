@@ -2,6 +2,8 @@ const request = require("request");
 const pool = require("../dbPool.js");
 const session = require("express-session");
 const bcrypt = require("bcrypt");
+// const { parse } = require("dotenv/types");
+require("dotenv").config();
 const API_KEY = process.env.API_KEY;
 const saltRounds = 10;
 //global vars
@@ -33,7 +35,7 @@ exports.displaySignInPage = async (req, res) => {
  */
 exports.displayIndexPage = async (req, res) => {
   let resultArray = await getFeaturedMovies();
-  res.render("index", { resultArray: resultArray });
+  res.render("index", { resultArray: resultArray, page_name: "home" });
 };
 
 /**
@@ -100,7 +102,7 @@ exports.displaySearchResults = async (req, res) => {
  * --- DONE ( DAN ) ---
  */
 exports.updateCart = async (req, res) => {
-  let user_id = req.session.name;
+  let user_id = 4; //req.session.name;
   let movie_id = parseInt(req.query.movie_id);
   let title = req.query.title;
   let release_date = req.query.release_date;
@@ -110,12 +112,10 @@ exports.updateCart = async (req, res) => {
   let genres = req.query.genres;
   let action = req.query.action; //add or delete
 
-  
-
   let sql = "";
   let sqlParams;
 
-  console.log("QUERY:", req.query);
+  // console.log("QUERY:", req.query);
 
   // check if this is an "add" or "delete" action
   switch (action) {
@@ -132,13 +132,18 @@ exports.updateCart = async (req, res) => {
         image_url,
         rating,
       ];
-      console.log(sqlParams);
+      // console.log(sqlParams);
       await callDB(sql, sqlParams);
       // INSERT GENRES INTO GENRE TABLE
       sql =
         "INSERT INTO genre (genre_id, movie_id, genre_name) VALUES (?, ?, ?)";
       for (genre of genres) {
         for (names of genreNames.genres) {
+          console.log(
+            `Names:${names.name.trim()} | Genres: ${genre.trim()} | ${
+              names.id == parseInt(genre) ? "true" : "false"
+            }`
+          );
           if (names.id == parseInt(genre)) {
             sqlParams = [parseInt(genre), movie_id, names.name];
             await callDB(sql, sqlParams);
@@ -173,7 +178,7 @@ exports.displayCartPage = async (req, res) => {
 
   console.log("# of items in cart:", cartContents.length); // diagnostic
   //console.log(cartContents); // diagnostic
-  res.render("shoppingcart", { cartContents: cartContents });
+  res.render("shoppingcart", { cartContents: cartContents, page_name: "shoppingCart" });
 };
 
 /**
