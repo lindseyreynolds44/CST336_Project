@@ -1,6 +1,5 @@
 /* global $ */
 
-var results; // list of movies resulted from searching for the keywords
 var featuredResults; // list of featured movies
 var selectedMovieID; // current selected moive ID from the search
 var adminSearchResults; // list of search results from WEB
@@ -326,29 +325,58 @@ $(document).ready(function () {
         success: function (data, status) {
           //result = JSON.parse(data);
           console.log(data);
-          results = data;
+          featuredResults = data;
 
           // display all the movie posters in the results
           $("#featured-header").html(""); // remove the featured header
-          displayAllMovies(results);
+          displayAllMovies(featuredResults);
+          displayGenreOptions(featuredResults);
 
           // display the first movie image/trailer and detail from the list
-          // displayMovieTrailer(0);
-          displayMovieImage(0);
-          displayMovieDetail(0);
           $("#selected-movie-container").show();
+          displayMovieImageAndDetail(0);
         },
       }); //ajax
     }
   }); //index - keyword search
+
+  // genre option is selected
+  $("#filter-genre").on("change", function () {
+    let genre = $(this).children("option:selected").val();
+    console.log("Option is clicked:", genre);
+    if (genre != "") {
+      featuredResults = filterMovieByGenre(genre);
+      displayAllMovies(featuredResults);
+      displayGenreOptions(featuredResults);
+
+      // display the first movie image/trailer and detail from the list
+      displayMovieImageAndDetail(0);
+    }
+  });
+
+  // an option is selected
+  $("#filter-rating").on("change", function () {
+    let rating = $(this).children("option:selected").val();
+    console.log("Rating is clicked:", rating);
+    if (rating != "") {
+      featuredResults = filterMovieByRating(rating);
+
+      displayAllMovies(featuredResults);
+      displayGenreOptions(featuredResults);
+
+      // display the first movie image/trailer and detail from the list
+      displayMovieImageAndDetail(0);
+      // reset the selection
+      $("#filter-rating option:first").prop("selected", true);
+    }
+  });
 
   // event for dynamically filled content
   $("#resultsContainer").on("click", ".movie-poster", function () {
     console.log("A movie is clicked");
     let movieIndex = Number($(this).attr("value"));
     console.log("Movie Index:" + movieIndex);
-    displayMovieImage(movieIndex);
-    displayMovieDetail(movieIndex);
+    displayMovieImageAndDetail(movieIndex);
     $("#selected-movie-container").show();
     selectedMovieID = results[movieIndex].movieID; // set it as current selected movie
     console.log("SELECTED MOVIE ID", selectedMovieID);
@@ -358,9 +386,9 @@ $(document).ready(function () {
   // display featured movies
   function displayFeaturedMovies(movies) {
     if ($("body").attr("page") == "index") {
-      results = movies;
       $("#featured-header").html("Recommended Movies");
-      displayAllMovies(results);
+      displayAllMovies(movies);
+      displayGenreOptions(movies);
     }
   }
 
@@ -384,25 +412,25 @@ $(document).ready(function () {
   }
 
   // display the poster image of the movie with given index
-  function displayMovieImage(index) {
-    let htmlString = `<img class='movie-image' src='${results[index].imageUrl}' alt='${results[index].title}' width='400' height='600' value=${index}>`;
-    $("#selected-image").html(htmlString);
-  }
-
-  // display the movie detail
-  function displayMovieDetail(index) {
-    $("#synopsis-content").html(results[index].overview);
-    $("#rating-content").html(results[index].rating);
-    $("#release-content").html(results[index].release_date);
-    // display the list of genres the movie belongs to
-    let genreString = "";
-    console.log(results[index].genres);
-    results[index].genres.forEach((name) => {
-      console.log("Genre: ", name);
-      genreString += name;
-      genreString += " ";
-    });
-    $("#genre-content").html(genreString);
+  function displayMovieImageAndDetail(index) {
+    console.log("index and length", index, featuredResults.length);
+    if (index < featuredResults.length) {
+      let htmlString = `<img class='movie-image' src='${featuredResults[index].imageUrl}' alt='${featuredResults[index].title}' width='400' height='600' value=${index}>`;
+      $("#selected-image").html(htmlString);
+      $("#synopsis-content").html(featuredResults[index].overview);
+      $("#rating-content").html(featuredResults[index].rating);
+      $("#release-content").html(featuredResults[index].release_date);
+      // display the list of genres the movie belongs to
+      let genreString = "";
+      featuredResults[index].genres.forEach((name) => {
+        console.log("Genre: ", name);
+        genreString += name;
+        genreString += " ";
+      });
+      $("#genre-content").html(genreString);
+    } else {
+      $("#selected-movie-container").hide();
+    }
   }
 
   // event handler when "Add to Cart" button is clicked
@@ -438,4 +466,53 @@ $(document).ready(function () {
       },
     }); // end of ajax
   });
+
+  // display genre option list
+  function displayGenreOptions(movies) {
+    // create available genre options
+    let genreOptions = [];
+    movies.forEach((movie) => {
+      movie.genres.forEach((name) => {
+        if (!genreOptions.includes(name)) {
+          genreOptions.push(name);
+        }
+      });
+    });
+    // sort the options list
+    let sortedGenreOptions = genreOptions.sort((a, b) => {
+      if (a < b) {
+        return -1;
+      }
+      if (a > b) {
+        return 1;
+      }
+      return 0;
+    });
+    console.log("Sorted Genre Options", sortedGenreOptions);
+
+    let html = "<option value=''>Select One </option>";
+    sortedGenreOptions.forEach((name) => {
+      html += `<option>${name}</option>`;
+    });
+    //console.log("genrehtml", html);
+    $("#filter-genre").html(html);
+  }
+
+  // filter the movie list by genre
+  function filterMovieByGenre(genre) {
+    let filteredMovies = featuredResults.filter((movie) => {
+      return movie.genres.includes(genre);
+    });
+    console.log(filteredMovies);
+    return filteredMovies;
+  }
+
+  // filter the movie list by rating
+  function filterMovieByRating(minRating) {
+    let filteredMovies = featuredResults.filter((movie) => {
+      return Number(movie.rating) >= Number(minRating);
+    });
+    console.log(filteredMovies);
+    return filteredMovies;
+  }
 });
