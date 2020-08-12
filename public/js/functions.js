@@ -10,7 +10,6 @@ var adminDBResults; // list of movies from Database
  *******************************************************************************/
 
 $(document).ready(function () {
-  
   // Check is the username is available
   $("#new-username").on("change", function () {
     let user = $("#new-username").val();
@@ -22,7 +21,7 @@ $(document).ready(function () {
         username: user,
       },
       success: function (data, status) {
-        if(!data.response){
+        if (!data.response) {
           $("#usernameError").html(`This username is not available`);
           $("#usernameError").css("color", "red");
         } else {
@@ -31,7 +30,6 @@ $(document).ready(function () {
       },
     }); //ajax
   });
-  
 
   /******************************************************************************
    *                            Admin page Code
@@ -380,7 +378,8 @@ $(document).ready(function () {
     console.log("Movie Index:" + movieIndex);
     displayMovieImageAndDetail(movieIndex);
     $("#selected-movie-container").show();
-    selectedMovieID = featuredResults[movieIndex].moveID; // set it as current selected movie
+    selectedMovieID = results[movieIndex].movieID; // set it as current selected movie
+    console.log("SELECTED MOVIE ID", selectedMovieID);
     window.scrollTo(0, 0); // scroll back to the top
   });
 
@@ -401,7 +400,7 @@ $(document).ready(function () {
     let htmlString = "";
     var i;
     for (i in movies) {
-      console.log(movies[i]);
+      // console.log(movies[i]);
       let imgPath = movies[i].imageUrl;
       htmlString += "<div class='poster-box'>";
       htmlString += `<img class='movie-poster' src='${imgPath}' alt='${movies[i].title}' width='200' height='300' value=${i}>`;
@@ -435,15 +434,32 @@ $(document).ready(function () {
   }
 
   // event handler when "Add to Cart" button is clicked
-  $("add-movie").on("click", function (e) {
-    let movieInfo = featuredResults[selectedMovieID];
-    console.log("Movie Info:" + movieInfo);
+  $("#add-movie").on("click", function (e) {
+    // let movieInfo = results[selectedMovieID];
+    let movieInfo = results.filter((movie) => {
+      console.log(
+        `${movie.movieID}: ${selectedMovieID} ?? ${
+          movie.movieID == selectedMovieID ? "True" : "False"
+        }`
+      );
+      return movie.movieID === selectedMovieID;
+    });
+    console.log("TESTING " + results[0]);
+    console.dir("Movie Info:" + movieInfo);
+
     $.ajax({
       method: "get",
       url: "/updateCart",
       data: {
+        // movieInfo: movieInfo,
         action: "add",
-        movie_info: movieInfo,
+        movie_id: movieInfo[0].movieID,
+        title: movieInfo[0].title,
+        release_date: movieInfo[0].release_date,
+        description: movieInfo[0].overview,
+        image_url: movieInfo[0].imageUrl,
+        rating: movieInfo[0].rating,
+        genres: movieInfo[0].genres,
       },
       success: function (data, status) {
         console.log("Movie is added");

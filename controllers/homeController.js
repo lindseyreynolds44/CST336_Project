@@ -46,7 +46,7 @@ exports.createAccount = (req, res) => {
   let lastNameInput = req.body.lastName;
 
   console.log("username " + usernameInput);
-  
+
   bcrypt.hash(passwordInput, saltRounds, function (err, hash) {
     let sql =
       "INSERT INTO user (admin_privledges, username, password, firstName, " +
@@ -92,7 +92,7 @@ exports.isUsernameAvailable = (req, res) => {
 exports.displaySearchResults = async (req, res) => {
   let query = req.query.search_string;
   let resultArray = await getMovie(query);
-  res.send(resultArray); 
+  res.send(resultArray);
 };
 
 /**
@@ -107,11 +107,15 @@ exports.updateCart = async (req, res) => {
   let description = req.query.description;
   let image_url = req.query.image_url;
   let rating = req.query.rating;
+  let genres = req.query.genres;
   let action = req.query.action; //add or delete
+
+  
 
   let sql = "";
   let sqlParams;
-  
+
+  console.log("QUERY:", req.query);
 
   // check if this is an "add" or "delete" action
   switch (action) {
@@ -128,10 +132,9 @@ exports.updateCart = async (req, res) => {
         image_url,
         rating,
       ];
-
+      console.log(sqlParams);
       await callDB(sql, sqlParams);
       // INSERT GENRES INTO GENRE TABLE
-      let genres = req.query.genres;
       sql =
         "INSERT INTO genre (genre_id, movie_id, genre_name) VALUES (?, ?, ?)";
       for (genre of genres) {
@@ -321,7 +324,7 @@ async function getMovie(query) {
     //MAIN END
 
     let genreNameArr = genreToString(movie.genre_ids);
-    
+
     let result = {
       title: movie.original_title,
       imageUrl: base_url + "w342" + movie.poster_path,
@@ -438,20 +441,20 @@ async function loadConfig() {
 async function getFeaturedMovies() {
   return new Promise(function (resolve, reject) {
     // Query to get the top ten rated movies from our database
-    let sql = "SELECT movie.movie_id, title, release_date, description, image_url," +
-              " rating, price, genre_name FROM movie JOIN genre on movie.movie_id =" + 
-              " genre.movie_id ORDER BY rating DESC, movie.movie_id;";
+    let sql =
+      "SELECT movie.movie_id, title, release_date, description, image_url," +
+      " rating, price, genre_name FROM movie JOIN genre on movie.movie_id =" +
+      " genre.movie_id ORDER BY rating DESC, movie.movie_id;";
     pool.query(sql, function (err, rows, fields) {
       if (err) throw err;
       let movieObjArray = [];
       let movieID = 0;
       let index = -1;
-      
+
       // Loop through all the rows returned from the query
-      rows.forEach( async (record) => {
-        
+      rows.forEach(async (record) => {
         // If this is a new movie ID, create a movie object for it
-        if(movieID != record.movie_id){
+        if (movieID != record.movie_id) {
           movieID = record.movie_id;
           let movie = {
             title: record.title,
@@ -464,8 +467,8 @@ async function getFeaturedMovies() {
           };
           index++;
           movieObjArray.push(movie);
-        
-        // Otherwise, this is a repeat movie_id, with a new genre
+
+          // Otherwise, this is a repeat movie_id, with a new genre
         } else {
           // Add the genre from this record to this movie's genre list
           movieObjArray[index].genres.push(record.genre_name);
