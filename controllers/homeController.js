@@ -102,7 +102,7 @@ exports.displaySearchResults = async (req, res) => {
  * --- DONE ( DAN ) ---
  */
 exports.updateCart = async (req, res) => {
-  let user_id = 4; //req.session.name;
+  let user_id = req.session.name;
   let movie_id = parseInt(req.query.movie_id);
   let title = req.query.title;
   let release_date = req.query.release_date;
@@ -333,6 +333,7 @@ async function getMovie(query) {
       release_date: date.toLocaleDateString(), // formats date to locale's style
       overview: movie.overview,
       genres: genreNameArr,
+      price: 5.99
     };
     resultArray.push(result);
   });
@@ -464,6 +465,7 @@ async function getFeaturedMovies() {
             release_date: record.release_date, // formats date to locale's style
             overview: record.description,
             genres: [],
+            price: record.price
           };
           index++;
           movieObjArray.push(movie);
