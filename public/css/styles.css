@@ -1,25 +1,11 @@
 html {
-    margin: 0px 15px;
-    
+  margin: 0px 15px;
 }
-
 
 #logo {
-   
-    color:red;
-    font-size: 3.0rem;
-    
-}
-
-#logo2 {
-   
-    color:red;
-    font-size: 5.5rem;
-    display:flex;
-    align-content: space-around;
-    margin: -1em 0 -2em -1em;
-    padding: 1em 0em 0em 2em;
-
+  /* need to select a google font here for logo*/
+  color: red;
+  font-size: 3rem;
 }
 
 /* 
@@ -27,154 +13,184 @@ html {
 */
 
 .home {
-    text-align: center;
-    background-image: url("../img/movie-wall.jpg");
-    background-size: cover;
-    background-repeat: no-repeat;
-    color: white;
-    font-size: 2.0rem;
-    padding: 20px;
-}
-
-.selection {
-    background-color:black;
-    color: gold;
-    font-size: 2.0rem;
-    padding:20px;
+  text-align: center;
+  background-image: url("../img/movie-wall.jpg");
+  background-size: cover;
+  background-repeat: no-repeat;
+  color: white;
+  font-size: 2rem;
+  padding: 20px;
 }
 
 #home-signIn {
-    background-color:red;
-    color:white;
-    /* text-decoration:none; */
-    text-align: center;
-    width:100%;
-    padding:10px 15px 10px 15px;
+  background-color: red;
+  color: white;
+  text-decoration: none;
+  text-align: center;
+  padding: 10px 15px 10px 15px;
 }
 
-#home-signIn2 {
-    /* background-color:#5F5F5F; */
-    color:white;
-    text-decoration:none;
-    text-align: center;
-    padding:10px 15px 10px 15px;
-}
-
-#sign-in-wrapper {
-    background-color:red;
-    opacity: 80%;
-    width:100%;
-}
-
-#home-menu, #search-form {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin: 5px;
-    
+#home-menu {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 5px;
 }
 
 #home-form {
-    display: inline-block;
-    margin:0 auto;
-    background-color: rgba(0, 0, 0, 0.75);
-    width: 50%;
-    font-size:2.0rem;
-    padding: 15px 15px 20px 15px;
+  display: inline-block;
+  margin: 0 auto;
+  background-color: rgba(0, 0, 0, 0.75);
+  width: 50%;
+  font-size: 2rem;
+  padding: 15px 15px 20px 15px;
 }
 
-#home-form input[type=text], #search-form input[type=text] {
-    font-size: 1.6rem;
-    border: 2px solid red;
-    border-radius: 10px;
-    padding: 5px;
+#home-form input[type="text"] {
+  font-size: 1.6rem;
+  border: 2px solid red;
+  border-radius: 10px;
+  padding: 5px;
 }
 
-#home-form input[type=text]:focus, #search-form input[type=text]:focus {
-        background-color: lightblue;
-        
+#home-form input[type="text"]:focus {
+  background-color: lightblue;
 }
 
 .home-button {
-    background-color:red;
-    color:white;
-    font-size:1.6rem;
-    padding: 5px;
+  background-color: red;
+  color: white;
+  font-size: 1.6rem;
+  padding: 5px;
+}
+
+.selection {
+  background-color: black;
+  color: gold;
+  padding: 20px;
+}
+
+#selection-box {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+#search-box {
+  display: flex;
+  justify-content: space-between;
+  align-item: center;
+  font-size: 1rem;
+  padding: 10px;
+}
+
+#search-form input[type="text"]:focus {
+  background-color: lightblue;
+}
+
+#search-form input[type="text"] {
+  font-size: 1rem;
+  border: 2px solid red;
+  border-radius: 10px;
+  padding: 10px;
+}
+
+#genre-box,
+#rating-box {
+  padding: 10px;
 }
 
 #resultsContainer {
-    display: flex;
-    flex-wrap: wrap;
-    font-size: 1rem;
+  display: flex;
+  flex-wrap: wrap;
+  font-size: 1rem;
 }
 
 .poster-box {
-    background-color: black;
-    color: white;
-    margin: 20px;
-    min-width:200px;
+  background-color: black;
+  color: white;
+  margin: 20px;
+  min-width: 200px;
 }
 
 #selected-movie-container {
-    display: flex;
-    background-color: black;
+  display: flex;
+  background-color: black;
 }
 
 #selected-image {
-    padding:30px;
+  padding: 30px;
 }
 
 #movie-detail {
-    margin: 10px;
-    padding:40px;
+  margin: 10px;
+  padding: 40px;
+  font-size: 1.5rem;
 }
 
-
 #add-movie {
-    color:black;
+  color: black;
 }
 
 #title {
-    color:blue;
+  color: blue;
 }
 
 #synopsis {
-    color:gold;
+  color: gold;
 }
 
 #synopsis-content {
-    color: mediumturquoise;
-    padding-left: 20px;
+  color: mediumturquoise;
+  padding-left: 20px;
 }
 
-#rating, #genre, #release {
-    color: darkseagreen;
+#rating,
+#genre,
+#release {
+  color: darkseagreen;
 }
 
-#rating-content, #genre-content, #release-content {
-    color: white;
-    padding-left: 20px;
+#rating-content,
+#genre-content,
+#release-content {
+  color: white;
+  padding-left: 20px;
 }
 
+/**********************************/
 /***** styles for Admin Page ******/
-#db-results {
-    display: flex;
-    justify-content: center;
-    padding: 25px;
-    
+/**********************************/
+#db-results,
+#admin-search-results {
+  display: flex;
+  justify-content: center;
+  padding: 25px;
 }
 
-#admin-db-btn, #admin-search-form {
-    display: flex;
-    justify-content: center;
+#admin-db-btn,
+#admin-search-form {
+  display: flex;
+  justify-content: center;
 }
 
-#admin-db-table tr:nth-child(even) {
-    /*background-color: #f2f2f2;*/
-    background-color: lightblue;
-    
+#admin-db-table tr:nth-child(even),
+#admin-search-table tr:nth-child(even) {
+  /*background-color: #f2f2f2;*/
+  background-color: lightblue;
 }
 
-#admin-db-table td {
-    padding: 5px;
+#admin-search-table {
+  width: 80%;
+}
+
+#admin-db-table td,
+#admin-db-table th,
+#admin-search-table td,
+#admin-search-table th {
+  padding: 12px;
+}
+
+#reportResults {
+  color: green;
 }
