@@ -378,7 +378,7 @@ $(document).ready(function () {
     console.log("Movie Index:" + movieIndex);
     displayMovieImageAndDetail(movieIndex);
     $("#selected-movie-container").show();
-    selectedMovieID = results[movieIndex].movieID; // set it as current selected movie
+    selectedMovieID = featuredResults[movieIndex].movieID; // set it as current selected movie
     console.log("SELECTED MOVIE ID", selectedMovieID);
     window.scrollTo(0, 0); // scroll back to the top
   });
@@ -436,7 +436,8 @@ $(document).ready(function () {
   // event handler when "Add to Cart" button is clicked
   $("#add-movie").on("click", function (e) {
     // let movieInfo = results[selectedMovieID];
-    let movieInfo = results.filter((movie) => {
+    console.log("added to cart");
+    let movieInfo = featuredResults.filter((movie) => {
       console.log(
         `${movie.movieID}: ${selectedMovieID} ?? ${
           movie.movieID == selectedMovieID ? "True" : "False"
@@ -444,8 +445,9 @@ $(document).ready(function () {
       );
       return movie.movieID === selectedMovieID;
     });
-    console.log("TESTING " + results[0]);
+    console.log("TESTING " + featuredResults[0]);
     console.dir("Movie Info:" + movieInfo);
+    console.log("GENRES:", movieInfo[0].genres);
 
     $.ajax({
       method: "get",
