@@ -3,9 +3,37 @@ html {
 }
 
 #logo {
-  /* need to select a google font here for logo*/
-  color: red;
-  font-size: 3rem;
+   
+    color:red;
+    font-size: 4.0rem;
+    
+}
+
+#logo2 {
+   
+    color:red;
+    font-size: 5.5rem;
+    display:flex;
+    align-content: space-around;
+    margin: -1em 0 -2em -1em;
+    padding: 1em 0em 0em 2em;
+}
+
+.navbar-nav{
+    height: 100% !important;
+     display: flex !important;
+   
+   justify-content: flex-end !important;
+    font-size: 2em !important;
+
+}
+
+.nav-wrapper{
+   
+   display: flex;
+   align-items: center;
+   justify-content: space-between;
+    
 }
 
 /* 
@@ -156,6 +184,16 @@ html {
 #release-content {
   color: white;
   padding-left: 20px;
+}
+
+.links a{
+margin-left: 4px;
+} 
+
+.nav-wrapper{
+    display:flex;
+    background-color:none;
+
 }
 
 /**********************************/
