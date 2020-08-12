@@ -11,7 +11,6 @@ var adminDBResults; // list of movies from Database
  *******************************************************************************/
 
 $(document).ready(function () {
-  
   // Check is the username is available
   $("#new-username").on("change", function () {
     let user = $("#new-username").val();
@@ -23,7 +22,7 @@ $(document).ready(function () {
         username: user,
       },
       success: function (data, status) {
-        if(!data.response){
+        if (!data.response) {
           $("#usernameError").html(`This username is not available`);
           $("#usernameError").css("color", "red");
         } else {
@@ -32,7 +31,6 @@ $(document).ready(function () {
       },
     }); //ajax
   });
-  
 
   /******************************************************************************
    *                            Admin page Code
@@ -68,7 +66,7 @@ $(document).ready(function () {
 
   // Update the price of a movie in the Database table
   $("#db-results").on("click", "#admin-update-btn", function () {
-    $(this).html("Updated");  
+    $(this).html("Updated");
     let currentRow = $(this).closest("tr");
     let index = $(this).val();
     let price = Number(currentRow.find(".admin-db-price").html());
@@ -97,19 +95,17 @@ $(document).ready(function () {
     let index = $(this).val();
     console.log("Delete Movie from DB:" + adminDBResults[index].movie_id);
     updateDB("delete", adminDBResults[index].movie_id);
-    
+
     // Disable buttons and price input
     $(this).html("Deleted");
     let currentRow = $(this).closest("tr");
     currentRow.find(".admin-db-price").prop("contenteditable", false);
     currentRow.find(".admin-delete-btn").prop("disabled", true);
     currentRow.find(".admin-update-btn").prop("disabled", true);
-    
   });
 
   // Display search results from a TMDB web
   $("#admin-search-form").on("submit", function (e) {
-    
     $("#admin-search-results").html(""); // clean up the search table content
     e.preventDefault();
     let keyword = $("#admin-search-text").val().trim();
@@ -123,7 +119,7 @@ $(document).ready(function () {
         method: "get",
         url: "/search",
         data: {
-          search_string: keyword
+          search_string: keyword,
         },
         success: function (data, status) {
           console.log(data);
@@ -133,7 +129,7 @@ $(document).ready(function () {
             "<th style='width:100px'>Title</th> <th style='width:60px'>Image</th>" +
             "<th style='width:30px'>Rating</th> <th style='width:100px'>Date</th> <th style='width:150px'>Description</th>" +
             "<th style='width:80px'>Genres</th> <th style='width:50px'>Price($)</th> <th style='width:50px'>Action</th> </tr>";
-  
+
           data.forEach((movie, i) => {
             let genreString = "";
             movie.genres.forEach((name) => {
@@ -161,11 +157,11 @@ $(document).ready(function () {
 
   $("#admin-search-results").on("click", "#admin-add-btn", function () {
     console.log("Add button is clicked");
-    
-    // clean the db table when this action is clicked, 
+
+    // clean the db table when this action is clicked,
     // otherwise need to make ajax call to reload the db table
     $("#db-results").html(""); // close the db table if a movie is added or removed
-      
+
     let currentRow = $(this).closest("tr");
     let index = $(this).val();
     let price = Number(currentRow.find(".admin-search-price").html());
@@ -227,8 +223,7 @@ $(document).ready(function () {
       success: function (data, status) {
         console.log("updateDB done!");
         // if action="delete" disable the delete button and price change
-        if (action=="delete") {
-            
+        if (action == "delete") {
         }
       },
     }); //ajax
@@ -260,7 +255,7 @@ $(document).ready(function () {
       },
     }); //ajax
   });
-  
+
   // GET MOST PURCHASED MOVIE
   $("#admin-get-most-inCart").on("click", () => {
     $.ajax({
@@ -269,9 +264,10 @@ $(document).ready(function () {
       success: (data, status) => {
         console.log("mostPurchased:", status);
         let mostInCart = data.mostInCart[0];
-        let html = `Most Popular Movie in Cart <br>` +
-         `Title: ${mostInCart.title} <br>` + 
-         `Times added: ${mostInCart.num_times}`;
+        let html =
+          `Most Popular Movie in Cart <br>` +
+          `Title: ${mostInCart.title} <br>` +
+          `Times added: ${mostInCart.num_times}`;
         $("#reportResults").html(html);
       },
     });
@@ -354,7 +350,8 @@ $(document).ready(function () {
     displayMovieImage(movieIndex);
     displayMovieDetail(movieIndex);
     $("#selected-movie-container").show();
-    selectedMovieID = results[movieIndex].moveID; // set it as current selected movie
+    selectedMovieID = results[movieIndex].movieID; // set it as current selected movie
+    console.log("SELECTED MOVIE ID", selectedMovieID);
     window.scrollTo(0, 0); // scroll back to the top
   });
 
@@ -375,7 +372,7 @@ $(document).ready(function () {
     let htmlString = "";
     var i;
     for (i in movies) {
-      console.log(movies[i]);
+      // console.log(movies[i]);
       let imgPath = movies[i].imageUrl;
       htmlString += "<div class='poster-box'>";
       htmlString += `<img class='movie-poster' src='${imgPath}' alt='${movies[i].title}' width='200' height='300' value=${i}>`;
@@ -410,15 +407,31 @@ $(document).ready(function () {
 
   // event handler when "Add to Cart" button is clicked
   $("#add-movie").on("click", function (e) {
-    let movieInfo = results[selectedMovieID];
+    // let movieInfo = results[selectedMovieID];
+    let movieInfo = results.filter((movie) => {
+      console.log(
+        `${movie.movieID}: ${selectedMovieID} ?? ${
+          movie.movieID == selectedMovieID ? "True" : "False"
+        }`
+      );
+      return movie.movieID === selectedMovieID;
+    });
     console.log("TESTING " + results[0]);
-    console.log("Movie Info:" + movieInfo);
+    console.dir("Movie Info:" + movieInfo);
+
     $.ajax({
       method: "get",
       url: "/updateCart",
       data: {
+        // movieInfo: movieInfo,
         action: "add",
-        movie_info: movieInfo,
+        movie_id: movieInfo[0].movieID,
+        title: movieInfo[0].title,
+        release_date: movieInfo[0].release_date,
+        description: movieInfo[0].overview,
+        image_url: movieInfo[0].imageUrl,
+        rating: movieInfo[0].rating,
+        genres: movieInfo[0].genres,
       },
       success: function (data, status) {
         console.log("Movie is added");
