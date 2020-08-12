@@ -7,7 +7,7 @@ html {
 #logo {
    
     color:red;
-    font-size: 3.0rem;
+    font-size: 4.0rem;
     
 }
 
@@ -20,6 +20,23 @@ html {
     margin: -1em 0 -2em -1em;
     padding: 1em 0em 0em 2em;
 
+}
+
+.navbar-nav{
+    height: 100% !important;
+     display: flex !important;
+   
+   justify-content: flex-end !important;
+    font-size: 2em !important;
+
+}
+
+.nav-wrapper{
+   
+   display: flex;
+   align-items: center;
+   justify-content: space-between;
+    
 }
 
 /* 
@@ -247,6 +264,12 @@ color: white;
 .links a{
 margin-left: 4px;
 } 
+
+.nav-wrapper{
+    display:flex;
+    background-color:none;
+
+}
 
 
 /**********************************/
