@@ -38,7 +38,6 @@ exports.displayIndexPage = async (req, res) => {
 
 /**
  * Handles the POST "/createAccount" route
- * --- TO DO (LINDSEY) ---
  */
 exports.createAccount = (req, res) => {
   let usernameInput = req.body.username;
@@ -50,7 +49,8 @@ exports.createAccount = (req, res) => {
   
   bcrypt.hash(passwordInput, saltRounds, function (err, hash) {
     let sql =
-      "INSERT INTO user (admin_privledges, username, password, firstName, lastName) VALUES (false, ?, ?, ?, ?);";
+      "INSERT INTO user (admin_privledges, username, password, firstName, " +
+      "lastName) VALUES (false, ?, ?, ?, ?);";
     let sqlParams = [usernameInput, hash, firstNameInput, lastNameInput];
     pool.query(sql, sqlParams, function (err, rows, fields) {
       if (err) throw err;
@@ -92,8 +92,7 @@ exports.isUsernameAvailable = (req, res) => {
 exports.displaySearchResults = async (req, res) => {
   let query = req.query.search_string;
   let resultArray = await getMovie(query);
-  console.dir(resultArray);
-  res.send(resultArray); // index page will be used as selection as well without reloading the page
+  res.send(resultArray); 
 };
 
 /**
@@ -322,7 +321,7 @@ async function getMovie(query) {
     //MAIN END
 
     let genreNameArr = genreToString(movie.genre_ids);
-
+    
     let result = {
       title: movie.original_title,
       imageUrl: base_url + "w342" + movie.poster_path,
@@ -438,50 +437,42 @@ async function loadConfig() {
  */
 async function getFeaturedMovies() {
   return new Promise(function (resolve, reject) {
-    let sql = "SELECT * FROM movie ORDER BY rating DESC LIMIT 10;";
+    // Query to get the top ten rated movies from our database
+    let sql = "SELECT movie.movie_id, title, release_date, description, image_url," +
+              " rating, price, genre_name FROM movie JOIN genre on movie.movie_id =" + 
+              " genre.movie_id ORDER BY rating DESC, movie.movie_id;";
     pool.query(sql, function (err, rows, fields) {
       if (err) throw err;
-      let resultArray = [];
-
-      rows.forEach(async (movie) => {
-        let genreNameArray = ["temp"];
-        // The next line is giving an error saying we cannot do this many sql queries
-        //let genreNameArray = await getGenreNamesFromDB(movie.movie_id);
-
-        let result = {
-          title: movie.title,
-          imageUrl: movie.image_url,
-          rating: movie.rating,
-          movieID: movie.movie_id,
-          release_date: movie.release_date, // formats date to locale's style
-          overview: movie.description,
-          genres: genreNameArray,
-        };
-        resultArray.push(result);
+      let movieObjArray = [];
+      let movieID = 0;
+      let index = -1;
+      
+      // Loop through all the rows returned from the query
+      rows.forEach( async (record) => {
+        
+        // If this is a new movie ID, create a movie object for it
+        if(movieID != record.movie_id){
+          movieID = record.movie_id;
+          let movie = {
+            title: record.title,
+            imageUrl: record.image_url,
+            rating: record.rating,
+            movieID: record.movie_id,
+            release_date: record.release_date, // formats date to locale's style
+            overview: record.description,
+            genres: [],
+          };
+          index++;
+          movieObjArray.push(movie);
+        
+        // Otherwise, this is a repeat movie_id, with a new genre
+        } else {
+          // Add the genre from this record to this movie's genre list
+          movieObjArray[index].genres.push(record.genre_name);
+        }
       });
-
-      resolve(resultArray);
-    });
-  });
-}
-
-/**
- * Get the names of all genres associated with the movie id
- * @param {movieID} the movie
- * @return {resultArray} an array of genres
- */
-
-function getGenreNamesFromDB(movieID) {
-  return new Promise(function (resolve, reject) {
-    let sql = "SELECT genre_name FROM genre WHERE movie_id = ?;";
-    pool.query(sql, [movieID], function (err, rows, fields) {
-      if (err) throw err;
-      let resultArray = [];
-
-      rows.forEach(async (genre) => {
-        resultArray.push(genre.genre_name);
-      });
-      resolve(resultArray);
+      // Send back all ten movies in JSON format, including their details
+      resolve(movieObjArray);
     });
   });
 }
