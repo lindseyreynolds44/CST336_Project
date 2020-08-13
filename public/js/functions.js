@@ -54,8 +54,8 @@ $(document).ready(function () {
           html += `<td> ${movie.movie_id} </td>`;
           html += `<td> ${movie.title} </td>`;
           html += `<td class='admin-db-price' contenteditable='true' > ${movie.price} </td>`;
-          html += `<td> <button id="admin-update-btn" class="btn btn-outline-success" value=${i}>Update</button> </td>`;
-          html += `<td> <button id="admin-delete-btn" class="btn btn-outline-success" value=${i}>Delete</button> </td>`;
+          html += `<td> <button id="admin-update-btn" class="btn btn-info" value=${i}>Update</button> </td>`;
+          html += `<td> <button id="admin-delete-btn" class="btn btn-info" value=${i}>Delete</button> </td>`;
           html += "</tr>";
         });
         html += "</table>";
@@ -145,7 +145,7 @@ $(document).ready(function () {
             html += `<td > ${movie.overview} </td>`;
             html += `<td > ${genreString} </td>`;
             html += `<td class='admin-search-price' contenteditable='true'> 5.99 </td>`;
-            html += `<td> <button id='admin-add-btn' class='btn btn-outline-success' value=${i}>Add Movie</button> </td>`;
+            html += `<td> <button id='admin-add-btn' class='btn btn-info' value=${i}>Add Movie</button> </td>`;
             html += "</tr>";
           });
           html += "</table>";
@@ -431,7 +431,7 @@ $(document).ready(function () {
       let imgPath = movies[i].imageUrl;
       htmlString += "<div class='poster-box'>";
       htmlString += `<img class='movie-poster' src='${imgPath}' alt='${movies[i].title}' width='200' height='300' value=${i}>`;
-      htmlString += `<br> ${movies[i].release_date}`;
+      // htmlString += `<br> ${movies[i].release_date}`;
       htmlString += "</div>";
     }
 
@@ -468,6 +468,7 @@ $(document).ready(function () {
   // event handler when "Add to Cart" button is clicked
   $("#add-movie").on("click", function (e) {
     console.log("added to cart", selectedMovieIndex);
+    console.log(featuredResults[3]);
     /*  just for testing purpose
     let featuredResults = featuredResults.filter((movie) => {
       console.log(

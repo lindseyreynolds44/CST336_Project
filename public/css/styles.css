@@ -1,18 +1,25 @@
 html {
-  margin: 0px 15px;
+  margin: 0 auto;
 }
 
+/*********************************************************************/
+/*                         Nav Bar Styles 
+/*********************************************************************/
 
 #logo {
-  color:red;
-  font-size: 4.0rem;
-    
+  color: red;
+  font-size: 2.4rem;
+}
+
+#logo-large {
+  color: red;
+  font-size: 4rem;
 }
 
 #logo2 {
-  color:red;
+  color: red;
   font-size: 5.5rem;
-  display:flex;
+  display: flex;
   align-content: space-around;
   margin: -1em 0 -2em -1em;
   padding: 1em 0em 0em 2em;
@@ -29,112 +36,112 @@ html {
 .navbar-nav {
   height: 100% !important;
   display: flex !important;
-  
+
   justify-content: flex-end !important;
   font-size: 2em !important;
 }
 
 .nav-wrapper {
-   display: flex;
-   align-items: center;
-   justify-content: space-between;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
 
-/* sign in page layout */
-/* Made with love by Mutiullah Samim*/
+/*********************************************************************/
+/*                      Sign In Page Styles 
+/*********************************************************************/
 
 /* @import url('https://fonts.googleapis.com/css?family=Numans');*/
 
-html,body{
-  background: linear-gradient( rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5) ), url('../img/movie-wall.jpg');
+html,
+body {
+  background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
+    url("../img/movie-wall.jpg");
   background-size: cover;
   background-repeat: no-repeat;
   height: 100%;
-  font-family: 'Numans', sans-serif;
+  font-family: "Numans", sans-serif;
 }
 
-.container{
+.container {
   height: 100%;
   align-content: center;
 }
 
-.card{
+.card {
   height: 370px;
-  margin-top: auto;
+  margin-top: 250px;
   margin-bottom: auto;
   width: 400px;
-  background-color: rgba(0,0,0,0.5) !important;
+  background-color: rgba(0, 0, 0, 0.5) !important;
 }
 
-.social_icon span{
+.social_icon span {
   font-size: 60px;
   margin-left: 10px;
   color: red;
 }
 
-.social_icon span:hover{
+.social_icon span:hover {
   color: white;
   cursor: pointer;
 }
 
-.card-header h3{
+.card-header h3 {
   color: white;
 }
 
-.social_icon{
+.social_icon {
   position: absolute;
   right: 20px;
   top: -45px;
 }
 
-.input-group-prepend span{
+.input-group-prepend span {
   width: 50px;
   background-color: red;
   color: black;
-  border:0 !important;
+  border: 0 !important;
 }
 
-input:focus{
-  outline: 0 0 0 0  !important;
+input:focus {
+  outline: 0 0 0 0 !important;
   box-shadow: 0 0 0 0 !important;
 }
 
-.remember{
+.remember {
   color: white;
 }
 
-.remember input
-{
+.remember input {
   width: 20px;
   height: 20px;
   margin-left: 15px;
   margin-right: 5px;
 }
 
-.login_btn{
+.login_btn {
   color: black;
   background-color: red;
   width: 100px;
 }
 
-.login_btn:hover{
+.login_btn:hover {
   color: black;
   background-color: white;
 }
 
-.links{
+.links {
   color: white;
 }
 
-.links a{
+.links a {
   margin-left: 4px;
 }
 
-
-
-/* 
-** Styles for home and index page 
-*/
+/*********************************************************************/
+/*                      Styles Home and Index Page
+/*********************************************************************/
 
 .home {
   text-align: center;
@@ -191,7 +198,6 @@ input:focus{
 .selection {
   background-color: black;
   color: gold;
-  padding: 20px;
 }
 
 #selection-box {
@@ -203,7 +209,6 @@ input:focus{
 #search-box {
   display: flex;
   justify-content: space-between;
-  align-item: center;
   font-size: 1rem;
   padding: 10px;
 }
@@ -222,7 +227,6 @@ input:focus{
 #filter-box {
   display: flex;
   justify-content: flex-end;
-  align-item: center;
   font-size: 1rem;
   padding: 10px;
 }
@@ -243,6 +247,13 @@ input:focus{
   color: white;
   margin: 20px;
   min-width: 200px;
+}
+
+.movie-poster {
+  transition: transform 0.2s;
+}
+.movie-poster:hover {
+  transform: scale(1.15);
 }
 
 #selected-movie-container {
@@ -290,19 +301,36 @@ input:focus{
   padding-left: 20px;
 }
 
-.links a{
-margin-left: 4px;
-} 
-
-.nav-wrapper{
-    display:flex;
-    background-color:none;
-
+.links a {
+  margin-left: 4px;
 }
 
-/**********************************/
-/***** styles for Admin Page ******/
-/**********************************/
+.nav-wrapper {
+  display: flex;
+  background-color: none;
+}
+
+/*********************************************************************/
+/*                        Styles for Admin Page 
+/*********************************************************************/
+#admin-title {
+  color: red;
+}
+
+#admin-content {
+  margin: 0 auto;
+}
+
+.admin-container {
+  height: 500px;
+  width: 80%;
+  border-radius: 10px;
+  margin: auto;
+  overflow-y: auto;
+  background-color: white;
+  opacity: 0.85;
+}
+
 #db-results,
 #admin-search-results {
   display: flex;
@@ -318,12 +346,20 @@ margin-left: 4px;
 
 #admin-db-table tr:nth-child(even),
 #admin-search-table tr:nth-child(even) {
-  /*background-color: #f2f2f2;*/
-  background-color: lightblue;
+  background-color: lightgray;
+}
+
+#admin-search-text {
+  width: 200px;
+  margin: 10px;
 }
 
 #admin-search-table {
-  width: 80%;
+  width: 90%;
+}
+
+#admin-search-table td {
+  height: 10px;
 }
 
 #admin-db-table td,
@@ -333,6 +369,6 @@ margin-left: 4px;
   padding: 12px;
 }
 
-#reportResults {
-  color: green;
+.admin-btn {
+  margin: 15px;
 }

@@ -1,47 +1,75 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <title>QueueFlix Admin</title>
-        <meta charset="UTF-8">
-        <script 
-            src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js">
-        </script>
-        <script src="js/functions.js"></script>
-        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
-		<link rel="stylesheet" href="css/styles.css" />
-        
-    </head>
-    <body>
-        <div id="logo">QueueFlix</div>
-        <h3 class="text-center">Admins Only </h3>
-        <hr>
+  <head>
+    <title>QueueFlix Admin</title>
+    <meta charset="UTF-8" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="js/functions.js"></script>
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
+      integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk"
+      crossorigin="anonymous"
+    />
+    <link rel="stylesheet" href="css/styles.css" />
+  </head>
+  <body>
+    <%- include("partials/nav.ejs") %>
+    <div id="admin-content">
+      <br><br>
+      <h1 id="admin-title" class="text-center">Administration Page</h1>
+      <br /><br />
+
+      <div class="admin-container">
+        <br />
+        <h4 class="text-center">Display Movies in the Database</h4>
+        <br />
         <div id="admin-db-btn">
-            <button id="db-btn" class="btn btn-info">Database table</button>
+          <button id="db-btn" class="btn btn-info">Display Table</button>
         </div>
         <div id="db-results"></div>
+      </div>
 
-        <br><br>
-        
+      <br /><br />
 
-        <h4 class="text-center">Search and Add Movie to Database</h4><br>
+      <div class="admin-container">
+        <br />
+        <h4 class="text-center">Search and Add Movies to the Database</h4>
+        <br />
         <form id="admin-search-form">
-            <input type="text" id="admin-search-text" placeholder="Search movie" size=40>
-            <button id="admin-search-btn" class="btn btn-info">Search</button>
-            
+          <input
+            type="text"
+            id="admin-search-text"
+            placeholder="Search keyword"
+            size="40"
+          />
+          <button id="admin-search-btn" class="btn btn-info">Search</button>
         </form>
         <div id="admin-search-warning" class="text-center"></div>
-        <br>
+        <br />
         <div id="admin-search-results"></div>
+      </div>
 
-        <h3 class="text-center">Reports</h3>
-        <hr>
+      <br /><br />
+
+      <div class="admin-container">
+        <br />
+        <h4 class="text-center">Generate Database Reports</h4>
+        <br />
         <div class="text-center">
-            <button id="admin-get-avg-price" class="btn btn-info">Average Movie Price</button>
-            <button id="admin-get-avg-rating" class="btn btn-info">Average Movie Rating</button>
-            <button id="admin-get-most-inCart" class="btn btn-info">Most added to Cart Movie</button>
+          <button id="admin-get-avg-price" class="admin-btn btn btn-info">
+            Average Movie Price
+          </button>
+          <button id="admin-get-avg-rating" class="admin-btn btn btn-info">
+            Average Movie Rating
+          </button>
+          <button id="admin-get-most-inCart" class="admin-btn btn btn-info">
+            Most added to Cart Movie
+          </button>
         </div>
-        <br>
+        <br />
         <div id="reportResults" class="text-center"></div>
-        
-    </body>
+      </div>
+    </div>
+  </body>
 </html>
