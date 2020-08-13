@@ -1,7 +1,7 @@
 
 
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-    <a id="logo" class="navbar-brand" href="#">QueueFlix</a>
+    <a id="logo" class="navbar-brand" href="/index">QueueFlix</a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
@@ -16,7 +16,8 @@
         </li>
         
       </ul>
-        <form id="search-form" class="form-inline <%- page_name == "adminPage" ? "d-none" : "" %>">
+        <form id="search-form" class="form-inline <%- (page_name == "adminPage" || page_name == "shoppingCart") ? "d-none" : "" %>">
+          
           <div id="search-warning"></div>
           <input id="search-text" class="form-control mr-sm-2" name="keyword" placeholder="Search Movie" type="test" aria-label="Search">
           <button class="btn btn-outline-danger my-2 my-sm-0" type="submit">Search</button>
