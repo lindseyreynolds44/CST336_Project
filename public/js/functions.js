@@ -349,8 +349,14 @@ $(document).ready(function () {
   
   // reset filters
   $("#reset-filters").on("click", function() {
+    
     $("#filter-genre option:first").prop("selected", true);
     $("#filter-rating option:first").prop("selected", true);
+    
+    // reset back to original list of movies, and remove the selected movie as well
+    $("#selected-movie-container").hide(); 
+    featuredResults = originalResults;
+    displayAllMovies(featuredResults);
   });
 
   // genre option is selected
