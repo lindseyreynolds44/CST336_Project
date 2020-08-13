@@ -2,6 +2,7 @@ html {
   margin: 0px 15px;
 }
 
+
 #logo {
   color:red;
   font-size: 4.0rem;
@@ -15,6 +16,14 @@ html {
   align-content: space-around;
   margin: -1em 0 -2em -1em;
   padding: 1em 0em 0em 2em;
+}
+
+.navbar-brand {
+  font-size: 1.8rem;
+}
+
+.nav-item {
+  font-size: 1.2rem;
 }
 
 .navbar-nav {
@@ -207,6 +216,14 @@ input:focus{
   font-size: 1rem;
   border: 2px solid red;
   border-radius: 10px;
+  padding: 10px;
+}
+
+#filter-box {
+  display: flex;
+  justify-content: flex-end;
+  align-item: center;
+  font-size: 1rem;
   padding: 10px;
 }
 

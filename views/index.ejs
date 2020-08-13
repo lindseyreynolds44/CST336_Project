@@ -1,17 +1,9 @@
 <%- include('partials/header.ejs') %>
 
 
-    <body class="selection" page="index">
-      <%- include("partials/nav.ejs") %> 
-        <form id="search-form">
-          <input
-            type="text"
-            id="search-text"
-            placeholder="Search movie keyword"
-            name="keyword"
-            size="30"
-          />
-        </form>
+  <body class="selection" page="index">
+      <%- include("partials/nav.ejs") %>
+      <div id="filter-box">
         <div id="genre-box">
           Filter by Genre:
           <select id="filter-genre" name="genre"></select>
@@ -26,9 +18,7 @@
           </select>
         </div>
       </div>
-    </div>
 
-    <div id="search-warning"></div>
 
     <main>
       <hr />
