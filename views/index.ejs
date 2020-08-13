@@ -1,17 +1,9 @@
 <%- include('partials/header.ejs') %>
 
 
-    <body class="selection" page="index">
-      <%- include("partials/nav.ejs") %> 
-        <form id="search-form">
-          <input
-            type="text"
-            id="search-text"
-            placeholder="Search movie keyword"
-            name="keyword"
-            size="30"
-          />
-        </form>
+  <body class="selection" page="index">
+      <%- include("partials/nav.ejs") %>
+      <div id="filter-box">
         <div id="genre-box">
           Filter by Genre:
           <select id="filter-genre" name="genre"></select>
@@ -25,10 +17,9 @@
             <option value="7">Above 7</option>
           </select>
         </div>
+        <button id="reset-filters" class="btn btn-outline-warning my-2 my-sm-0" type="submit">Reset Filters</button>
       </div>
-    </div>
 
-    <div id="search-warning"></div>
 
     <main>
       <hr />
@@ -52,7 +43,8 @@
     </main>
   </body>
   <script>
+    originalResults = <%- JSON.stringify(resultArray) %>;
     featuredResults = <%- JSON.stringify(resultArray) %>;
-    console.log(featuredResults);
+    console.log(originalResults);
   </script>
 </html>
