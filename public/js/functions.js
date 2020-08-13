@@ -346,6 +346,12 @@ $(document).ready(function () {
       }); //ajax
     }
   }); //index - keyword search
+  
+  // reset filters
+  $("#reset-filters").on("click", function() {
+    $("#filter-genre option:first").prop("selected", true);
+    $("#filter-rating option:first").prop("selected", true);
+  });
 
   // genre option is selected
   $("#filter-genre").on("change", function () {
