@@ -431,7 +431,7 @@ $(document).ready(function () {
       let imgPath = movies[i].imageUrl;
       htmlString += "<div class='poster-box'>";
       htmlString += `<img class='movie-poster' src='${imgPath}' alt='${movies[i].title}' width='200' height='300' value=${i}>`;
-      htmlString += `<br> ${movies[i].release_date}`;
+      // htmlString += `<br> ${movies[i].release_date}`;
       htmlString += "</div>";
     }
 
@@ -468,6 +468,7 @@ $(document).ready(function () {
   // event handler when "Add to Cart" button is clicked
   $("#add-movie").on("click", function (e) {
     console.log("added to cart", selectedMovieIndex);
+    console.log(featuredResults[3]);
     /*  just for testing purpose
     let featuredResults = featuredResults.filter((movie) => {
       console.log(

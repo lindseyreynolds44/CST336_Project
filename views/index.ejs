@@ -1,9 +1,22 @@
-<%- include('partials/header.ejs') %>
+<%- include("partials/header.ejs") %>
+<%- include("partials/nav.ejs") %>
 
 
   <body class="selection" page="index">
-      <%- include("partials/nav.ejs") %>
       <div id="filter-box">
+
+        <div id="genre-box" class="dropdown show">
+          <a class="btn btn-secondary dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            Genre
+          </a>
+        
+          <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+            <a class="dropdown-item" href="#">Action</a>
+            <a class="dropdown-item" href="#">Another action</a>
+            <a class="dropdown-item" href="#">Something else here</a>
+          </div>
+        </div>
+
         <div id="genre-box">
           Filter by Genre:
           <select id="filter-genre" name="genre"></select>
@@ -41,6 +54,7 @@
       <div id="featured-header"></div>
       <div id="resultsContainer"></div>
     </main>
+    <%- include("partials/bootstrap-footer.ejs") %> 
   </body>
   <script>
     originalResults = <%- JSON.stringify(resultArray) %>;
