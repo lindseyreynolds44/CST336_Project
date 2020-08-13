@@ -13,35 +13,49 @@
     </head>
     <body>
         <div id="logo">QueueFlix</div>
-        <h3 class="text-center">Admins Only </h3>
-        <hr>
-        <div id="admin-db-btn">
-            <button id="db-btn" class="btn btn-info">Database table</button>
-        </div>
-        <div id="db-results"></div>
-
-        <br><br>
         
-
-        <h4 class="text-center">Search and Add Movie to Database</h4><br>
-        <form id="admin-search-form">
-            <input type="text" id="admin-search-text" placeholder="Search movie" size=40>
-            <button id="admin-search-btn" class="btn btn-info">Search</button>
+        <div id="admin-content">
+            <h2 id="admin-title" class="text-center">Administration Page</h2>
+            <br><br>
             
-        </form>
-        <div id="admin-search-warning" class="text-center"></div>
-        <br>
-        <div id="admin-search-results"></div>
-
-        <h3 class="text-center">Reports</h3>
-        <hr>
-        <div class="text-center">
-            <button id="admin-get-avg-price" class="btn btn-info">Average Movie Price</button>
-            <button id="admin-get-avg-rating" class="btn btn-info">Average Movie Rating</button>
-            <button id="admin-get-most-inCart" class="btn btn-info">Most added to Cart Movie</button>
+            <div class="admin-container">
+                <br><h4 class="text-center"> Display Movies in the Database </h4><br>
+                <div id="admin-db-btn">
+                    <button id="db-btn" class="btn btn-info">Display Table</button>
+                </div>
+                <div id="db-results"></div>
+            </div>
+        
+            <br><br>
+            
+            <div class="admin-container">
+                <br><h4 class="text-center">Search and Add Movies to the Database</h4><br>
+                <form id="admin-search-form">
+                    <input type="text" id="admin-search-text" placeholder="Search keyword" size=40>
+                    <button id="admin-search-btn" class="btn btn-info">Search</button>
+                    
+                </form>
+                <div id="admin-search-warning" class="text-center"></div>
+                <br>
+                <div id="admin-search-results"></div>
+            </div>
+            
+            <br><br>
+            
+            <div class="admin-container">
+                <br><h4 class="text-center"> Generate Database Reports </h4><br>
+                <div class="text-center">
+                    <button id="admin-get-avg-price" class="admin-btn btn btn-info">Average Movie Price</button>
+                    <button id="admin-get-avg-rating" class="admin-btn btn btn-info">Average Movie Rating</button>
+                    <button id="admin-get-most-inCart" class="admin-btn btn btn-info">Most added to Cart Movie</button>
+                </div>
+                <br>
+                <div id="reportResults" class="text-center"></div>
+            </div>
+            
+                
         </div>
-        <br>
-        <div id="reportResults" class="text-center"></div>
+        
         
     </body>
 </html>
