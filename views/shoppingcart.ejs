@@ -1,59 +1,59 @@
 <%- include('partials/header.ejs') %>
-    <body>
-    <h2>SHOPPING CART</h2>
-
-    <button id="add">Add To Cart</button>
-    <button id="delete">Delete From Cart</button>
-
-    <% cartContents.forEach((item) => { %>
-        <div class="card">
-            <div class="card-body flex-row">
-                <div class="title">
-                  <img src="<%= item.image_url %>" alt="movie image">  
-                </div>
-                <div class="title">
-                    <%= item.title %>
-                    Price: $<%= item.price %>
-                </div>
-            </div>
-        </div>
-   <% }); %>
+<%- include("partials/nav.ejs") %>
     
-    <script>
+    <body>
+    <div class="home-shopping">
+        
+    <br><br>
+    <h2 id="cart-header">Shopping Cart</h2>
+    <br><br>
 
-     $("#add").on("click", function () {
-         console.log("updateCart")
-        $.ajax({
-            method: "get",
-            url: "/updateCart",
-            data: {
-                movie_id: 1,
-                title: "Test Movie",
-                release_date: "01/01/1990",
-                description: "Test Description",
-                image_url: "www.google.com",
-                rating: "9.9",
-                genres: [18,14],
-                action: "add"
-            },
-            success: (results, status) => {
-                console.log("Add:",status)
-            },
-        });
-     });
-
-     $("#delete").on("click", function () {
-         $.ajax({
-             method: "get",
-             url: "/updateCart",
-             data: { movie_id: 1, action: "delete"},
-             success: (results, status) => {
-                 console.log("Delete:", status)
-             },
-         });
-     });
-
-    </script>
+    <div id="cart-content">
+        
+        <table id="cart-table">
+            <tr id="table-header">
+                <td><strong>Poster</strong></td>
+                <td><strong>Movie ID</strong></td>
+                <td><strong>Title</strong></td>
+                <td><strong>Price ($)</strong></td>
+                <td><strong>Remove</strong></td>
+            </tr>
+            <% let subtotal = 0; %>
+            <% cartContents.forEach((item) => { %>
+                <tr class="table-row">
+                    <td><img height="200" src="<%= item.image_url %>" alt="movie image"></td>
+                    <td class="cart-movie-id row-item"><%= item.movie_id %></td>
+                    <td class="row-item"><%= item.title %></td>
+                    <td class="cart-movie-price row-item"><%= item.price %></td>
+                    <td><button type="button" class="btn btn-danger cart-delete-btn">Delete</button></td>
+                </tr>
+                <% subtotal += item.price; %>
+            <% }); 
+                subtotal = subtotal.toFixed(2);
+                let shipping = 5.99; 
+                let total = parseFloat(subtotal) + parseFloat(shipping);
+                total = total.toFixed(2); %>
+        </table>
+        <section id="cart-total">
+            <h2 class="total-header">Cart Total</h2>
+            <hr>
+            
+            <% if(cartContents.length == 0) { %>
+                <br>
+                <h4 id="empty-label">Your Cart is Empty</h4>
+            <% } else { %>
+                <h4 id="empty-label"></h4>
+                <ul>
+                    <li><span class="total-label">Subtotal: $</span> <span id="subtotal"><%= subtotal %></span></li>
+                    <li><span class="total-label">Shipping: $</span> <span id="shipping"><%= shipping %></span></li>
+                    <li id="total-label2">Total: $ <span id="total"><%= total %></span></li>
+                </ul>
+            <% } %>
+            
+            <button id="refresh-cart-btn" class="btn btn-danger"><a href="/shoppingCart">Refresh Cart</a></button>
+        </section>
+    </div>
+    
         
 <%- include('partials/footer.ejs') %>
 
