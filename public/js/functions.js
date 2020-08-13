@@ -374,11 +374,16 @@ $(document).ready(function () {
     
   });
   
+  // display and filter the original list of movies
   function displayFilteredMovies() {
+    
+    featuredResults = originalResults; // reset to original list before filtering
+    
+    // filter the movies with current selected genre
     let genre = $("#filter-genre").children("option:selected").val();
     console.log("Option is clicked:", genre);
     if (genre != "") {
-      featuredResults = filterMovieByGenre(originalResults, genre);
+      featuredResults = filterMovieByGenre(featuredResults, genre);
       console.log("Genre filtered", featuredResults);
       
     }
@@ -430,7 +435,13 @@ $(document).ready(function () {
       // console.log(movies[i]);
       let imgPath = movies[i].imageUrl;
       htmlString += "<div class='poster-box'>";
-      htmlString += `<img class='movie-poster' src='${imgPath}' alt='${movies[i].title}' width='200' height='300' value=${i}>`;
+      if (imgPath.search("w342null") >= 0) {
+        // no poster image for the movie
+        htmlString += `<div class='movie-poster' style='background-image:url(../img/filmstrip.png);' value=${i}>${movies[i].title}</div>`;
+      } else {
+        htmlString += `<div class='movie-poster' style='background-image:url(${imgPath});' value=${i}></div>`;
+        //htmlString += `<img class='movie-poster' src='${imgPath}' alt='${movies[i].title}' width='200' height='300' value=${i}>`;
+      }
       // htmlString += `<br> ${movies[i].release_date}`;
       htmlString += "</div>";
     }
@@ -441,9 +452,16 @@ $(document).ready(function () {
   // display the poster image of the movie with given index
   function displayMovieImageAndDetail(index) {
     console.log("index and length", index, featuredResults.length);
+    let imgPath = featuredResults[index].imageUrl;
     if (index < featuredResults.length) {
-      let htmlString = `<img class='movie-image' src='${featuredResults[index].imageUrl}' alt='${featuredResults[index].title}' width='400' height='600' value=${index}>`;
+      
+      if (imgPath.search("w342null") >= 0) {
+        // there are no image poster, so replace with default image
+        imgPath = "../img/movie_poster.jpg";
+      }
+      let htmlString = `<img class='movie-image' src='${imgPath}' alt='${featuredResults[index].title}' width='400' height='600' value=${index}>`;
       $("#selected-image").html(htmlString);
+      $("#title").html(featuredResults[index].title);
       $("#synopsis-content").html(featuredResults[index].overview);
       $("#rating-content").html(featuredResults[index].rating);
       $("#release-content").html(featuredResults[index].release_date);
@@ -469,20 +487,7 @@ $(document).ready(function () {
   $("#add-movie").on("click", function (e) {
     console.log("added to cart", selectedMovieIndex);
     console.log(featuredResults[3]);
-    /*  just for testing purpose
-    let featuredResults = featuredResults.filter((movie) => {
-      console.log(
-        `${movie.movieID}: ${selectedMovieID} ?? ${
-          movie.movieID == selectedMovieID ? "True" : "False"
-        }`
-      );
-      return movie.movieID === selectedMovieID;
-    });
-    console.log("TESTING " + featuredResults[selectedMovieIndex]);
-    console.dir("Movie Info:" + featuredResults);
-    console.log("GENRES:", featuredResults[selectedMovieIndex].genres);
-    */
-
+    
     $.ajax({
       method: "get",
       url: "/updateCart",
