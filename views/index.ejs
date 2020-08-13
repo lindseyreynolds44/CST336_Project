@@ -52,7 +52,8 @@
     </main>
   </body>
   <script>
+    originalResults = <%- JSON.stringify(resultArray) %>;
     featuredResults = <%- JSON.stringify(resultArray) %>;
-    console.log(featuredResults);
+    console.log(originalResults);
   </script>
 </html>
