@@ -57,7 +57,11 @@ html,
 body {
   background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
     url("../img/movie-wall.jpg");
+<<<<<<< HEAD
   /* background-size: cover; */
+=======
+  background-size: cover;
+>>>>>>> 42c938f5eae1e95cabdedc56f55e3fb186c3d92d
   background-repeat: repeat;
   height: 100%;
   font-family: "Numans", sans-serif;
@@ -74,6 +78,16 @@ body {
   margin-bottom: auto;
   width: 400px;
   background-color: rgba(0, 0, 0, 0.5) !important;
+}
+
+.card-header h3 {
+  color: white;
+  text-align:center;
+}
+
+.form-group {
+  display:flex;
+  justify-content:center;
 }
 
 .social_icon span {
@@ -160,10 +174,10 @@ input:focus {
   text-align: center;
   background-image: url("../img/movie-wall.jpg");
   background-size: cover;
-  background-repeat: no-repeat;
+  /* background-repeat: no-repeat; */
   color: white;
   font-size: 2rem;
-  padding: 20px;
+  padding: 20px; 
 }
 
 #home-signIn {
@@ -255,6 +269,7 @@ input:focus {
   font-size: 1rem;
 }
 
+
 .poster-box {
   background-color: black;
   color: white;
@@ -262,9 +277,20 @@ input:focus {
   min-width: 200px;
 }
 
+
 .movie-poster {
+  height: 300px;
+  width:200px;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  position: relative;
   transition: transform 0.2s;
+  line-height: 150px;
+  text-align: center;
 }
+
+
 .movie-poster:hover {
   transform: scale(1.15);
 }
@@ -289,7 +315,8 @@ input:focus {
 }
 
 #title {
-  color: blue;
+  color: magenta;
+  font-size:1.8rem;
 }
 
 #synopsis {
