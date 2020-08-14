@@ -22,7 +22,7 @@ app.use(express.urlencoded({extended: true})); //to be able to parse POST parame
 app.get("/", homeController.displaySignInPage);
 
 // Route to display main page of our website, once user is logged in
-app.get("/index", homeController.displayIndexPage); // for testing purpose
+app.get("/index", isAuthenticated, homeController.displayIndexPage); // for testing purpose
 
 // When user clicks "sign in" on the sign in page, using
 // their username and password (Be sure to use POST in .ejs file)
@@ -51,7 +51,7 @@ app.get("/isUsernameAvailable", homeController.isUsernameAvailable);
 app.post("/createAccount", homeController.createAccount);
 
 // Route for returning movies from a search
-app.get("/search", homeController.displaySearchResults); // for testing without authentication
+app.get("/search", isAuthenticated, homeController.displaySearchResults); // for testing without authentication
 
 // Route when user clicks the "logout" button
 app.get("/logout", function(req, res){
@@ -60,30 +60,30 @@ app.get("/logout", function(req, res){
 });
 
 // Route when user adds or deletes movies from their cart
-app.get("/updateCart", homeController.updateCart);
+app.get("/updateCart", isAuthenticated, homeController.updateCart);
 
 // Route to display the shopping cart page 
-app.get("/shoppingCart", homeController.displayCartPage);
+app.get("/shoppingCart", isAuthenticated, homeController.displayCartPage);
 
 // Display the admin page
-app.get("/adminPage", function(req, res){
+app.get("/adminPage", isAuthenticated, isAdmin, function(req, res){
   res.render("admin", {page_name: "adminPage"});
 });
 
 // Called from ADMIN page in order to display a table of the movies from the DB
-app.get("/api/getMoviesFromDB", homeController.getMoviesFromDB);
+app.get("/api/getMoviesFromDB", isAuthenticated, homeController.getMoviesFromDB);
 
 // Called from ADMIN page to add or delete from our DB
-app.get("/api/updateDB", homeController.updateDB);
+app.get("/api/updateDB", isAuthenticated, homeController.updateDB);
 
 // Called from ADMIN page to retrieve the average movie price
-app.get("/averagePrice", homeController.getAvgPrice);
+app.get("/averagePrice", isAuthenticated, homeController.getAvgPrice);
 
 // Called from ADMIN page to retrieve the average movie rating
-app.get("/averageRating", homeController.getAvgRating);
+app.get("/averageRating", isAuthenticated, homeController.getAvgRating);
 
 // Called from ADMIN page to retrieve the most popular movie in cart.
-app.get("/mostInCart", homeController.getMostInCart);
+app.get("/mostInCart", isAuthenticated, homeController.getMostInCart);
 
 // Start server
 app.listen(process.env.PORT, process.env.IP, function () {
@@ -119,7 +119,6 @@ async function verifyLoginInfo(req, username, password) {
     return false;
   }
 }
-
 
 function checkUsername(username) {
   let sql = "SELECT * from user WHERE username = ?";

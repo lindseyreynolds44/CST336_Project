@@ -12,11 +12,11 @@
         
         <table id="cart-table">
             <tr id="table-header">
-                <td><strong>Poster</strong></td>
-                <td><strong>Movie ID</strong></td>
-                <td><strong>Title</strong></td>
-                <td><strong>Price ($)</strong></td>
-                <td><strong>Remove</strong></td>
+                <th>Poster</th>
+                <th>Movie ID</th>
+                <th>Title</th>
+                <th>Price ($)</th>
+                <th>Remove</th>
             </tr>
             <% let subtotal = 0; %>
             <% cartContents.forEach((item) => { %>
@@ -54,8 +54,8 @@
         </section>
     </div>
     
-        
-<%- include('partials/footer.ejs') %>
+    <%- include("partials/bootstrap-footer.ejs") %> 
+    <%- include('partials/footer.ejs') %>
 
     </body>
 </html>
