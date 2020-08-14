@@ -349,9 +349,12 @@ $(document).ready(function () {
   
   // reset filters
   $("#reset-filters").on("click", function() {
-    
+    /*  old version of select
     $("#filter-genre option:first").prop("selected", true);
     $("#filter-rating option:first").prop("selected", true);
+    */
+    $("#selected-genre").text("Select Genre");
+    $("#selected-rating").text("Select Rating");
     
     // reset back to original list of movies, and remove the selected movie as well
     $("#selected-movie-container").hide(); 
@@ -359,13 +362,13 @@ $(document).ready(function () {
     displayAllMovies(featuredResults);
   });
 
+  /* old version -- using select and options
   // genre option is selected
   $("#filter-genre").on("change", function () {
     
     displayFilteredMovies();
    
   });
-
   // a rating is selected
   $("#filter-rating").on("change", function () {
       displayFilteredMovies();
@@ -373,6 +376,25 @@ $(document).ready(function () {
       //$("#filter-rating option:first").prop("selected", true);
     
   });
+  */
+  
+  $(".dropdown-menu").on('click','a', function(){
+      
+      var selectedText= ($(this).text());
+      var parent = $(this).parent().attr("filter");
+      if (parent == "genre") {
+        $("#selected-genre").text(selectedText);
+      }
+      if (parent == "rating") {
+        $("#selected-rating").text(selectedText);
+      }
+      console.log('Bootstrap Click Event:', selectedText, parent);
+      
+      displayFilteredMovies();
+      
+  });
+
+  
   
   // display and filter the original list of movies
   function displayFilteredMovies() {
@@ -380,18 +402,30 @@ $(document).ready(function () {
     featuredResults = originalResults; // reset to original list before filtering
     
     // filter the movies with current selected genre
-    let genre = $("#filter-genre").children("option:selected").val();
-    console.log("Option is clicked:", genre);
-    if (genre != "") {
+    // let genre = $("#filter-genre").children("option:selected").val();
+    let genre = $("#selected-genre").text();
+    console.log("Filter movies with Genre:", genre);
+    if (genre != "Select Genre") {
       featuredResults = filterMovieByGenre(featuredResults, genre);
       console.log("Genre filtered", featuredResults);
       
     }
      
     // filter the movie with current selected rating
-    let rating = $("#filter-rating").children("option:selected").val();
-    console.log("Rating is clicked:", rating);
-    if (rating != "") {
+    // let rating = $("#filter-rating").children("option:selected").val();
+    let ratingText = $("#selected-rating").text();
+    console.log("Selected Rating:" + ratingText);
+    let rating = 0;
+    switch (ratingText) {
+      case "Above 3": rating=3; break;
+      case "Above 5": rating=5; break;
+      case "Above 7": rating=7; break;
+      default: rating=0;
+    } 
+    console.log("Filter Movie with Rating:", rating);
+    
+    /*if (rating != "") { */
+    if (rating != 0) {
         featuredResults = filterMovieByRating(featuredResults, rating);
         console.log("Rating filtered", featuredResults);
     }
@@ -417,7 +451,7 @@ $(document).ready(function () {
   // display featured movies
   function displayFeaturedMovies(movies) {
     if ($("body").attr("page") == "index") {
-      $("#featured-header").html("Recommended Movies");
+      $("#featured-header").html("Top Rated Movies");
       displayAllMovies(movies);
       displayGenreOptions(movies);  // display a new set of genre options
       $("#filter-rating option:first").prop("selected", true); // reset the rating option too
@@ -474,8 +508,8 @@ $(document).ready(function () {
         
       });
       $("#genre-content").html(genreString);
-      $("#price-content").html(featuredResults[index].price);
-      $("#add-movie").html("Add to Cart");
+      $("#price-content").html("$" + featuredResults[index].price);
+      $("#add-movie").html("Add to the Cart");
       $("#add-movie").prop('disabled', false);
       
     } else {
@@ -532,13 +566,19 @@ $(document).ready(function () {
       return 0;
     });
     console.log("Sorted Genre Options", sortedGenreOptions);
-
+    let html = "";
+    sortedGenreOptions.forEach((name) => {
+      html += `<a class="dropdown-item" href="#">${name}</a>`;
+    }); 
+    /*
     let html = "<option value=''>Select One </option>";
     sortedGenreOptions.forEach((name) => {
       html += `<option>${name}</option>`;
     });
+    */
     //console.log("genrehtml", html);
     $("#filter-genre").html(html);
+  
   }
 
   // filter the movie list by genre
