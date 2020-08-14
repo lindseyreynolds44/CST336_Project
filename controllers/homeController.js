@@ -116,8 +116,6 @@ exports.updateCart = async (req, res) => {
   let sql = "";
   let sqlParams;
 
-  console.log("QUERY:", req.query);
-
   // Check if this is an "add" or "delete" action
   switch (action) {
     case "add":
@@ -141,8 +139,9 @@ exports.updateCart = async (req, res) => {
         sqlParams = [genre_id, movie_id, genreName];
         await callDB(sql, sqlParams);
       }
+      
       // Insert movie into the cart table
-      sql = "INSERT INTO cart (user_id, movie_id) VALUES (?, ?)";
+      sql = "REPLACE INTO cart (user_id, movie_id) VALUES (?, ?)";
       sqlParams = [user_id, movie_id];
       await callDB(sql, sqlParams);
       res.send({ status: 200 });
@@ -467,6 +466,7 @@ async function getFeaturedMovies() {
           };
           index++;
           movieObjArray.push(movie);
+          movieObjArray[index].genres.push(record.genre_name);
 
           // Otherwise, this is a repeat movie_id, with a new genre
         } else {
