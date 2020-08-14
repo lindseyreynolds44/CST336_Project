@@ -239,11 +239,21 @@ input:focus {
   justify-content: flex-end;
   font-size: 1rem;
   padding: 10px;
+  align-items: center;
 }
 
 #genre-box,
 #rating-box {
   padding: 10px;
+}
+
+#reset-filters {
+  padding:10px;
+}
+
+#featured-header {
+  padding-left: 50px;
+  font-size: 1.6rem;
 }
 
 #resultsContainer {

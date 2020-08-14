@@ -5,30 +5,36 @@
   <body class="selection" page="index">
       <div id="filter-box">
 
-        <div id="genre-box" class="dropdown show">
-          <a class="btn btn-secondary dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-            Genre
-          </a>
-        
-          <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-            <a class="dropdown-item" href="#">Action</a>
-            <a class="dropdown-item" href="#">Another action</a>
-            <a class="dropdown-item" href="#">Something else here</a>
-          </div>
-        </div>
-
         <div id="genre-box">
-          Filter by Genre:
+          <!-- Filter by Genre: -->
+          <!--  
           <select id="filter-genre" name="genre"></select>
+          -->
+          <a id="selected-genre" class="btn btn-secondary dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          Select Genre
+          </a>
+          <div id="filter-genre" class="dropdown-menu" aria-labelledby="dropdownMenuLink" filter="genre"></div>
+              
         </div>
         <div id="rating-box">
-          Filter by Rating:
+          <!-- Filter by Rating: -->
+          <a id="selected-rating" class="btn btn-secondary dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          Select Rating
+          </a>
+        
+          <div id="filter-rating" class="dropdown-menu" aria-labelledby="dropdownMenuLink" filter="rating">
+            <a class="dropdown-item" href="#">Above 3</a>
+            <a class="dropdown-item" href="#">Above 5</a>
+            <a class="dropdown-item" href="#">Above 7</a>
+          </div>
+          <!--
           <select id="filter-rating">
             <option value="">Select One</option>
             <option value="3">Above 3</option>
             <option value="5">Above 5</option>
             <option value="7">Above 7</option>
           </select>
+          -->
         </div>
         <button id="reset-filters" class="btn btn-outline-warning my-2 my-sm-0" type="submit">Reset Filters</button>
       </div>
