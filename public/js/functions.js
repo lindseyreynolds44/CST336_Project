@@ -508,7 +508,7 @@ $(document).ready(function () {
         
       });
       $("#genre-content").html(genreString);
-      $("#price-content").html(featuredResults[index].price);
+      $("#price-content").html("$" + featuredResults[index].price);
       $("#add-movie").html("Add to the Cart");
       $("#add-movie").prop('disabled', false);
       
