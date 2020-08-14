@@ -519,6 +519,8 @@ $(document).ready(function () {
 
   // event handler when "Add to Cart" button is clicked
   $("#add-movie").on("click", function (e) {
+    $("#add-movie").html("Added");
+    $("#add-movie").prop('disabled', true);
     console.log("added to cart", selectedMovieIndex);
     console.log(featuredResults[3]);
     
@@ -538,8 +540,6 @@ $(document).ready(function () {
       },
       success: function (data, status) {
         console.log("Movie is added");
-        $("#add-movie").html("Movie is Added to Cart");
-        $("#add-movie").prop('disabled', true);
       },
     }); // end of ajax
   });
@@ -598,4 +598,47 @@ $(document).ready(function () {
     console.log(filteredMovies);
     return filteredMovies;
   }
+  
+  
+  
+/******************************************************************************
+*                           Shopping Cart Code
+*******************************************************************************/
+  
+  /**
+   * Delete a movie from the shopping cart
+   */
+  $(".cart-delete-btn").on("click", function () {
+    $(this).html("Deleted");
+    $(this).prop("disabled", true);
+    let currentRow = $(this).closest("tr");
+    let movie_id = Number(currentRow.find(".cart-movie-id").html());
+    let price = currentRow.find(".cart-movie-price").html();
+    let subtotal = $("#subtotal").html();
+    subtotal = subtotal - price;
+    let total = parseFloat(subtotal) + 5.99;
+    
+    // Cut off the totals 2 places after the decimal point
+    subtotal = subtotal.toFixed(2);
+    total = total.toFixed(2);
+    
+    if(subtotal <= 0){
+      $(".total-label").html("");
+      $("#subtotal").html("");
+      $("#shipping").html("")
+      $("#total-label2").html("");
+      $("#empty-label").html("<br> Your Cart is Empty");
+    } else {
+      $("#subtotal").html(`${subtotal}`);
+      $("#total").html(`${total}`);
+    }
+    
+    $.ajax({
+         method: "get",
+         url: "/updateCart",
+         data: { movie_id: movie_id, action: "delete"},
+         success: (results, status) => {},
+     });//ajax
+  });//delete cart
+
 });

@@ -405,3 +405,96 @@ input:focus {
 .admin-btn {
   margin: 15px;
 }
+
+/*********************************************************************/
+/*                        Styles for Shopping Cart
+/*********************************************************************/
+
+#cart-header {
+  color: red;
+  text-align: center;
+}
+
+.home-shopping {
+  background-image: url("../img/movie-wall.jpg");
+  background-size: cover;
+  /* background-repeat: no-repeat !important; */
+}
+
+#cart-content {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+}
+
+/* Table listing items in cart */
+#cart-table {
+    border: 1px black solid;
+    width: 800px;
+}
+
+#table-header {
+    background-color: #4F565C;
+    font-size: 1.2em;
+    color: white;
+}
+
+.table-row {
+    border: 1px black solid;
+    background-color: white;
+    opacity: .8;
+}
+
+td {
+  padding: 15px 15px;
+}
+
+.row-item {
+  font-size: 1.3em;
+}
+
+/* Box on the right, displaying cart totals */
+#cart-total {
+    border: 1px black solid;
+    background-color: white; 
+    opacity: .8;
+    padding-top: 60px;
+    width: 300px;
+    text-align: center;
+}
+
+ul {
+  list-style-type: none;
+}
+
+li {
+  text-align: left;
+  padding: 10px;
+}
+
+.total-label, #subtotal, #shipping {
+  font-size: 1.3em;
+  padding-bottom: 20px;
+}
+
+#total-label2, #total {
+  font-size: 25px;
+  font-weight:bold;
+  margin-top: 10px;
+}
+
+#empty-label {
+  color: red;
+  text-align: center;
+}
+
+#refresh-cart-btn {
+  margin: 20px;
+}
+
+#cart-total a {
+  text-decoration: none;
+  color: white;
+}
+
+
