@@ -47,6 +47,21 @@ html {
   justify-content: space-between;
 }
 
+.has-search .form-control-feedback {
+  display: block;
+  width: 2.375rem;
+  height: 2.375rem;
+  line-height: 2.375rem;
+  text-align: center;
+
+  color: #aaa;
+}
+
+.form-control-feedback {
+  background-color: #1C1C1C;
+  border-radius: 5px;
+}
+
 /*********************************************************************/
 /*                      Sign In Page Styles 
 /*********************************************************************/
@@ -252,11 +267,21 @@ input:focus {
   justify-content: flex-end;
   font-size: 1rem;
   padding: 10px;
+  align-items: center;
 }
 
 #genre-box,
 #rating-box {
   padding: 10px;
+}
+
+#reset-filters {
+  padding:10px;
+}
+
+#featured-header {
+  padding-left: 50px;
+  font-size: 1.6rem;
 }
 
 #resultsContainer {
@@ -367,6 +392,10 @@ input:focus {
   opacity: 0.85;
 }
 
+#reports-container {
+  height: 250px;
+}
+
 #db-results,
 #admin-search-results {
   display: flex;
@@ -408,7 +437,6 @@ input:focus {
 .admin-btn {
   margin: 15px;
 }
-
 /*********************************************************************/
 /*                        Styles for Shopping Cart
 /*********************************************************************/
