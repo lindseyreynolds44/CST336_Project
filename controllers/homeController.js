@@ -23,6 +23,7 @@ setInterval(loadConfig, interval);
 
 /**
  * Handles the GET "/" route
+ * Displays the sign in page
  */
 exports.displaySignInPage = async (req, res) => {
   res.render("sign-in");
@@ -30,7 +31,7 @@ exports.displaySignInPage = async (req, res) => {
 
 /**
  * Handles the GET "/index" route
- * This method gets the top 10 rated movies from our database and sends
+ * Gets the top 10 rated movies from our database and renders
  * them to index.ejs to be displayed
  */
 exports.displayIndexPage = async (req, res) => {
@@ -40,6 +41,7 @@ exports.displayIndexPage = async (req, res) => {
 
 /**
  * Handles the POST "/createAccount" route
+ * Creates a new account in our database
  */
 exports.createAccount = (req, res) => {
   let usernameInput = req.body.username;
@@ -47,8 +49,7 @@ exports.createAccount = (req, res) => {
   let firstNameInput = req.body.firstName;
   let lastNameInput = req.body.lastName;
 
-  console.log("username " + usernameInput);
-
+  // Use bcrypt to create a decrypted password
   bcrypt.hash(passwordInput, saltRounds, function (err, hash) {
     let sql =
       "INSERT INTO user (admin_privledges, username, password, firstName, " +
@@ -68,7 +69,7 @@ exports.createAccount = (req, res) => {
 
 /**
  * Handles the GET "/isUsernameAvailable" route
- *  --- DONE ---
+ * Check if the username already exists in our database
  */
 exports.isUsernameAvailable = (req, res) => {
   let username = req.query.username;
@@ -89,7 +90,7 @@ exports.isUsernameAvailable = (req, res) => {
 
 /**
  * Handles the GET "/search" route
- * --- DONE ---
+ * Searches the movies API and sends the results back to index.ejs
  */
 exports.displaySearchResults = async (req, res) => {
   let query = req.query.search_string;
@@ -99,10 +100,9 @@ exports.displaySearchResults = async (req, res) => {
 
 /**
  * Handles the GET "/updateCart" route
- * --- DONE ( DAN ) ---
+ * Adds or deletes records from our database
  */
 exports.updateCart = async (req, res) => {
-  console.log("updateCart Called");
   let user_id = req.session.name;
   let movie_id = parseInt(req.query.movie_id);
   let title = req.query.title;
@@ -118,11 +118,10 @@ exports.updateCart = async (req, res) => {
 
   console.log("QUERY:", req.query);
 
-  // check if this is an "add" or "delete" action
+  // Check if this is an "add" or "delete" action
   switch (action) {
     case "add":
-      //add here
-      // INSERT MOVIE TO MOVIE TABLE
+      // Insert movie into the movie table
       sql =
         "REPLACE INTO movie (movie_id, title, release_date, description, image_url, rating) VALUES (?,?,?,?,?,?)";
       sqlParams = [
@@ -134,23 +133,23 @@ exports.updateCart = async (req, res) => {
         rating,
       ];
       await callDB(sql, sqlParams);
-      // INSERT GENRES INTO GENRE TABLE
+      // Insert genres into genre table
       sql =
-        "INSERT INTO genre (genre_id, movie_id, genre_name) VALUES (?, ?, ?)";
+        "REPLACE INTO genre (genre_id, movie_id, genre_name) VALUES (?, ?, ?)";
       for (genreName of genres) {
         let genre_id = await getGenreIDFromName(genreName);
         sqlParams = [genre_id, movie_id, genreName];
         await callDB(sql, sqlParams);
       }
-
-      // INSERT MOVIE INTO CART TABLE
+      // Insert movie into the cart table
       sql = "INSERT INTO cart (user_id, movie_id) VALUES (?, ?)";
       sqlParams = [user_id, movie_id];
       await callDB(sql, sqlParams);
       res.send({ status: 200 });
       break;
+
     case "delete":
-      //delete here
+      // Delete movie from the cart table
       sql = "DELETE FROM cart WHERE user_id = ? AND movie_id = ?;";
       sqlParams = [user_id, movie_id];
       await callDB(sql, sqlParams);
@@ -161,16 +160,15 @@ exports.updateCart = async (req, res) => {
 
 /**
  * Handles the GET "/displayCartPage" route
- * --- DONE ( DAN ) ---
+ * Display the shopping cart with all the current user's cart items
  */
 exports.displayCartPage = async (req, res) => {
   let user_id = req.session.name;
+  // Select all the movies in this user's cart
   let sql =
     "SELECT movie_id, title, image_url, price FROM cart JOIN movie USING (movie_id) WHERE user_id = ?";
   let cartContents = await callDB(sql, user_id);
 
-  console.log("# of items in cart:", cartContents.length); // diagnostic
-  //console.log(cartContents); // diagnostic
   res.render("shoppingcart", {
     cartContents: cartContents,
     page_name: "shoppingCart",
@@ -179,7 +177,7 @@ exports.displayCartPage = async (req, res) => {
 
 /**
  * Handles the GET "/getMoviesFromDB" route
- * --- PENDING ( Lindsey ) ---
+ * Get all movies from our database to send to the admin page
  */
 exports.getMoviesFromDB = async (req, res) => {
   let sql = "SELECT movie_id, title, price FROM movie;";
@@ -189,7 +187,7 @@ exports.getMoviesFromDB = async (req, res) => {
 
 /**
  * Handles the GET "/api/updateDB" route
- * --- PENDING ( Lindsey ) ---
+ * Add, delete or update the price of records in the movie and genre tables
  */
 exports.updateDB = async (req, res) => {
   let sql;
@@ -211,6 +209,7 @@ exports.updateDB = async (req, res) => {
   // Add/Delete record from movie table
   switch (action) {
     case "add":
+      // Insert movie into the movie table
       sql =
         "REPLACE INTO movie (movie_id, title, image_url, rating, " +
         "release_date, description, price) VALUES (?, ?, ?, ?, ?, ?, ?);";
@@ -225,15 +224,20 @@ exports.updateDB = async (req, res) => {
       ];
       break;
     case "delete":
+      // Delete movie from the movie table
       sql = "DELETE FROM movie WHERE movie_id = ?";
       sqlParams = [movie_id];
       break;
-    case "update": // update the price
+    case "update":
+      // Update this movie's price
       sql = "UPDATE movie SET price = ? WHERE movie_id = ?";
       sqlParams = [price, movie_id];
       break;
   } //switch
+
+  // Add or Delete records from movie table
   await callDB(sql, sqlParams);
+
   // Add all genres into the genre table that are associated with the movie_id
   if (action == "add") {
     sql =
@@ -244,12 +248,12 @@ exports.updateDB = async (req, res) => {
       await callDB(sql, sqlParams);
     });
   }
-
   res.send({ status: 200 });
 };
 
 /**
  * Handles the GET  "/averagePrice" route
+ * Get the average price of all movies in our database
  */
 exports.getAvgPrice = async (req, res) => {
   let sql = "SELECT AVG(price) AS avgPrice FROM movie";
@@ -259,6 +263,7 @@ exports.getAvgPrice = async (req, res) => {
 
 /**
  * Handles the GET "/averageRating" route
+ * Get the average rating of all movies in our database
  */
 exports.getAvgRating = async (req, res) => {
   let sql = "SELECT AVG(rating) AS avgRating FROM movie";
@@ -266,6 +271,10 @@ exports.getAvgRating = async (req, res) => {
   res.send({ averageRating: averageRating });
 };
 
+/**
+ * Handles the GET "/getMostInCart" route
+ * Get the movie that appears most often in user's carts
+ */
 exports.getMostInCart = async (req, res) => {
   let sql =
     "SELECT cart.movie_id, title, COUNT(cart.movie_id) AS num_times FROM cart JOIN movie ON cart.movie_id = movie.movie_id GROUP BY cart.movie_id ORDER BY num_times DESC LIMIT 1;";
@@ -273,31 +282,36 @@ exports.getMostInCart = async (req, res) => {
   res.send({ mostInCart: mostInCart });
 };
 
-function getGenreIDFromName(genreName) {
-  return new Promise((resolve, reject) => {
-    let returnID = 0;
-    genrePairArray.forEach((genre) => {
-      if (genre.name == genreName) {
-        returnID = genre.id;
-      }
-    });
-    resolve(returnID);
-  });
-}
-
 /*******************************************************************************
  *                            API functions                                    *
  ******************************************************************************/
 
 /**
- * Processes movie data from API.
+ * Loads the static configuration information from the API
+ */
+async function loadConfig() {
+  let requestUrl = {
+    url: "https://api.themoviedb.org/3/configuration",
+    qs: {
+      api_key: API_KEY,
+    },
+  };
+  // Sets values to global variables
+  config = await callAPI(requestUrl);
+  genreNames = await getGenreNames();
+  genrePairArray = await getGenrePairs();
+  console.log("Loaded config");
+}
+
+/**
+ * Retrieves movie data from the API based on a keyword
  * @param {String} query
+ * @return {}
  */
 async function getMovie(query) {
-  // reorganized to make the url easier to manipulate and read
+  // Request URL including the API key and the search term
   let requestUrl = {
     url: "https://api.themoviedb.org/3/search/movie",
-    // qs adds the query string after the url.
     qs: {
       api_key: API_KEY,
       query: query,
@@ -306,24 +320,10 @@ async function getMovie(query) {
   let parsedData = await callAPI(requestUrl);
   let base_url = config.images.base_url;
   let resultArray = [];
-  // console.log(genreList.genres.length);
 
-  //   parsedData.results.forEach((movie) => {
-  //     // creates Date object for formatting
-  //     let date = new Date(movie.release_date);
-
-  // MAIN CHANGES
-  console.log("getMovie");
-  //console.log(parsedData);
-
-  // remove async from forEach, otherwise the return resultArray executed before the resultArray is ready
   parsedData.results.forEach((movie) => {
-    // creates Date object for formatting
+    // Create Date object for formatting
     let date = new Date(movie.release_date);
-
-    // change genreToString to normal function rather than async function
-    //MAIN END
-
     let genreNameArr = genreToString(movie.genre_ids);
 
     let result = {
@@ -331,27 +331,24 @@ async function getMovie(query) {
       imageUrl: base_url + "w342" + movie.poster_path,
       rating: movie.vote_average,
       movieID: movie.id,
-      release_date: date.toLocaleDateString(), // formats date to locale's style
+      release_date: date.toLocaleDateString(), // format date to locale's style
       overview: movie.overview,
       genres: genreNameArr,
       price: 5.99,
     };
     resultArray.push(result);
   });
-  // console.log(resultArray);
   return resultArray;
 }
 
 /**
  * This function receives a request URL object with the URL and params
  * to call the api and returns the parsed results.
- *
  * @param {Object} requestUrl
  */
 function callAPI(requestUrl) {
   return new Promise((resolve, reject) => {
     request(requestUrl, function (error, response, body) {
-      //body is the string that is retrieved
       //check that the request was successful
       if (!error && response.statusCode == 200) {
         let parsedData = JSON.parse(body);
@@ -380,9 +377,8 @@ async function getGenreNames() {
 }
 
 /**
- * Matches genreIDs to API's genre names and returns corresponding name for
- * genre id in question.
- *
+ * Matches a movie's genreIDs to the API's genre names and returns the
+ * corresponding name 
  * @param {Int} genreIDs
  * @param {Object} genreNames
  */
@@ -398,8 +394,7 @@ function genreToString(genreIDs) {
 }
 
 /**
- * Create an array of all genres, including their id and name
- * How to call: genrePairArray[0].id OR genrePairArray[0].name
+ * Create an array of all genres, pairing their id with their name
  */
 function getGenrePairs() {
   return new Promise((resolve, reject) => {
@@ -416,21 +411,23 @@ function getGenrePairs() {
 }
 
 /**
- * Loads the static configuration information from API
+ * Get the genre name from its corresponding id
+ * @param {string} genreName
+ * @return {int} returnID
  */
-async function loadConfig() {
-  let requestUrl = {
-    url: "https://api.themoviedb.org/3/configuration",
-    qs: {
-      api_key: API_KEY,
-    },
-  };
-  //sets value of call to global var
-  config = await callAPI(requestUrl);
-  genreNames = await getGenreNames();
-  genrePairArray = await getGenrePairs();
-  console.log("Loaded config");
+function getGenreIDFromName(genreName) {
+  return new Promise((resolve, reject) => {
+    let returnID = 0;
+    genrePairArray.forEach((genre) => {
+      if (genre.name == genreName) {
+        returnID = genre.id;
+      }
+    });
+    resolve(returnID);
+  });
 }
+
+
 
 /*******************************************************************************
  *                            Database Functions                               *
@@ -442,7 +439,7 @@ async function loadConfig() {
  */
 async function getFeaturedMovies() {
   return new Promise(function (resolve, reject) {
-    // Query to get the top ten rated movies from our database
+    // Get the top ten rated movies from our database
     let sql =
       "SELECT movie.movie_id, title, release_date, description, image_url," +
       " rating, price, genre_name FROM movie JOIN genre on movie.movie_id =" +

@@ -2,6 +2,10 @@ html {
   margin: 0 auto;
 }
 
+footer {
+  color: gold;
+}
+
 /*********************************************************************/
 /*                         Nav Bar Styles 
 /*********************************************************************/
@@ -51,8 +55,6 @@ html {
 /*                      Sign In Page Styles 
 /*********************************************************************/
 
-/* @import url('https://fonts.googleapis.com/css?family=Numans');*/
-
 html,
 body {
   background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
@@ -78,12 +80,12 @@ body {
 
 .card-header h3 {
   color: white;
-  text-align:center;
+  text-align: center;
 }
 
 .form-group {
-  display:flex;
-  justify-content:center;
+  display: flex;
+  justify-content: center;
 }
 
 .social_icon span {
@@ -153,58 +155,6 @@ input:focus {
 /*                      Styles Home and Index Page
 /*********************************************************************/
 
-.home {
-  text-align: center;
-  background-image: url("../img/movie-wall.jpg");
-  background-size: cover;
-  /* background-repeat: no-repeat; */
-  color: white;
-  font-size: 2rem;
-  padding: 20px; 
-}
-
-#home-signIn {
-  background-color: red;
-  color: white;
-  text-decoration: none;
-  text-align: center;
-  padding: 10px 15px 10px 15px;
-}
-
-#home-menu {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin: 5px;
-}
-
-#home-form {
-  display: inline-block;
-  margin: 0 auto;
-  background-color: rgba(0, 0, 0, 0.75);
-  width: 50%;
-  font-size: 2rem;
-  padding: 15px 15px 20px 15px;
-}
-
-#home-form input[type="text"] {
-  font-size: 1.6rem;
-  border: 2px solid red;
-  border-radius: 10px;
-  padding: 5px;
-}
-
-#home-form input[type="text"]:focus {
-  background-color: lightblue;
-}
-
-.home-button {
-  background-color: red;
-  color: white;
-  font-size: 1.6rem;
-  padding: 5px;
-}
-
 .selection {
   background-color: black;
   color: gold;
@@ -248,20 +198,20 @@ input:focus {
 }
 
 #reset-filters {
-  padding:10px;
+  padding: 10px;
 }
 
 #featured-header {
-  padding-left: 50px;
+  padding-left: 3%;
   font-size: 1.6rem;
 }
 
 #resultsContainer {
   display: flex;
+  justify-content: center;
   flex-wrap: wrap;
   font-size: 1rem;
 }
-
 
 .poster-box {
   background-color: black;
@@ -270,10 +220,9 @@ input:focus {
   min-width: 200px;
 }
 
-
 .movie-poster {
   height: 300px;
-  width:200px;
+  width: 200px;
   background-position: center;
   background-repeat: no-repeat;
   background-size: cover;
@@ -282,7 +231,6 @@ input:focus {
   line-height: 150px;
   text-align: center;
 }
-
 
 .movie-poster:hover {
   transform: scale(1.15);
@@ -304,12 +252,12 @@ input:focus {
 }
 
 #add-movie {
-  color: black;
+  color: white;
 }
 
 #title {
-  color: magenta;
-  font-size:1.8rem;
+  color: red;
+  font-size: 1.8rem;
 }
 
 #synopsis {
@@ -317,14 +265,14 @@ input:focus {
 }
 
 #synopsis-content {
-  color: mediumturquoise;
+  color: white;
   padding-left: 20px;
 }
 
 #rating,
 #genre,
 #release {
-  color: darkseagreen;
+  color: gold;
 }
 
 #rating-content,
@@ -332,6 +280,9 @@ input:focus {
 #release-content {
   color: white;
   padding-left: 20px;
+}
+#price {
+  color: white;
 }
 
 .links a {
@@ -362,6 +313,10 @@ input:focus {
   overflow-y: auto;
   background-color: white;
   opacity: 0.85;
+}
+
+#reports-container {
+  height: 250px;
 }
 
 #db-results,
@@ -405,7 +360,6 @@ input:focus {
 .admin-btn {
   margin: 15px;
 }
-
 /*********************************************************************/
 /*                        Styles for Shopping Cart
 /*********************************************************************/
@@ -422,31 +376,37 @@ input:focus {
 }
 
 #cart-content {
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  /* max-width: 1500px; */
 }
 
 /* Table listing items in cart */
 #cart-table {
-    border: 1px black solid;
-    width: 800px;
+  border: 1px black solid;
+  width: 70%;
+  max-width: 1000px;
 }
 
 #table-header {
-    background-color: #4F565C;
-    font-size: 1.2em;
-    color: white;
+  background-color: #4f565c;
+  font-size: 1.2em;
+  color: white;
 }
 
 .table-row {
-    border: 1px black solid;
-    background-color: white;
-    opacity: .8;
+  border: 1px black solid;
+  background-color: rgb(255, 255, 255, 0.8);
+}
+
+th {
+  padding: 15px 5px;
 }
 
 td {
-  padding: 15px 15px;
+  padding: 15px 5px;
+  text-align: center;
 }
 
 .row-item {
@@ -455,16 +415,17 @@ td {
 
 /* Box on the right, displaying cart totals */
 #cart-total {
-    border: 1px black solid;
-    background-color: white; 
-    opacity: .8;
-    padding-top: 60px;
-    width: 300px;
-    text-align: center;
+  border: 1px black solid;
+  background-color: rgb(255, 255, 255, 0.8);
+  padding-top: 60px;
+  width: 25%;
+  text-align: center;
+  max-width: 300px;
 }
 
 ul {
   list-style-type: none;
+  padding-left: 20%;
 }
 
 li {
@@ -472,14 +433,17 @@ li {
   padding: 10px;
 }
 
-.total-label, #subtotal, #shipping {
+.total-label,
+#subtotal,
+#shipping {
   font-size: 1.3em;
   padding-bottom: 20px;
 }
 
-#total-label2, #total {
+#total-label2,
+#total {
   font-size: 25px;
-  font-weight:bold;
+  font-weight: bold;
   margin-top: 10px;
 }
 
@@ -496,5 +460,3 @@ li {
   text-decoration: none;
   color: white;
 }
-
-

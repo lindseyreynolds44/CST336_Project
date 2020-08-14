@@ -18,7 +18,7 @@
     <div id="admin-content">
       <br><br>
       <h1 id="admin-title" class="text-center">Administration Page</h1>
-      <br /><br />
+      <br><br>
 
       <div class="admin-container">
         <br />
@@ -30,7 +30,7 @@
         <div id="db-results"></div>
       </div>
 
-      <br /><br />
+      <br><br>
 
       <div class="admin-container">
         <br />
@@ -41,8 +41,7 @@
             type="text"
             id="admin-search-text"
             placeholder="Search keyword"
-            size="40"
-          />
+            size="40"/>
           <button id="admin-search-btn" class="btn btn-info">Search</button>
         </form>
         <div id="admin-search-warning" class="text-center"></div>
@@ -50,9 +49,9 @@
         <div id="admin-search-results"></div>
       </div>
 
-      <br /><br />
+      <br><br>
 
-      <div class="admin-container">
+      <div id="reports-container" class="admin-container">
         <br />
         <h4 class="text-center">Generate Database Reports</h4>
         <br />
@@ -64,12 +63,15 @@
             Average Movie Rating
           </button>
           <button id="admin-get-most-inCart" class="admin-btn btn btn-info">
-            Most added to Cart Movie
+            Movie Added to Most Carts
           </button>
         </div>
         <br />
         <div id="reportResults" class="text-center"></div>
       </div>
+      <br><br>
     </div>
+    <%- include("partials/bootstrap-footer.ejs") %> 
+    <%- include('partials/footer.ejs') %>
   </body>
 </html>
