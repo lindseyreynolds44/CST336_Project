@@ -229,7 +229,7 @@ $(document).ready(function () {
     }); //ajax
   }
 
-  // GET AVERAGE MOVIE PRICE
+   // Get the average price for a movie in our database
   $("#admin-get-avg-price").on("click", function () {
     $.ajax({
       method: "get",
@@ -242,7 +242,8 @@ $(document).ready(function () {
       },
     }); //ajax
   });
-  // GET AVERAGE MOVIE RATING
+  
+  // Get the average rating for a movie in our database
   $("#admin-get-avg-rating").on("click", function () {
     $.ajax({
       method: "get",
@@ -256,7 +257,7 @@ $(document).ready(function () {
     }); //ajax
   });
 
-  // GET MOST PURCHASED MOVIE
+  // Get the movie that is in the most user's carts
   $("#admin-get-most-inCart").on("click", () => {
     $.ajax({
       method: "get",
@@ -265,7 +266,6 @@ $(document).ready(function () {
         console.log("mostPurchased:", status);
         let mostInCart = data.mostInCart[0];
         let html =
-          `Most Popular Movie in Cart <br>` +
           `Title: ${mostInCart.title} <br>` +
           `Times added: ${mostInCart.num_times}`;
         $("#reportResults").html(html);
@@ -293,9 +293,11 @@ $(document).ready(function () {
     return true;
   }
 
-  /**
-   * Index Page action event and functions
-   */
+
+  /******************************************************************************
+  *                             Index Page Code
+  *******************************************************************************/ 
+   
   hideMovieDetail(); //hide the movie detail when the page is freshly loaded
 
   displayFeaturedMovies(originalResults); // display all the movies in the results
