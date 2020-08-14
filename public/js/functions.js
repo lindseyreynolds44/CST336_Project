@@ -357,7 +357,13 @@ $(document).ready(function () {
     $("#filter-genre option:first").prop("selected", true);
     $("#filter-rating option:first").prop("selected", true);
     */
+    $("#filter-genre option:first").prop("selected", true);
+    $("#filter-rating option:first").prop("selected", true);
     
+  })
+
+
+
     $("#selected-genre").text("Select Genre");
     $("#selected-rating").text("Select Rating");
     
